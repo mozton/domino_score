@@ -1,3 +1,4 @@
+import 'package:dominos_score/provider/dialogs.dart';
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:dominos_score/widgets/score_view.dart';
 import 'package:flutter/material.dart';
@@ -142,6 +143,7 @@ class HomeScreen extends StatelessWidget {
                               provider.addRound(provider.team1Name, points);
                               provider.pointController.clear();
                               FocusScope.of(context).unfocus();
+                              showDialogWins(context, provider.team1Name);
                             }
                           },
                           icon: const Icon(Icons.add),
@@ -153,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         ElevatedButton.icon(
                           onLongPress: () {},
-                          onPressed: () {
+                          onPressed: () async {
                             final points =
                                 int.tryParse(provider.pointController.text) ??
                                 0;
@@ -161,6 +163,9 @@ class HomeScreen extends StatelessWidget {
                               provider.addRound(provider.team2Name, points);
                               provider.pointController.clear();
                               FocusScope.of(context).unfocus();
+
+                              await Future.delayed(Duration(milliseconds: 100));
+                              showDialogWins(context, provider.team2Name);
                             }
                           },
 

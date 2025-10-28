@@ -20,6 +20,9 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       routes: Routes.routes(),
       initialRoute: '/',
+      theme: context.read<GameProvider>().isDarkMode
+          ? ThemeData.dark()
+          : ThemeData.light(),
     );
   }
 }

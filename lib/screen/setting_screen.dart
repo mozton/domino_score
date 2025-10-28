@@ -1,4 +1,5 @@
 import 'package:dominos_score/provider/game_provider.dart';
+import 'package:dominos_score/widgets/switch_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,7 @@ class SettingScreen extends StatelessWidget {
   final TextEditingController team1Controller = TextEditingController();
   final TextEditingController team2Controller = TextEditingController();
   final List<int> pointsToWin = [100, 200, 300, 400, 500];
+  List<bool> isSelected = [true, false];
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +102,8 @@ class SettingScreen extends StatelessWidget {
                     },
                   ),
                 ),
+
+                Row(children: [Text('Theme'), Spacer(), SwitchThemeWidget()]),
               ],
             ),
           ),
