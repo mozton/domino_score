@@ -11,8 +11,8 @@ class GameProvider extends ChangeNotifier {
     _game = GameModel(
       rounds: [],
       actualRound: 1,
-      team1: (Team(id: 1, name: 'Team 1')),
-      team2: (Team(id: 2, name: 'Team 2')),
+      team1: (Team(id: 1, name: 'TEAM 1')),
+      team2: (Team(id: 2, name: 'TEAM 2')),
     );
   }
 
@@ -36,6 +36,9 @@ class GameProvider extends ChangeNotifier {
   // Change Names
 
   // Puntos totales
+  final List<int> _pointsToWin = [100, 200, 300, 400, 500];
+  List<int> get pointsToWins => _pointsToWin;
+
   int get team1Total {
     int total = 0;
     for (var round in _game.rounds) {
@@ -119,8 +122,17 @@ class GameProvider extends ChangeNotifier {
   bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
 
+  bool _isSystemTheme = false;
+  bool get isSystemTheme => _isSystemTheme;
+
   void toggleTheme(bool isOn) {
     _isDarkMode = isOn;
+    notifyListeners();
+  }
+
+  void toggleSystemTheme(bool isOn) {
+    _isSystemTheme = isOn;
+    print(isSystemTheme);
     notifyListeners();
   }
 }
