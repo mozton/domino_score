@@ -11,8 +11,8 @@ class GameProvider extends ChangeNotifier {
     _game = GameModel(
       rounds: [],
       actualRound: 1,
-      team1: (Team(id: 1, name: 'Team 1')),
-      team2: (Team(id: 2, name: 'Team 2')),
+      team1: (Team(id: 1, name: 'TEAM 1')),
+      team2: (Team(id: 2, name: 'TEAM 2')),
     );
   }
 
@@ -27,15 +27,16 @@ class GameProvider extends ChangeNotifier {
   final TextEditingController _pointController = TextEditingController();
   TextEditingController get pointController => _pointController;
 
-  // Setters
+  // Setters for change name of teams
 
   set team1Name(String name) => _game.team1.name = name;
 
   set team2Name(String name) => _game.team2.name = name;
 
-  // Change Names
-
   // Puntos totales
+  final List<int> _pointsToWin = [100, 200, 300, 400, 500];
+  List<int> get pointsToWins => _pointsToWin;
+
   int get team1Total {
     int total = 0;
     for (var round in _game.rounds) {
@@ -94,6 +95,7 @@ class GameProvider extends ChangeNotifier {
 
     _game.rounds.add(newRound);
     _game.actualRound++;
+
     notifyListeners();
   }
 
@@ -119,8 +121,27 @@ class GameProvider extends ChangeNotifier {
   bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
 
+  bool _isSystemTheme = false;
+  bool get isSystemTheme => _isSystemTheme;
+
   void toggleTheme(bool isOn) {
     _isDarkMode = isOn;
     notifyListeners();
+  }
+
+  void toggleSystemTheme(bool isOn) {
+    _isSystemTheme = isOn;
+    print(isSystemTheme);
+    notifyListeners();
+  }
+
+  // FOCUS NODE
+
+  final FocusNode focusNode = FocusNode();
+  @override
+  void dispose() {
+    pointController.dispose();
+    focusNode.dispose();
+    super.dispose();
   }
 }
