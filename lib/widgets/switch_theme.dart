@@ -37,7 +37,7 @@ class SwitchThemeWidget extends StatelessWidget {
                 activeTrackColor: Colors.blue,
                 inactiveTrackColor: Colors.grey,
                 inactiveThumbColor: Colors.white,
-                trackOutlineWidth: WidgetStateProperty.all(null),
+                trackOutlineWidth: WidgetStateProperty.all(0.1),
                 onChanged: (value) {
                   if (prov.isSystemTheme == true) {
                     null;

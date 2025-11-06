@@ -131,7 +131,6 @@ class GameProvider extends ChangeNotifier {
 
   void toggleSystemTheme(bool isOn) {
     _isSystemTheme = isOn;
-    print(isSystemTheme);
     notifyListeners();
   }
 
