@@ -33,11 +33,17 @@ class SwitchThemeWidget extends StatelessWidget {
             else
               Switch(
                 value: prov.isDarkMode,
-                activeColor: Colors.white,
-                activeTrackColor: Colors.grey,
+                activeThumbColor: Colors.white,
+                activeTrackColor: Colors.blue,
+                inactiveTrackColor: Colors.grey,
+                inactiveThumbColor: Colors.white,
+                trackOutlineWidth: WidgetStateProperty.all(null),
                 onChanged: (value) {
-                  prov.toggleTheme(value);
-
+                  if (prov.isSystemTheme == true) {
+                    null;
+                  } else {
+                    prov.toggleTheme(value);
+                  }
                   // print(value);
                 },
               ),

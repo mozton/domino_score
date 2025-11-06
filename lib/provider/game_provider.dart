@@ -27,13 +27,11 @@ class GameProvider extends ChangeNotifier {
   final TextEditingController _pointController = TextEditingController();
   TextEditingController get pointController => _pointController;
 
-  // Setters
+  // Setters for change name of teams
 
   set team1Name(String name) => _game.team1.name = name;
 
   set team2Name(String name) => _game.team2.name = name;
-
-  // Change Names
 
   // Puntos totales
   final List<int> _pointsToWin = [100, 200, 300, 400, 500];
@@ -97,6 +95,7 @@ class GameProvider extends ChangeNotifier {
 
     _game.rounds.add(newRound);
     _game.actualRound++;
+
     notifyListeners();
   }
 
@@ -134,5 +133,15 @@ class GameProvider extends ChangeNotifier {
     _isSystemTheme = isOn;
     print(isSystemTheme);
     notifyListeners();
+  }
+
+  // FOCUS NODE
+
+  final FocusNode focusNode = FocusNode();
+  @override
+  void dispose() {
+    pointController.dispose();
+    focusNode.dispose();
+    super.dispose();
   }
 }

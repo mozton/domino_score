@@ -16,26 +16,48 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("$teamWinner is Winner!"),
-          content: Column(
-            children: [
-              Text('Congratulation you won, You wanna play again?'),
-              GifView.asset('assets/domiforever.gif', height: 150, width: 150),
-            ],
+          title: Center(child: Text("$teamWinner is Winner!")),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: Column(
+              children: [
+                Text(
+                  'Congratulation you won, You wanna play again?',
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                GifView.asset(
+                  'assets/competition.gif',
+                  height: 150,
+                  width: 150,
+                ),
+              ],
+            ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('No', style: textStyle),
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<GameProvider>().resetGame();
-                Navigator.of(context).pop();
-              },
-              child: Text('Yes', style: textStyle),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('No', style: textStyle),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<GameProvider>().resetGame();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Yes',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -47,10 +69,7 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
 
 void dialogWinIOS(BuildContext context, String teamWinner) {
   final prov = Provider.of<GameProvider>(context, listen: false);
-  final textcolor = TextStyle(
-    fontWeight: FontWeight.bold,
-    color: prov.isDarkMode ? Colors.white : Colors.blueGrey,
-  );
+
   if (prov.team1Total >= prov.pointToWin ||
       prov.team2Total >= prov.pointToWin) {
     showCupertinoDialog(

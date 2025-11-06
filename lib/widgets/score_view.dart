@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dominos_score/dialogs/delete_round_dialog.dart';
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ScoreView extends StatelessWidget {
   final GameProvider provider;
@@ -34,11 +33,13 @@ class ScoreView extends StatelessWidget {
 
                 Text(
                   '${round.pointTeam1}',
+
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
                 Text(
                   '${round.pointTeam2}',
+
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 

@@ -45,24 +45,67 @@ void cupertinoPicker(BuildContext context, List<int> points) {
   );
 }
 
-void dropdownMenuAndroid(BuildContext context) {
-  Consumer<GameProvider>(
-    builder: (context, prov, child) => Dialog(
-      child: DropdownButtonFormField(
-        // style: TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-        ),
-        hint: Text('Points to Win'),
-        items: [
-          for (var point in prov.pointsToWins)
-            DropdownMenuItem(value: point, child: Text('$point')),
-        ],
-        onChanged: (Object? value) {
-          prov.pointsToWin = value as int;
-          // print(prov.pointToWin);
+void showPointsDialog(BuildContext context, List<int> points) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Consumer<GameProvider>(
+        builder: (context, prov, child) {
+          int selectedValue = prov.pointsToWin;
+
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: const Text(
+              'Select Points to Win',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            content: StatefulBuilder(
+              builder: (context, setState) {
+                return DropdownButtonFormField<int>(
+                  value: selectedValue,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                  ),
+                  items: points
+                      .map(
+                        (point) => DropdownMenuItem(
+                          value: point,
+                          child: Text('$point'),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        selectedValue = value;
+                      });
+                    }
+                  },
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  prov.pointsToWin = selectedValue;
+                  Navigator.pop(context);
+                },
+                child: const Text('Done'),
+              ),
+            ],
+          );
         },
-      ),
-    ),
+      );
+    },
   );
 }

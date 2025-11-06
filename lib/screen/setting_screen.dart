@@ -115,15 +115,28 @@ class SettingScreen extends StatelessWidget {
                     child: ElevatedButton(
                       child: Row(
                         children: [
-                          Text('Change    '),
-                          Text(prov.pointToWin.toString()),
+                          Text(
+                            'Change',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          Spacer(),
+                          Text(
+                            prov.pointToWin.toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
                         ],
                       ),
                       onPressed: () {
                         if (Platform.isIOS) {
                           cupertinoPicker(context, prov.pointsToWins);
                         } else {
-                          dropdownMenuAndroid(context);
+                          showPointsDialog(context, prov.pointsToWins);
                           return;
                         }
                       },
@@ -134,21 +147,7 @@ class SettingScreen extends StatelessWidget {
                   SizedBox(height: 15),
                   Text('Other Settings', style: style),
                   SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Text(
-                        'ThemeMode:      ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        prov.isDarkMode ? 'Dark' : 'Light',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Spacer(),
 
-                      SwitchThemeWidget(),
-                    ],
-                  ),
                   Row(
                     children: [
                       Text(
@@ -170,6 +169,11 @@ class SettingScreen extends StatelessWidget {
                         ),
                       if (Platform.isAndroid)
                         Switch(
+                          activeThumbColor: Colors.white,
+                          activeTrackColor: Colors.blue,
+                          inactiveTrackColor: Colors.grey,
+                          inactiveThumbColor: Colors.white,
+                          trackOutlineWidth: WidgetStateProperty.all(0.1),
                           value: prov.isSystemTheme,
                           onChanged: (value) {
                             prov.toggleSystemTheme(value);
@@ -177,6 +181,23 @@ class SettingScreen extends StatelessWidget {
                         ),
                     ],
                   ),
+                  prov.isSystemTheme
+                      ? SizedBox.shrink()
+                      : Row(
+                          children: [
+                            Text(
+                              'Dark Mode: ',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              prov.isDarkMode ? 'On' : 'Off',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+
+                            SwitchThemeWidget(),
+                          ],
+                        ),
                 ],
               ),
             ),

@@ -33,10 +33,10 @@ void newGameDialog(BuildContext context) {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              TextButton(
+              ElevatedButton(
+                style: ButtonStyle(),
                 onPressed: () {
                   Navigator.of(context).pop();
-
                   FocusScope.of(context).unfocus();
                 },
                 child: const Text(

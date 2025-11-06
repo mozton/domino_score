@@ -13,24 +13,38 @@ void showDeleteRoundDialog(BuildContext context, int index, int round) {
       );
 
       return AlertDialog(
-        title: Text('Delete Round'),
-        content: Text('Are you sure that want to delete round: $round'),
+        title: Center(child: Text('Delete Round')),
+        content: Text(
+          'Are you sure that want to delete round: $round',
+          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('No', style: textStyle),
-          ),
-          TextButton(
-            onPressed: () {
-              prov.deletePoint(index);
-              Navigator.pop(context);
-            },
-            child: Text(
-              'Yes',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('No', style: textStyle),
+              ),
+              TextButton(
+                onPressed: () {
+                  prov.deletePoint(index);
+                  FocusScope.of(context).unfocus();
+
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Yes',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       );

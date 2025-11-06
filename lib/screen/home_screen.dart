@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.brown[500],
+          backgroundColor: Colors.blueAccent,
           title: const Text(
             'Domino Score',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushNamed('/setting');
               },
-              icon: const Icon(Icons.settings, size: 25, color: Colors.white),
+              icon: const Icon(Icons.settings, size: 25, color: Colors.grey),
             ),
           ],
         ),
@@ -132,6 +132,9 @@ class HomeScreen extends StatelessWidget {
                   Column(
                     children: [
                       TextField(
+                        autofocus: false,
+                        focusNode: provider.focusNode,
+
                         maxLength: 3,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -160,13 +163,14 @@ class HomeScreen extends StatelessWidget {
                                 if (points > 0) {
                                   provider.addRound(provider.team1Name, points);
                                   provider.pointController.clear();
+                                  provider.focusNode.unfocus();
                                   FocusScope.of(context).unfocus();
                                   if (Platform.isIOS) {
-                                    dialogWinIOS(context, provider.team2Name);
+                                    dialogWinIOS(context, provider.team1Name);
                                   } else {
                                     dialogWinsAndroid(
                                       context,
-                                      provider.team2Name,
+                                      provider.team1Name,
                                     );
                                   }
                                 }
@@ -196,6 +200,7 @@ class HomeScreen extends StatelessWidget {
                                 if (points > 0) {
                                   provider.addRound(provider.team2Name, points);
                                   provider.pointController.clear();
+                                  provider.focusNode.unfocus();
                                   FocusScope.of(context).unfocus();
                                   if (Platform.isIOS) {
                                     dialogWinIOS(context, provider.team2Name);
@@ -205,6 +210,7 @@ class HomeScreen extends StatelessWidget {
                                       provider.team2Name,
                                     );
                                   }
+                                  FocusScope.of(context).unfocus();
                                 }
                               },
 
