@@ -1,4 +1,5 @@
 import 'package:dominos_score/provider/providers.dart';
+import 'package:dominos_score/widgets/icon_domino_5-1.dart';
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ class HomeScreenV1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Consumer<GameProvider>(
       builder: (context, prov, child) {
         return Container(
@@ -78,6 +80,32 @@ class HomeScreenV1 extends StatelessWidget {
                 // Row(children:  [ButtonAddTeamAndScoreV1()]),
                 SizedBox(height: 27),
                 ScoreList(nameTeam1: prov.team1Name, nameTeam2: prov.team2Name),
+                SizedBox(height: 15),
+                Container(
+                  height: size.height * 0.0504,
+                  width: size.width * 0.508,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFB28B32),
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(left: 20, top: 15, child: IconDomino()),
+                      Positioned(
+                        left: 55,
+                        top: 13,
+                        child: Text(
+                          'Empezar Partida',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
