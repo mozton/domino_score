@@ -86,7 +86,16 @@ class CardTeam extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Center(child: Icon(Icons.add)),
+              child: Center(
+                child: Image(
+                  height: 20,
+                  width: 20,
+                  image: AssetImage('assets/icon/pencil-plus.png'),
+                  color: colorButton != Color(0xFFD4AF37)
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
             ),
           ),
         ),

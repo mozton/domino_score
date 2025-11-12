@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:dominos_score/router/router.dart';
 import 'package:dominos_score/provider/providers.dart';
-
 import 'package:provider/provider.dart';
 
 void main() => runApp(
