@@ -16,6 +16,12 @@ class HomeScreen extends StatelessWidget {
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/homescreenv1');
+            },
+            icon: Icon(Icons.sync_alt_rounded),
+          ),
           backgroundColor: Colors.blueAccent,
           title: const Text(
             'Domino Score',

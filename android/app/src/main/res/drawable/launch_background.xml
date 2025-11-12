@@ -2,12 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Fondo de la pantalla -->
-    <item android:drawable="@android:color/white" />
+    <item android:drawable="@android:color/black" />
 
     <!-- Logo centrado -->
     <item>
         <bitmap
-            android:gravity="fill"
+            android:gravity="center"
             android:src="@drawable/logodomino" />
     </item>
 

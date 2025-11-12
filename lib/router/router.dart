@@ -7,6 +7,7 @@ class Routes {
     return {
       '/': (context) => HomeScreen(),
       '/setting': (context) => SettingScreen(),
+      '/homescreenv1': (context) => HomeScreenV1(),
     };
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void cupertinoPicker(BuildContext context, List<int> points) {
+  // final prov = Provider.of<GameProvider>(context, listen: false);
   showCupertinoModalPopup(
     context: context,
     builder: (context) {
@@ -14,6 +15,23 @@ void cupertinoPicker(BuildContext context, List<int> points) {
           child: Column(
             children: [
               // Botón para cerrar o confirmar
+              Expanded(
+                child: CupertinoPicker(
+                  magnification: 1.5,
+                  scrollController: FixedExtentScrollController(
+                    initialItem: points.indexOf(prov.pointsToWin),
+                  ),
+
+                  itemExtent: 35.0,
+                  onSelectedItemChanged: (int index) {
+                    prov.pointsToWin = points[index];
+                  },
+                  children: [
+                    for (var point in points)
+                      Text('$point', style: TextStyle(color: Colors.black)),
+                  ],
+                ),
+              ),
               Container(
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.symmetric(
@@ -21,20 +39,14 @@ void cupertinoPicker(BuildContext context, List<int> points) {
                   vertical: 5,
                 ),
                 child: CupertinoButton(
-                  child: const Text('Done'),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-              Expanded(
-                child: CupertinoPicker(
-                  scrollController: FixedExtentScrollController(
-                    initialItem: points.indexOf(prov.pointsToWin),
+                  child: const Text(
+                    'Done',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  itemExtent: 35.0,
-                  onSelectedItemChanged: (int index) {
-                    prov.pointsToWin = points[index];
-                  },
-                  children: [for (var point in points) Text('$point')],
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
             ],
