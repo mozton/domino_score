@@ -143,4 +143,15 @@ class GameProvider extends ChangeNotifier {
     focusNode.dispose();
     super.dispose();
   }
+
+  // Animate
+
+  bool _showButtonDelete = true;
+
+  bool get showButtonDelete => _showButtonDelete;
+
+  void isSelectedToDelete(bool isSelect) {
+    _showButtonDelete = isSelect;
+    notifyListeners();
+  }
 }

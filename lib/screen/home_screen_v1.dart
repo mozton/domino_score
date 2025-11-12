@@ -1,5 +1,5 @@
 import 'package:dominos_score/provider/providers.dart';
-import 'package:dominos_score/widgets/icon_domino_5-1.dart';
+
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,6 @@ class HomeScreenV1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Consumer<GameProvider>(
       builder: (context, prov, child) {
         return Container(
@@ -25,42 +24,13 @@ class HomeScreenV1 extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Colors.transparent,
 
-            appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height * 0.099,
-              backgroundColor: const Color(0xFFE4E9F2),
-              title: Text(
-                'Dominos App',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Poppins',
-                ),
-              ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back),
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).pushNamed('/setting'),
-                    child: Image(
-                      height: 28,
-                      width: 28,
-                      image: AssetImage('assets/icon/settings.png'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            appBar: _appBarHome(context),
             body: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    // Cards Teams & Buttons Change Name & Add Score
                     CardTeam(
                       teamName: prov.team1Name,
                       points: prov.team1Total,
@@ -77,40 +47,59 @@ class HomeScreenV1 extends StatelessWidget {
                     ),
                   ],
                 ),
-                // Row(children:  [ButtonAddTeamAndScoreV1()]),
+
                 SizedBox(height: 27),
+
+                // Score List View
                 ScoreList(nameTeam1: prov.team1Name, nameTeam2: prov.team2Name),
-                SizedBox(height: 15),
-                Container(
-                  height: size.height * 0.0504,
-                  width: size.width * 0.508,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFB28B32),
-                    borderRadius: BorderRadius.circular(22),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(left: 20, top: 15, child: IconDomino()),
-                      Positioned(
-                        left: 55,
-                        top: 13,
-                        child: Text(
-                          'Empezar Partida',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
+                SizedBox(height: 17),
+
+                // Button Start Game & New Game
+
+                //TODO: falta button New Game
+                ButtonStartGame(),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  // AppBarHome
+
+  AppBar _appBarHome(BuildContext context) {
+    return AppBar(
+      toolbarHeight: MediaQuery.of(context).size.height * 0.099,
+      backgroundColor: const Color(0xFFE4E9F2),
+      title: Text(
+        'Dominos App',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Poppins',
+        ),
+      ),
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(Icons.arrow_back),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 15),
+          child: InkWell(
+            onTap: () => Navigator.of(context).pushNamed('/setting'),
+            child: Image(
+              height: 28,
+              width: 28,
+              image: AssetImage('assets/icon/settings.png'),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

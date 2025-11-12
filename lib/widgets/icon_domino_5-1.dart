@@ -1,6 +1,6 @@
-import 'dart:math' as Math;
-
 import 'package:flutter/material.dart';
+
+import 'dart:math' as Math;
 
 class IconDomino extends StatelessWidget {
   const IconDomino({super.key});
@@ -16,11 +16,12 @@ class IconDomino extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                right: 10,
+                right: 10.4,
                 child: Image(
                   width: 17,
                   height: 17,
                   image: AssetImage('assets/icon/dice-5.png'),
+                  color: Color(0xFFFFFFFF),
                 ),
               ),
               Positioned(
@@ -30,6 +31,7 @@ class IconDomino extends StatelessWidget {
                   height: 17,
 
                   image: AssetImage('assets/icon/dice-1.png'),
+                  color: Color(0xFFFFFFFF),
                 ),
               ),
             ],

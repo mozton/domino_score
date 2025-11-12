@@ -1,3 +1,4 @@
+import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class CardTeam extends StatelessWidget {
@@ -6,6 +7,7 @@ class CardTeam extends StatelessWidget {
   Color colorCard;
   Color colorButton;
   VoidCallback onTap;
+
   CardTeam({
     super.key,
     required this.teamName,
@@ -65,40 +67,7 @@ class CardTeam extends StatelessWidget {
           ),
         ),
         SizedBox(height: 13),
-        InkWell(
-          borderRadius: BorderRadius.circular(16),
-          splashColor: colorButton.withOpacity(0.1),
-          onTap: onTap,
-          child: Card(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.0316,
-              width: MediaQuery.of(context).size.width * 0.278,
-
-              decoration: BoxDecoration(
-                color: colorButton,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: colorButton.withOpacity(0.5),
-                    offset: const Offset(4, 4),
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Image(
-                  height: 20,
-                  width: 20,
-                  image: AssetImage('assets/icon/pencil-plus.png'),
-                  color: colorButton != Color(0xFFD4AF37)
-                      ? Colors.white
-                      : Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ),
+        ButtonAddTeamAndScoreV1(colorButton: colorButton, onTap: onTap),
       ],
     );
   }

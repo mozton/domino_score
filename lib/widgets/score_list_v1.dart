@@ -69,30 +69,61 @@ class RoundView extends StatelessWidget {
         itemCount: prov.rounds.length,
         itemBuilder: (context, index) {
           final round = prov.rounds[index];
-          return Padding(
-            padding: const EdgeInsets.only(
-              top: 5,
-              bottom: 5,
-              left: 8,
-              right: 8,
-            ),
-            child: Container(
-              height: size.height * 0.0410,
-              decoration: BoxDecoration(
-                color: Color(0xFFF7F8FA),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(width: 1, color: Color(0xFFDADDE2)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text('${round.round}', style: poppins),
-                  Text('${round.pointTeam1}', style: poppins),
-                  Text('${round.pointTeam2}', style: poppins),
-                ],
-              ),
-            ),
-          );
+          return prov.showButtonDelete
+              ? GestureDetector(
+                  onTap: () => prov.isSelectedToDelete(false),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 5,
+                      bottom: 5,
+                      left: 8,
+                      right: 8,
+                    ),
+                    child: Container(
+                      height: size.height * 0.0410,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF7F8FA),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(width: 1, color: Color(0xFFDADDE2)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text('${round.round}', style: poppins),
+                          Text('${round.pointTeam1}', style: poppins),
+                          Text('${round.pointTeam2}', style: poppins),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () => prov.isSelectedToDelete(true),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 5,
+                      bottom: 5,
+                      left: 8,
+                      right: 8,
+                    ),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      height: size.height * 0.0410,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFB00020).withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(width: 1, color: Color(0xFFDADDE2)),
+                      ),
+                      child: Center(
+                        child: Image(
+                          image: AssetImage('assets/icon/trash.png'),
+                          width: 20,
+                          color: Color(0xFFFFFFFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
         },
       ),
     );
