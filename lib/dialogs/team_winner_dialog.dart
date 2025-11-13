@@ -26,11 +26,11 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10),
-                GifView.asset(
-                  'assets/competition.gif',
-                  height: 150,
-                  width: 150,
-                ),
+                // GifView.asset(
+                //   'assets/competition.gif',
+                //   height: 150,
+                //   width: 150,
+                // ),
               ],
             ),
           ),

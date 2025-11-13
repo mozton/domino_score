@@ -44,7 +44,7 @@ class GameProvider extends ChangeNotifier {
 
       // Verificar si alcanzó 200 puntos
       if (total >= pointToWin) {
-        _declararGanador(team1Name);
+        // _declararGanador(team1Name);
         break; // Opcional
       }
     }
@@ -57,7 +57,7 @@ class GameProvider extends ChangeNotifier {
       total += round.pointTeam2;
 
       if (total >= pointToWin) {
-        _declararGanador(team2Name);
+        // _declararGanador(team2Name);
         break; // Opcional
       }
     }
@@ -65,15 +65,9 @@ class GameProvider extends ChangeNotifier {
   }
 
   // Método para manejar cuando un equipo gana
-  _declararGanador(String teamName) {}
+  // _declararGanador(String teamName) {}
 
   // Métodos
-
-  // void selectTeam(String teamName) {
-  //   _selectedTeam = teamName;
-  //   // print('Equipo seleccionado: $_selectedTeam'); // Debug
-  //   notifyListeners();
-  // }
 
   void clearSelection() {
     _selectedTeam = '';
@@ -146,12 +140,28 @@ class GameProvider extends ChangeNotifier {
 
   // Animate
 
-  bool _showButtonDelete = true;
+  // bool _showButtonDelete = true;
+  // bool get showButtonDelete => _showButtonDelete;
 
-  bool get showButtonDelete => _showButtonDelete;
+  // void isSelectedToDelete(bool isSelect) {
+  //   _showButtonDelete = isSelect;
+  //   notifyListeners();
+  // }
 
-  void isSelectedToDelete(bool isSelect) {
-    _showButtonDelete = isSelect;
+  // int? _selectedIndex;
+  // int? get selectedIndex => _selectedIndex;
+
+  // void setSelectedIndex(int? index) {
+  //   _selectedIndex = index;
+  //   notifyListeners();
+  // }
+
+  int? _roundSelected;
+  int? get roundSelected => _roundSelected;
+
+  void selectRoundByIndex(int? index) {
+    _roundSelected = index;
+    // print(_roundSelected);
     notifyListeners();
   }
 }

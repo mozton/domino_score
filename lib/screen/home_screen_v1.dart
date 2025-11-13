@@ -1,5 +1,4 @@
 import 'package:dominos_score/provider/providers.dart';
-
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +88,7 @@ class HomeScreenV1 extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 15),
+          padding: const EdgeInsets.only(right: 20),
           child: InkWell(
             onTap: () => Navigator.of(context).pushNamed('/setting'),
             child: Image(
