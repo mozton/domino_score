@@ -24,8 +24,16 @@ class GameProvider extends ChangeNotifier {
   int get pointToWin => pointsToWin;
 
   List<Round> get rounds => _game.rounds;
+  // Controllers
+
   final TextEditingController _pointController = TextEditingController();
   TextEditingController get pointController => _pointController;
+
+  final TextEditingController _team1NameController = TextEditingController();
+  TextEditingController get team1NameController => _team1NameController;
+
+  final TextEditingController _team2NameController = TextEditingController();
+  TextEditingController get team2NameController => _team2NameController;
 
   // Setters for change name of teams
 
@@ -162,6 +170,28 @@ class GameProvider extends ChangeNotifier {
   void selectRoundByIndex(int? index) {
     _roundSelected = index;
     // print(_roundSelected);
+    notifyListeners();
+  }
+
+  // ======================== Events ======================== //
+
+  bool get isStartEnable {
+    return team1Name != 'TEAM 1' && team2Name != 'TEAM 2';
+  }
+
+  void setNameTeam1() {
+    team1Name = team1NameController.text.trim();
+    notifyListeners();
+  }
+
+  void setNameTeam2() {
+    team2Name = _team2NameController.text.trim();
+    notifyListeners();
+  }
+
+  void reset() {
+    team1Name;
+    team1Name;
     notifyListeners();
   }
 }

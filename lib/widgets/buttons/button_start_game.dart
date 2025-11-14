@@ -1,19 +1,27 @@
+import 'package:dominos_score/provider/providers.dart';
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ButtonStartGame extends StatelessWidget {
-  const ButtonStartGame({super.key});
+class ButtonNewtGame extends StatelessWidget {
+  const ButtonNewtGame({super.key});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return InkWell(
-      onTap: () {},
+      onTap: context.read<GameProvider>().isStartEnable
+          ? () {
+              print('Iniciar Juego');
+            }
+          : null,
       child: Container(
         height: size.height * 0.0504,
         width: size.width * 0.508,
         decoration: BoxDecoration(
-          color: Color(0xFFB28B32),
+          color: context.watch<GameProvider>().isStartEnable
+              ? Color(0xFFB28B32)
+              : Color(0xFFB28B32).withOpacity(0.45),
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(

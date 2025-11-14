@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class ChangeNameTeam extends StatelessWidget {
   final Color colorButton;
   final VoidCallback onTap;
+  final TextEditingController controller;
   const ChangeNameTeam({
     super.key,
     required this.onTap,
     required this.colorButton,
+    required this.controller,
   });
 
   @override
@@ -26,16 +28,17 @@ class ChangeNameTeam extends StatelessWidget {
           Stack(
             children: [
               SizedBox(
-                width: size.width * (281 / 393),
+                // width: size.width * (281 / 393),
                 child: TextField(
+                  controller: controller,
                   maxLines: 1,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
                   maxLength: 15,
-
                   cursorColor: Color(0xFFD9D9D9),
                   decoration: InputDecoration(
                     counterText: '',
+
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFD9D9D9)),
                     ),

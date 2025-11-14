@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<GameProvider>(context);
+    prov.isStartEnable;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: Routes.routes(),
