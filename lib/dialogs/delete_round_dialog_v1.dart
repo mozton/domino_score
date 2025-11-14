@@ -78,7 +78,7 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
   );
 }
 
-RichText textDialog(BuildContext context, int index, int newIndex) {
+RichText textDialog(BuildContext context, int index, int round) {
   return RichText(
     textAlign: TextAlign.center,
     text: TextSpan(
@@ -89,11 +89,12 @@ RichText textDialog(BuildContext context, int index, int newIndex) {
             fontSize: 18,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
-            color: Color(0xFFF2B610),
+            color: Color(0xFFB30000),
+            //  Color(0xFFF2B610),
           ),
         ),
         TextSpan(
-          text: 'round $newIndex',
+          text: 'round $round',
           style: TextStyle(
             fontSize: 18,
             fontFamily: 'Poppins',
