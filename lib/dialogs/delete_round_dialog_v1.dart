@@ -8,8 +8,10 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 15),
         backgroundColor: Color(0xFFFFFFFF),
         content: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
           height: size.height * (200 / 852),
           width: size.width * 0.95,
           decoration: BoxDecoration(color: Color(0xFFFFFFFF)),
@@ -36,7 +38,9 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
               Image(
                 height: 30,
                 width: 30,
-                color: Color(0xFFF2B610),
+                color:
+                    //  Color(0xFFB30000),
+                    Color(0xFFF2B610),
                 image: AssetImage('assets/icon/alertcircle.png'),
               ),
               SizedBox(height: 13),
@@ -46,7 +50,7 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
 
               SizedBox(height: 25),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buttonCancelAndDelete(
                     context,
@@ -62,7 +66,7 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
                     'Eliminar',
                     Color(0xFFC8C8C8),
                     () {
-                      print('Elimino el index $index');
+                      // print('Elimino el index $index');
                       context.read<GameProvider>().deletePoint(index);
                       context.read<GameProvider>().selectRoundByIndex(null);
                       Navigator.pop(context);
@@ -88,9 +92,11 @@ RichText textDialog(BuildContext context, int index, int round) {
           style: TextStyle(
             fontSize: 18,
             fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFB30000),
-            //  Color(0xFFF2B610),
+            fontWeight: FontWeight.w700,
+            color:
+                //  Color(0xFFB30000),
+                // Color(0xFFC8C8C8),
+                Color(0xFFF2B610),
           ),
         ),
         TextSpan(
@@ -99,7 +105,10 @@ RichText textDialog(BuildContext context, int index, int round) {
             fontSize: 18,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w700,
-            color: Color(0xFFF2B610),
+            color:
+                //  Color(0xFFC8C8C8),
+                //  Color(0xFFB30000),
+                Color(0xFFF2B610),
           ),
         ),
         TextSpan(
@@ -107,8 +116,11 @@ RichText textDialog(BuildContext context, int index, int round) {
           style: TextStyle(
             fontSize: 18,
             fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFF2B610),
+            fontWeight: FontWeight.w700,
+            color:
+                // Color(0xFFC8C8C8),
+                //  Color(0xFFB30000),
+                Color(0xFFF2B610),
           ),
         ),
       ],
