@@ -47,11 +47,11 @@ class HomeScreen extends StatelessWidget {
       builder: (context, provider, _) {
         return Container(
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/fondoblanco.jpg'), // Ruta completa
-              fit: BoxFit.cover,
-              opacity: 0.9, // Hacemos la imagen semi-transparente
-            ),
+            // image: DecorationImage(
+            //   image: AssetImage('assets/fondoblanco.jpg'), // Ruta completa
+            //   fit: BoxFit.cover,
+            //   opacity: 0.9, // Hacemos la imagen semi-transparente
+            // ),
           ),
           child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),

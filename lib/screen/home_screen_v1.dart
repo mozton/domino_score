@@ -1,3 +1,4 @@
+import 'package:dominos_score/dialogs/add_score_dialog_v1.dart';
 import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
 
 import 'package:dominos_score/provider/providers.dart';
@@ -39,14 +40,26 @@ class HomeScreenV1 extends StatelessWidget {
                         points: prov.team1Total,
                         colorCard: const Color(0xFFF7E7AF),
                         colorButton: Color(0xFFD4AF37),
-                        onTap: () => addNameTeam1Dialog(context),
+                        onTap: prov.canStartGame
+                            ? () {
+                                addScoreTeam1(context);
+                              }
+                            : () {
+                                addNameTeam1Dialog(context);
+                              },
                       ),
                       CardTeam(
                         teamName: prov.team2Name,
                         points: prov.team2Total,
                         colorCard: const Color(0xFFFFFFFF),
                         colorButton: const Color(0xFF1E2B43),
-                        onTap: () => addNameTeam2Dialog(context),
+                        onTap: prov.canStartGame
+                            ? () {
+                                addScoreTeam2(context);
+                              }
+                            : () {
+                                addNameTeam2Dialog(context);
+                              },
                       ),
                     ],
                   ),
@@ -78,6 +91,7 @@ class HomeScreenV1 extends StatelessWidget {
 
   AppBar _appBarHome(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       toolbarHeight: MediaQuery.of(context).size.height * 0.099,
       backgroundColor: const Color(0xFFE4E9F2),
       title: Text(
@@ -87,12 +101,6 @@ class HomeScreenV1 extends StatelessWidget {
           fontWeight: FontWeight.w500,
           fontFamily: 'Poppins',
         ),
-      ),
-      leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(Icons.arrow_back),
       ),
       actions: [
         Padding(

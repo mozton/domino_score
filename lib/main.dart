@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: Routes.routes(),
-      initialRoute: '/',
+      initialRoute: '/homescreenv1',
       themeMode: prov.isSystemTheme
           ? ThemeMode.system
           : prov.isDarkMode

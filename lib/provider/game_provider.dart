@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class GameProvider extends ChangeNotifier {
   late GameModel _game;
   String _selectedTeam = '';
-  int pointsToWin = 200;
+  int pointsToWin = 0;
 
   GameProvider() {
     _game = GameModel(
@@ -53,7 +53,7 @@ class GameProvider extends ChangeNotifier {
       total += round.pointTeam1;
 
       // Verificar si alcanzó 200 puntos
-      if (total >= _pointToWin!) {
+      if (total >= pointsToWin) {
         // _declararGanador(team1Name);
         break; // Opcional
       }
@@ -66,7 +66,7 @@ class GameProvider extends ChangeNotifier {
     for (var round in _game.rounds) {
       total += round.pointTeam2;
 
-      if (total >= _pointToWin!) {
+      if (total >= pointsToWin) {
         // _declararGanador(team2Name);
         break; // Opcional
       }
@@ -158,13 +158,13 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ======================== Select Point to Win ======================== //
+  // ========================  Point Select to Win ======================== //
 
-  int? _pointToWin;
-  int? get pointToWinIsSelected => _pointToWin;
+  int? _pointSelect = 0;
+  int? get pointToWinIsSelected => _pointSelect;
 
   void selectPointToWin(int isSelected) {
-    _pointToWin = isSelected;
+    _pointSelect = isSelected;
     notifyListeners();
   }
 
@@ -191,6 +191,6 @@ class GameProvider extends ChangeNotifier {
   }
 
   bool get canStartGame {
-    return team1Name != 'TEAM 1' && team2Name != 'TEAM 2' && _pointToWin != 0;
+    return team1Name != 'TEAM 1' && team2Name != 'TEAM 2' && pointsToWin != 0;
   }
 }

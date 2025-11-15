@@ -5,18 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ButtonStartGame extends StatelessWidget {
-  const ButtonStartGame({super.key});
+  ButtonStartGame({super.key});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final prov = context.read<GameProvider>();
+
     return InkWell(
-      onTap: context.read<GameProvider>().isStartEnable
+      onTap: prov.isStartEnable
           ? () {
               selectPointToWin(context);
-              // print('Iniciar Juego');
             }
           : null,
+
       child: Container(
         height: size.height * 0.0504,
         width: size.width * 0.508,
@@ -45,7 +47,9 @@ class ButtonStartGame extends StatelessWidget {
               left: 55,
               top: 13,
               child: Text(
-                'Empezar Partida',
+                context.read<GameProvider>().canStartGame
+                    ? 'Nueva Partida'
+                    : 'Empezar Partida',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
