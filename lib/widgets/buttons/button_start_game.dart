@@ -1,10 +1,11 @@
+import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ButtonNewtGame extends StatelessWidget {
-  const ButtonNewtGame({super.key});
+class ButtonStartGame extends StatelessWidget {
+  const ButtonStartGame({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,8 @@ class ButtonNewtGame extends StatelessWidget {
     return InkWell(
       onTap: context.read<GameProvider>().isStartEnable
           ? () {
-              print('Iniciar Juego');
+              selectPointToWin(context);
+              // print('Iniciar Juego');
             }
           : null,
       child: Container(
@@ -34,7 +36,11 @@ class ButtonNewtGame extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Positioned(left: 20, top: 15, child: IconDomino()),
+            Positioned(
+              left: 20,
+              top: 15,
+              child: IconDomino(colorIcon: Color(0xFFFFFFFF)),
+            ),
             Positioned(
               left: 55,
               top: 13,

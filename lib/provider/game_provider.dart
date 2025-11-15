@@ -14,6 +14,8 @@ class GameProvider extends ChangeNotifier {
       team1: (Team(id: 1, name: 'TEAM 1')),
       team2: (Team(id: 2, name: 'TEAM 2')),
     );
+
+    isStartEnable;
   }
 
   // Getters
@@ -51,7 +53,7 @@ class GameProvider extends ChangeNotifier {
       total += round.pointTeam1;
 
       // Verificar si alcanzó 200 puntos
-      if (total >= pointToWin) {
+      if (total >= _pointToWin!) {
         // _declararGanador(team1Name);
         break; // Opcional
       }
@@ -64,7 +66,7 @@ class GameProvider extends ChangeNotifier {
     for (var round in _game.rounds) {
       total += round.pointTeam2;
 
-      if (total >= pointToWin) {
+      if (total >= _pointToWin!) {
         // _declararGanador(team2Name);
         break; // Opcional
       }
@@ -146,30 +148,23 @@ class GameProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  // Animate
-
-  // bool _showButtonDelete = true;
-  // bool get showButtonDelete => _showButtonDelete;
-
-  // void isSelectedToDelete(bool isSelect) {
-  //   _showButtonDelete = isSelect;
-  //   notifyListeners();
-  // }
-
-  // int? _selectedIndex;
-  // int? get selectedIndex => _selectedIndex;
-
-  // void setSelectedIndex(int? index) {
-  //   _selectedIndex = index;
-  //   notifyListeners();
-  // }
+  // ======================== Select Round ======================== //
 
   int? _roundSelected;
   int? get roundSelected => _roundSelected;
 
   void selectRoundByIndex(int? index) {
     _roundSelected = index;
-    // print(_roundSelected);
+    notifyListeners();
+  }
+
+  // ======================== Select Point to Win ======================== //
+
+  int? _pointToWin;
+  int? get pointToWinIsSelected => _pointToWin;
+
+  void selectPointToWin(int isSelected) {
+    _pointToWin = isSelected;
     notifyListeners();
   }
 
@@ -193,5 +188,9 @@ class GameProvider extends ChangeNotifier {
     team1Name;
     team1Name;
     notifyListeners();
+  }
+
+  bool get canStartGame {
+    return team1Name != 'TEAM 1' && team2Name != 'TEAM 2' && _pointToWin != 0;
   }
 }
