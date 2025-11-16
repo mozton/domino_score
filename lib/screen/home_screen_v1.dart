@@ -1,6 +1,5 @@
 import 'package:dominos_score/dialogs/add_score_dialog_v1.dart';
 import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
-
 import 'package:dominos_score/provider/providers.dart';
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -75,8 +74,6 @@ class HomeScreenV1 extends StatelessWidget {
                   SizedBox(height: 17),
 
                   // Button Start Game & New Game
-
-                  //TODO: falta button New Game
                   ButtonStartGame(),
                 ],
               ),

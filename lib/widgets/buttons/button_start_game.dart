@@ -1,3 +1,4 @@
+import 'package:dominos_score/dialogs/new_game_diaglo_v1.dart';
 import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:dominos_score/widgets/widgets.dart';
@@ -15,7 +16,9 @@ class ButtonStartGame extends StatelessWidget {
     return InkWell(
       onTap: prov.isStartEnable
           ? () {
-              selectPointToWin(context);
+              prov.canStartGame
+                  ? newGameOrResetGame(context, '')
+                  : selectPointToWin(context);
             }
           : null,
 

@@ -116,6 +116,18 @@ class GameProvider extends ChangeNotifier {
       team2: _game.team2,
     );
     _selectedTeam = '';
+
+    notifyListeners();
+  }
+
+  void resetGameOtherTeam() {
+    _game = GameModel(
+      rounds: [],
+      actualRound: 1,
+      team1: (Team(id: 1, name: 'TEAM 1')),
+      team2: (Team(id: 2, name: 'TEAM 2')),
+    );
+    // _selectedTeam = '';
     notifyListeners();
   }
 
@@ -176,6 +188,7 @@ class GameProvider extends ChangeNotifier {
 
   void setNameTeam1() {
     team1Name = team1NameController.text.trim();
+
     notifyListeners();
   }
 

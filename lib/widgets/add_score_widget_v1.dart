@@ -4,11 +4,13 @@ class AddScore extends StatelessWidget {
   final Color colorButton;
   final VoidCallback onTap;
   final TextEditingController controller;
+  final VoidCallback onTapPass;
   const AddScore({
     super.key,
     required this.onTap,
     required this.colorButton,
     required this.controller,
+    required this.onTapPass,
   });
 
   @override
@@ -77,18 +79,21 @@ class AddScore extends StatelessWidget {
             children: [
               _ButtonSaveName(colorButton: colorButton, onTap: onTap),
 
-              Container(
-                height: size.height * (43 / 852),
-                width: size.width * (70 / 393),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.circular(22),
-                  border: BoxBorder.all(width: 1.4, color: Color(0xFFDADDE2)),
-                ),
-                child: Image(
-                  height: 32,
-                  color: Color(0xFF1E2B43),
-                  image: AssetImage('assets/icon/rewind-forward-30.png'),
+              GestureDetector(
+                onTap: onTapPass,
+                child: Container(
+                  height: size.height * (43 / 852),
+                  width: size.width * (70 / 393),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.circular(22),
+                    border: BoxBorder.all(width: 1.4, color: Color(0xFFDADDE2)),
+                  ),
+                  child: Image(
+                    height: 28,
+                    color: Color(0xFF1E2B43),
+                    image: AssetImage('assets/icon/rewind-forward-30.png'),
+                  ),
                 ),
               ),
             ],

@@ -47,7 +47,7 @@ class ScoreList extends StatelessWidget {
               ),
             ),
 
-            SingleChildScrollView(child: Column(children: [RoundView()])),
+            Column(children: [SizedBox(height: 319, child: RoundView())]),
           ],
         ),
       ),
@@ -74,71 +74,73 @@ class RoundView extends StatelessWidget {
       color: Color(0xFF1E2B43),
     );
 
-    return SizedBox(
-      child: ListView.builder(
-        reverse: true,
-        shrinkWrap: true,
-        itemCount: prov.rounds.length,
-        itemBuilder: (context, index) {
-          final round = prov.rounds[index];
-          final isSelected = prov.roundSelected == (index);
+    return SingleChildScrollView(
+      child: SizedBox(
+        child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          reverse: true,
+          shrinkWrap: true,
+          itemCount: prov.rounds.length,
+          itemBuilder: (context, index) {
+            final round = prov.rounds[index];
+            final isSelected = prov.roundSelected == (index);
 
-          return GestureDetector(
-            onTap: () {
-              if (isSelected) {
-                deleteRoundDialogV1(context, index, round.round);
-              } else {
-                prov.selectRoundByIndex(index);
-                print('$index index seleccionado');
-              }
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 5,
-                bottom: 5,
-                left: 8,
-                right: 8,
-              ),
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                height: size.height * 0.0410,
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? Color(0xFFB00020).withOpacity(0.9) // selected (rojo)
-                      : Color(0xFFF7F8FA), // not selected (normal)
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(width: 1, color: Color(0xFFDADDE2)),
+            return GestureDetector(
+              onTap: () {
+                if (isSelected) {
+                  deleteRoundDialogV1(context, index, round.round);
+                } else {
+                  prov.selectRoundByIndex(index);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 5,
+                  bottom: 5,
+                  left: 8,
+                  right: 8,
                 ),
-
-                child: AnimatedSwitcher(
+                child: AnimatedContainer(
                   duration: Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeInOut,
-                  switchOutCurve: Curves.easeInOut,
-                  transitionBuilder: (child, animation) =>
-                      FadeTransition(opacity: animation, child: child),
-                  child: isSelected
-                      ? Center(
-                          key: ValueKey('trash_$index'),
-                          child: Image.asset(
-                            'assets/icon/trash.png',
-                            width: 20,
-                            color: Colors.white,
+                  height: size.height * 0.0410,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Color(0xFFB00020).withOpacity(0.9) // selected (rojo)
+                        : Color(0xFFF7F8FA), // not selected (normal)
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(width: 1, color: Color(0xFFDADDE2)),
+                  ),
+
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeInOut,
+                    switchOutCurve: Curves.easeInOut,
+                    transitionBuilder: (child, animation) =>
+                        FadeTransition(opacity: animation, child: child),
+                    child: isSelected
+                        ? Center(
+                            key: ValueKey('trash_$index'),
+                            child: Image.asset(
+                              'assets/icon/trash.png',
+                              width: 20,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Row(
+                            key: ValueKey('row_$index'),
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text('${round.round}', style: poppins),
+                              Text('${round.pointTeam1}', style: poppins),
+                              Text('${round.pointTeam2}', style: poppins),
+                            ],
                           ),
-                        )
-                      : Row(
-                          key: ValueKey('row_$index'),
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text('${round.round}', style: poppins),
-                            Text('${round.pointTeam1}', style: poppins),
-                            Text('${round.pointTeam2}', style: poppins),
-                          ],
-                        ),
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -19,7 +19,7 @@ void addNameTeam1Dialog(BuildContext context) {
               final prov = context.read<GameProvider>();
               prov.team1Name = prov.team1NameController.text;
               prov.setNameTeam1();
-
+              prov.team1NameController.clear();
               Navigator.pop(context);
             },
           ),
@@ -46,6 +46,7 @@ void addNameTeam2Dialog(BuildContext context) {
               final prov = context.read<GameProvider>();
 
               prov.setNameTeam2();
+              prov.team2NameController.clear();
 
               Navigator.pop(context);
             },
