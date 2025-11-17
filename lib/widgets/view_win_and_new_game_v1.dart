@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,7 +14,9 @@ class ViewWinAndNewGame extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * (436 / 852),
+      height: Platform.isAndroid
+          ? size.height * (536 / 852)
+          : size.height * (436 / 852),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Color(0xFFE4E9F2),
@@ -76,7 +80,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/flame.png',
                 titleButton: 'Mismo equipo',
                 onTap: () {
-                  context.read<GameProvider>().resetGame();
+                  context.read<GameProvider>().createNewGame();
                   Navigator.pop(context);
                 },
               ),
@@ -86,7 +90,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/users-group.png',
                 titleButton: 'Otro equipo',
                 onTap: () {
-                  context.read<GameProvider>().resetGameOtherTeam();
+                  context.read<GameProvider>().createGameNewTeam();
                   context.read<GameProvider>().pointsToWin = 0;
                   Navigator.pop(context);
                 },

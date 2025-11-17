@@ -46,7 +46,7 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<GameProvider>().resetGame();
+                    context.read<GameProvider>().createNewGame();
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -106,7 +106,7 @@ void dialogWinIOS(BuildContext context, String teamWinner) {
                 ),
               ),
               onPressed: () {
-                context.read<GameProvider>().resetGame();
+                context.read<GameProvider>().createNewGame();
                 Navigator.of(context).pop();
               },
             ),

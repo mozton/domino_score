@@ -12,7 +12,7 @@ void selectPointToWin(BuildContext context) {
         backgroundColor: Color(0xFFFFFFFF),
         actions: [
           Container(
-            height: size.height * (237 / 852),
+            height: size.height * (218 / 852),
             width: size.width * 320 / 393,
             decoration: BoxDecoration(color: Color(0xFFFFFFFF)),
             child: Column(

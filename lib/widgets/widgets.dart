@@ -1,4 +1,4 @@
-export 'package:dominos_score/widgets/buttons/button_start_game.dart';
+export 'package:dominos_score/widgets/buttons/button_start_game_v1.dart';
 
 export 'package:dominos_score/widgets/icon_domino_5-1.dart';
 export 'package:dominos_score/widgets/buttons/button_add_team_and_score_v1.dart';

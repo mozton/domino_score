@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class Routes {
   static Map<String, WidgetBuilder> routes() {
     return {
-      '/': (context) => HomeScreen(),
+      // '/': (context) => HomeScreen(),
       '/setting': (context) => SettingScreen(),
       '/homescreenv1': (context) => HomeScreenV1(),
     };

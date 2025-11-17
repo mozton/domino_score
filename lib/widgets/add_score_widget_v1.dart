@@ -18,8 +18,8 @@ class AddScore extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * (174 / 852),
-      width: size.width * (300 / 393),
+      height: size.height * (194 / 852),
+      width: size.width * (280 / 393),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Color(0xFFFFFFFF),
@@ -50,7 +50,7 @@ class AddScore extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w700,
-                    fontSize: 36,
+                    fontSize: 50,
                     color: Color(0xFF1E2B43),
                   ),
                 ),
@@ -75,10 +75,10 @@ class AddScore extends StatelessWidget {
 
           SizedBox(height: 15),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _ButtonSaveName(colorButton: colorButton, onTap: onTap),
-
+              SizedBox(width: size.width * 0.07),
               GestureDetector(
                 onTap: onTapPass,
                 child: Container(

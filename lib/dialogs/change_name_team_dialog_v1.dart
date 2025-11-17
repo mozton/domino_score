@@ -17,6 +17,10 @@ void addNameTeam1Dialog(BuildContext context) {
             controller: context.read<GameProvider>().team1NameController,
             onTap: () {
               final prov = context.read<GameProvider>();
+              if (prov.team1NameController.text.isEmpty ||
+                  prov.team1NameController.text == " ") {
+                return;
+              }
               prov.team1Name = prov.team1NameController.text;
               prov.setNameTeam1();
               prov.team1NameController.clear();
@@ -45,6 +49,9 @@ void addNameTeam2Dialog(BuildContext context) {
             onTap: () {
               final prov = context.read<GameProvider>();
 
+              if (prov.team2NameController.text.isEmpty) {
+                return;
+              }
               prov.setNameTeam2();
               prov.team2NameController.clear();
 

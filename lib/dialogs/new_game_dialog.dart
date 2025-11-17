@@ -51,7 +51,7 @@ void newGameDialog(BuildContext context) {
               ElevatedButton(
                 style: ButtonStyle(),
                 onPressed: () {
-                  prov.resetGame();
+                  prov.createNewGame();
                   prov.pointController.clear();
                   Navigator.of(context).pop();
                 },
@@ -118,7 +118,7 @@ void newGameIOSDialog(BuildContext context) {
 
               CupertinoDialogAction(
                 onPressed: () {
-                  prov.resetGame();
+                  prov.createNewGame();
                   prov.pointController.clear();
                   Navigator.of(context).pop();
                 },

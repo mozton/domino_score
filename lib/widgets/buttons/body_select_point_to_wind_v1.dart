@@ -13,21 +13,22 @@ class MenuSelectPointV1 extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height * (70 / 852),
+          height: MediaQuery.of(context).size.height * (60 / 852),
           width: double.infinity,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
             itemCount: prov.pointsToWins.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
+              crossAxisCount: 3,
               crossAxisSpacing: 4,
+              childAspectRatio: 2,
             ),
             itemBuilder: (context, index) {
               final bool isSelect = prov.pointToWinIsSelected == index;
               final point = prov.pointsToWins[index];
+
               return GestureDetector(
                 onTap: () async {
-                  Future.delayed(Duration(milliseconds: 300));
                   prov.pointsToWin = point;
                   prov.selectPointToWin(index);
                 },
@@ -36,7 +37,7 @@ class MenuSelectPointV1 extends StatelessWidget {
 
                   decoration: BoxDecoration(
                     color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(22),
                     border: BoxBorder.all(
                       width: 1.3,
                       color: isSelect ? Color(0xFFD4AF37) : Color(0xFFC8C8C8),

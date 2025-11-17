@@ -73,6 +73,11 @@ class RoundView extends StatelessWidget {
       fontFamily: 'Poppins',
       color: Color(0xFF1E2B43),
     );
+    final rounds = prov.rounds;
+
+    if (rounds.isEmpty) {
+      return const Center(child: Text('No hay rondas registradas'));
+    }
 
     return SingleChildScrollView(
       child: SizedBox(

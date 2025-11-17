@@ -17,7 +17,7 @@ class ChangeNameTeam extends StatelessWidget {
 
     return Container(
       height: size.height * (174 / 852),
-      width: size.width * (300 / 393),
+      width: size.width * (280 / 393),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Color(0xFFFFFFFF),
@@ -29,13 +29,19 @@ class ChangeNameTeam extends StatelessWidget {
             children: [
               SizedBox(
                 // width: size.width * (281 / 393),
-                child: TextField(
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      print('value is need');
+                    }
+                  },
                   controller: controller,
                   maxLines: 1,
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.name,
                   textCapitalization: TextCapitalization.words,
                   maxLength: 15,
                   cursorColor: Color(0xFFD9D9D9),
+
                   decoration: InputDecoration(
                     counterText: '',
 
@@ -46,7 +52,7 @@ class ChangeNameTeam extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w700,
-                    fontSize: 36,
+                    fontSize: 44,
                     color: Color(0xFF1E2B43),
                   ),
                 ),
@@ -72,7 +78,7 @@ class ChangeNameTeam extends StatelessWidget {
           SizedBox(height: 15),
           Row(
             children: [
-              SizedBox(width: 28),
+              SizedBox(width: 5),
               _ButtonSaveName(colorButton: colorButton, onTap: onTap),
             ],
           ),

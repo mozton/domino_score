@@ -1,33 +1,64 @@
-// import 'package:sqflite/sqflite.dart';
-// import 'package:path/path.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
 
-// class DatabaseHelper {
-//   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-//   static Database? _database;
+class DatabaseHelper {
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  factory DatabaseHelper() => _instance;
 
-//   DatabaseHelper._privateConstructor();
+  DatabaseHelper._internal();
+  // deleteDatabase();
+  static Database? _database;
 
-//   Future<Database> get database async {
-//     if (_database != null) return _database!;
-//     _database = await _initDatabase();
-//     return _database!;
-//   }
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
 
-//   Future<Database> _initDatabase() async {
-//     String path = join(await getDatabasesPath(), 'domino_score.db');
-//     return await openDatabase(path, version: 1, onCreate: _onCreate);
-//   }
+  Future<Database> _initDatabase() async {
+    String path = join(await getDatabasesPath(), 'DominoScoreDB.db');
 
-//   Future<void> _onCreate(Database db, int version) async {
-//     await db.execute('''
-//       CREATE TABLE scores(
-//         id INTEGER PRIMARY KEY,
-//         team1 TEXT,
-//         team2 TEXT,
-//         scoreTeam1 INTEGER NOT NULL,
-//         scoreTeam2 INTEGER NOT NULL,
-//         isWiner BOOLEAN
-//       )
-//     ''');
-//   }
-// }
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _createTables,
+      onConfigure: (db) async {
+        // Activar claves foráneas
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
+
+  Future<void> _createTables(Database db, int version) async {
+    await db.execute('''
+     CREATE TABLE games(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+        )
+''');
+
+    await db.execute('''
+      CREATE TABLE teams(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        totalPoints INTEGER NOT NULL
+        )
+''');
+
+    await db.execute('''
+      CREATE TABLE rounds(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        round INTEGER NOT NULL,
+        pointTeam1 INTEGER NOT NULL,
+        pointTeam2 INTEGER NOT NULL,
+
+)''');
+  }
+
+  Future<void> getGames() async {
+    final db = await database;
+
+    final sipi = db.query('rounds');
+    print(db);
+  }
+}

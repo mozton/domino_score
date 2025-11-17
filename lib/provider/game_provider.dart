@@ -1,18 +1,26 @@
-import 'package:dominos_score/model/game_model.dart';
-import 'package:dominos_score/model/round_model.dart';
+import 'package:dominos_score/services/database_helper.dart';
 import 'package:flutter/material.dart';
+
+import 'package:dominos_score/model/models.dart';
 
 class GameProvider extends ChangeNotifier {
   late GameModel _game;
   String _selectedTeam = '';
   int pointsToWin = 0;
+  late List<GameModel> _games;
+  List<GameModel> get games => _games;
+
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   GameProvider() {
+    _databaseHelper.getGames();
+
     _game = GameModel(
       rounds: [],
       actualRound: 1,
       team1: (Team(id: 1, name: 'TEAM 1')),
       team2: (Team(id: 2, name: 'TEAM 2')),
+      pointsToWin: pointsToWin,
     );
 
     isStartEnable;
@@ -44,7 +52,7 @@ class GameProvider extends ChangeNotifier {
   set team2Name(String name) => _game.team2.name = name;
 
   // Puntos totales
-  final List<int> _pointsToWin = [100, 200, 300, 400, 500];
+  final List<int> _pointsToWin = [100, 200, 300];
   List<int> get pointsToWins => _pointsToWin;
 
   int get team1Total {
@@ -84,7 +92,7 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addRound(String team, int points) {
+  void addRound(String team, int points) async {
     final newRound = Round(
       round: _game.actualRound,
       pointTeam1: 0,
@@ -103,31 +111,50 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> loadRoundsFromDb() async {
+    _game.rounds.clear(); // Limpiar rondas actuales
+    _game.rounds.addAll(rounds); // Agregar rondas desde BD
+
+    // Actualizar la ronda actual basado en las rondas cargadas
+    if (rounds.isNotEmpty) {
+      _game.actualRound = rounds.last.round + 1;
+    } else {
+      _game.actualRound = 1;
+    }
+
+    notifyListeners();
+  }
+
   void deletePoint(int index) {
     rounds.removeAt(index);
     notifyListeners();
   }
 
-  void resetGame() {
+  void createNewGame() {
     _game = GameModel(
       rounds: [],
       actualRound: 1,
       team1: _game.team1,
       team2: _game.team2,
+      pointsToWin: pointsToWin,
     );
     _selectedTeam = '';
 
     notifyListeners();
   }
 
-  void resetGameOtherTeam() {
+  void createGameNewTeam() {
     _game = GameModel(
       rounds: [],
       actualRound: 1,
       team1: (Team(id: 1, name: 'TEAM 1')),
       team2: (Team(id: 2, name: 'TEAM 2')),
+      pointsToWin: pointsToWin,
     );
-    // _selectedTeam = '';
+    _pointSelect = -2;
+    //TODO: Cuando otro equipo inicie partida los puntos ya se quedaran predeterminados
+    //en el valor seleccionado inicialmente, se establecera la primera vez y luego se hara desde settings
+
     notifyListeners();
   }
 
@@ -172,7 +199,7 @@ class GameProvider extends ChangeNotifier {
 
   // ========================  Point Select to Win ======================== //
 
-  int? _pointSelect = 0;
+  int? _pointSelect = -2;
   int? get pointToWinIsSelected => _pointSelect;
 
   void selectPointToWin(int isSelected) {
