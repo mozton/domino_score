@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dominos_score/model/game_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -33,7 +36,7 @@ class DatabaseHelper {
   Future<void> _createTables(Database db, int version) async {
     await db.execute('''
      CREATE TABLE games(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY AUTOINCREMENT
         )
 ''');
 
@@ -50,7 +53,7 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         round INTEGER NOT NULL,
         pointTeam1 INTEGER NOT NULL,
-        pointTeam2 INTEGER NOT NULL,
+        pointTeam2 INTEGER NOT NULL
 
 )''');
   }
@@ -58,7 +61,18 @@ class DatabaseHelper {
   Future<void> getGames() async {
     final db = await database;
 
-    final sipi = db.query('rounds');
-    print(db);
+    final games = await db.query('rounds');
+  }
+
+  Future<void> deleteDatabaseFile() async {
+    final dbPath = await getDatabasesPath();
+    final path = '$dbPath/DominoScoreDB.db';
+
+    if (await File(path).exists()) {
+      await deleteDatabase(path);
+      print('Base de datos eliminada');
+    } else {
+      print('No existe la base de datos');
+    }
   }
 }
