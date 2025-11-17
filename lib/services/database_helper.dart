@@ -1,8 +1,6 @@
-import 'package:dominos_score/model/game_model.dart';
 import 'package:dominos_score/model/models.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
