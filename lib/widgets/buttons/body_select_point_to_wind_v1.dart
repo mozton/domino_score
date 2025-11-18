@@ -63,7 +63,7 @@ class MenuSelectPointV1 extends StatelessWidget {
         GestureDetector(
           onTap: () {
             final prov = context.read<GameProvider>();
-            prov.canStartGame;
+            // prov.canStartGame;
 
             Navigator.pop(context);
             //TODO: Aqui va la logica para comenzar a colocar los puntos

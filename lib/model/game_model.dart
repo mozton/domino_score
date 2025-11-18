@@ -1,29 +1,48 @@
-import 'dart:convert';
-
 import 'package:dominos_score/model/models.dart';
 
 class GameModel {
   int? id;
-  List<Round> rounds;
   int actualRound;
-  Team team1;
-  Team team2;
-  Team? team3;
-  Team? team4;
   int pointsToWin;
-  DateTime? createdAt;
+  DateTime createdAt;
   String? winnerTeamName;
+
+  List<Team> teams;
+  List<Round> rounds;
 
   GameModel({
     this.id,
-    required this.rounds,
     required this.actualRound,
-    required this.team1,
-    required this.team2,
-    this.team3,
-    this.team4,
     required this.pointsToWin,
-    this.createdAt,
+    required this.createdAt,
     this.winnerTeamName,
+    required this.teams,
+    required this.rounds,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'actualRound': actualRound,
+      'pointsToWin': pointsToWin,
+      'createdAt': createdAt.toIso8601String(),
+      'winnerTeamName': winnerTeamName,
+    };
+  }
+
+  factory GameModel.fromMap(
+    Map<String, dynamic> map, {
+    required List<Team> teams,
+    required List<Round> rounds,
+  }) {
+    return GameModel(
+      id: map['id'] as int?,
+      actualRound: map['actualRound'] as int,
+      pointsToWin: map['pointsToWin'] as int,
+      createdAt: DateTime.parse(map['createdAt']),
+      winnerTeamName: map['winnerTeamName'] as String?,
+      teams: teams,
+      rounds: rounds,
+    );
+  }
 }

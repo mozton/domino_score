@@ -1,21 +1,30 @@
 class Team {
-  final int id;
-  String name;
-  String? name2;
-  int? totalPoints;
-
-  Team({required this.id, required this.name, this.name2, this.totalPoints});
-
-  Map<String, dynamic> toMap() {
-    return {'id': id, 'name': name, 'name2': name2, 'points': totalPoints};
-  }
+  final int? id;
+  final int gameId; // Foreign Key
+  final String name;
+  final int totalPoints;
+  Team({
+    this.id,
+    required this.gameId,
+    required this.name,
+    required this.totalPoints,
+  });
 
   factory Team.fromMap(Map<String, dynamic> map) {
     return Team(
-      id: map['id'],
-      name: map['name'],
-      name2: map['name2'],
-      totalPoints: map['points'],
+      id: map['id'] as int?,
+      gameId: map['gameId'] as int,
+      name: map['name'] as String,
+      totalPoints: map['totalPoints'] as int,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'gameId': gameId,
+      'name': name,
+      'totalPoints': totalPoints,
+    };
   }
 }

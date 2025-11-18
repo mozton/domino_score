@@ -1,41 +1,43 @@
 class Round {
-  int? id;
-  String? gameId;
-  int round;
-  int pointTeam1;
-  int pointTeam2;
-  int? pointTeam3;
-  int? pointTeam4;
+  final int? id;
+  final int gameId; // Foreign Key
+  final int number;
+  final int team1Points;
+  final int team2Points;
+  final int? team3Points;
+  final int? team4Points;
 
   Round({
     this.id,
-    this.gameId,
-    required this.round,
-    required this.pointTeam1,
-    required this.pointTeam2,
-    this.pointTeam3,
-    this.pointTeam4,
+    required this.gameId,
+    required this.number,
+    required this.team1Points,
+    required this.team2Points,
+    this.team3Points,
+    this.team4Points,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'round': round,
-      'pointTeam1': pointTeam1,
-      'pointTeam2': pointTeam2,
-      'pointTeam3': pointTeam3,
-      'pointTeam4': pointTeam4,
-    };
-  }
 
   factory Round.fromMap(Map<String, dynamic> map) {
     return Round(
       id: map['id'] as int?,
-      round: map['round'] as int,
-      pointTeam1: map['pointTeam1'] as int,
-      pointTeam2: map['pointTeam2'] as int,
-      pointTeam3: map['pointTeam3'] as int?, // Agregado
-      pointTeam4: map['pointTeam4'] as int?, // Agregado
+      gameId: map['gameId'] as int,
+      number: map['number'] as int,
+      team1Points: map['team1Points'] as int,
+      team2Points: map['team2Points'] as int,
+      team3Points: map['team3Points'] as int?,
+      team4Points: map['team4Points'] as int?,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'gameId': gameId,
+      'number': number,
+      'team1Points': team1Points,
+      'team2Points': team2Points,
+      'team3Points': team3Points,
+      'team4Points': team4Points,
+    };
   }
 }
