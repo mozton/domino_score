@@ -1,5 +1,6 @@
 class Round {
   int? id;
+  String? gameId;
   int round;
   int pointTeam1;
   int pointTeam2;
@@ -8,6 +9,7 @@ class Round {
 
   Round({
     this.id,
+    this.gameId,
     required this.round,
     required this.pointTeam1,
     required this.pointTeam2,

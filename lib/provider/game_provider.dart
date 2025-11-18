@@ -14,7 +14,6 @@ class GameProvider extends ChangeNotifier {
 
   GameProvider() {
     _databaseHelper.getGames();
-
     _game = GameModel(
       rounds: [],
       actualRound: 1,
@@ -22,6 +21,7 @@ class GameProvider extends ChangeNotifier {
       team2: (Team(id: 2, name: 'TEAM 2')),
       pointsToWin: pointsToWin,
     );
+    // _databaseHelper.createGame(_game);
 
     isStartEnable;
   }

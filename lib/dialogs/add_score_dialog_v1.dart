@@ -1,7 +1,7 @@
 import 'package:dominos_score/dialogs/new_game_diaglo_v1.dart';
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:dominos_score/widgets/add_score_widget_v1.dart';
-import 'package:dominos_score/widgets/view_win_and_new_game_v1.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
