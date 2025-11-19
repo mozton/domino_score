@@ -6,7 +6,7 @@ class Routes {
   static Map<String, WidgetBuilder> routes() {
     return {
       // '/': (context) => HomeScreen(),
-      '/setting': (context) => SettingScreen(),
+      // '/setting': (context) => SettingScreen(),
       '/homescreenv1': (context) => HomeScreenV1(),
     };
   }

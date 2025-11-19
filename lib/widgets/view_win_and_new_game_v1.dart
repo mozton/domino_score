@@ -80,7 +80,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/flame.png',
                 titleButton: 'Mismo equipo',
                 onTap: () {
-                  context.read<GameProvider>().createNewGame();
+                  // context.read<GameProvider>().createNewGame();
                   Navigator.pop(context);
                 },
               ),
@@ -90,7 +90,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/users-group.png',
                 titleButton: 'Otro equipo',
                 onTap: () {
-                  context.read<GameProvider>().createGameNewTeam();
+                  // context.read<GameProvider>().createGameNewTeam();
                   context.read<GameProvider>().pointsToWin = 0;
                   Navigator.pop(context);
                 },

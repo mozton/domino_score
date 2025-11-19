@@ -1,4 +1,4 @@
-import 'package:dominos_score/dialogs/delete_round_dialog_v1.dart';
+import 'package:dominos_score/model/round_model.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +64,7 @@ class RoundView extends StatelessWidget {
     final prov = Provider.of<GameProvider>(context);
 
     // final reversedRound = prov.rounds.reversed.toList();
-
+    final List<Round> rounds = [];
     final size = MediaQuery.of(context).size;
 
     final poppins = TextStyle(
@@ -73,7 +73,6 @@ class RoundView extends StatelessWidget {
       fontFamily: 'Poppins',
       color: Color(0xFF1E2B43),
     );
-    final rounds = prov.rounds;
 
     if (rounds.isEmpty) {
       return const Center(child: Text('No hay rondas registradas'));
@@ -85,15 +84,16 @@ class RoundView extends StatelessWidget {
           physics: BouncingScrollPhysics(),
           reverse: true,
           shrinkWrap: true,
-          itemCount: prov.rounds.length,
+          itemCount: rounds.length,
+
           itemBuilder: (context, index) {
-            final round = prov.rounds[index];
+            // final round = prov.rounds[index];
             final isSelected = prov.roundSelected == (index);
 
             return GestureDetector(
               onTap: () {
                 if (isSelected) {
-                  deleteRoundDialogV1(context, index, round.round);
+                  // TODO: deleteRoundDialogV1(context, index, round.round);
                 } else {
                   prov.selectRoundByIndex(index);
                 }
@@ -135,9 +135,9 @@ class RoundView extends StatelessWidget {
                             key: ValueKey('row_$index'),
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Text('${round.round}', style: poppins),
-                              Text('${round.pointTeam1}', style: poppins),
-                              Text('${round.pointTeam2}', style: poppins),
+                              // TODO:       Text('${round.round}', style: poppins),
+                              // TODO:      Text('${round.pointTeam1}', style: poppins),
+                              // TODO:     Text('${round.pointTeam2}', style: poppins),
                             ],
                           ),
                   ),

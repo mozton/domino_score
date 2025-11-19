@@ -1,3 +1,4 @@
+import 'package:dominos_score/model/models.dart';
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:dominos_score/widgets/change_name_team_widget_v1.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,9 @@ void addNameTeam1Dialog(BuildContext context) {
             controller: context.read<GameProvider>().team1NameController,
             onTap: () {
               final prov = context.read<GameProvider>();
-              if (prov.team1NameController.text.isEmpty ||
-                  prov.team1NameController.text == " ") {
-                return;
-              }
-              prov.team1Name = prov.team1NameController.text;
-              prov.setNameTeam1();
+              final team = Team(name: prov.team1NameController.text.trim());
+              prov.addTeam(team, 1);
+              // print(prov.actualTeam1);
               prov.team1NameController.clear();
               Navigator.pop(context);
             },
@@ -48,13 +46,10 @@ void addNameTeam2Dialog(BuildContext context) {
             controller: context.read<GameProvider>().team2NameController,
             onTap: () {
               final prov = context.read<GameProvider>();
+              final team = Team(name: prov.team2NameController.text.trim());
+              prov.addTeam(team, 2);
 
-              if (prov.team2NameController.text.isEmpty) {
-                return;
-              }
-              prov.setNameTeam2();
               prov.team2NameController.clear();
-
               Navigator.pop(context);
             },
           ),

@@ -1,4 +1,3 @@
-import 'package:dominos_score/dialogs/new_game_diaglo_v1.dart';
 import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:dominos_score/widgets/widgets.dart';
@@ -14,21 +13,16 @@ class ButtonStartGame extends StatelessWidget {
     final prov = context.read<GameProvider>();
 
     return InkWell(
-      onTap: prov.isStartEnable
-          ? () {
-              prov.canStartGame
-                  ? newGameOrResetGame(context, '')
-                  : selectPointToWin(context);
-            }
-          : null,
+      onTap: () => selectPointToWin(context),
 
       child: Container(
         height: size.height * 0.0504,
         width: size.width * 0.508,
         decoration: BoxDecoration(
-          color: context.watch<GameProvider>().isStartEnable
-              ? Color(0xFFB28B32)
-              : Color(0xFFB28B32).withOpacity(0.45),
+          color: Color(0xFFB28B32),
+          // context.watch<GameProvider>().isStartEnable
+          //     ? Color(0xFFB28B32)
+          //     : Color(0xFFB28B32).withOpacity(0.45),
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
@@ -50,9 +44,10 @@ class ButtonStartGame extends StatelessWidget {
               left: 55,
               top: 13,
               child: Text(
-                context.read<GameProvider>().canStartGame
-                    ? 'Nueva Partida'
-                    : 'Empezar Partida',
+                'Empezar Partida',
+                // context.read<GameProvider>().canStartGame
+                //     ? 'Nueva Partida'
+                //     : 'Empezar Partida',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

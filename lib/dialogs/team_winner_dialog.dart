@@ -10,8 +10,9 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
     fontWeight: FontWeight.bold,
     color: prov.isDarkMode ? Colors.white : Colors.blueGrey,
   );
-  if (prov.team1Total >= prov.pointToWin ||
-      prov.team2Total >= prov.pointToWin) {
+  // if (prov.team1Total >= prov.pointToWin ||
+  //     prov.team2Total >= prov.pointToWin)
+  {
     showDialog(
       context: context,
       builder: (context) {
@@ -46,7 +47,7 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<GameProvider>().createNewGame();
+                    // context.read<GameProvider>().createNewGame();
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -70,8 +71,9 @@ void dialogWinsAndroid(BuildContext context, String teamWinner) {
 void dialogWinIOS(BuildContext context, String teamWinner) {
   final prov = Provider.of<GameProvider>(context, listen: false);
 
-  if (prov.team1Total >= prov.pointToWin ||
-      prov.team2Total >= prov.pointToWin) {
+  // if (prov.team1Total >= prov.pointToWin ||
+  //     prov.team2Total >= prov.pointToWin)
+  {
     showCupertinoDialog(
       context: context,
 
@@ -106,7 +108,7 @@ void dialogWinIOS(BuildContext context, String teamWinner) {
                 ),
               ),
               onPressed: () {
-                context.read<GameProvider>().createNewGame();
+                // context.read<GameProvider>().createNewGame();
                 Navigator.of(context).pop();
               },
             ),

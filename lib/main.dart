@@ -20,16 +20,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<GameProvider>(context);
+    // final prov = Provider.of<GameProvider>(context, listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: Routes.routes(),
       initialRoute: '/homescreenv1',
-      themeMode: prov.isSystemTheme
-          ? ThemeMode.system
-          : prov.isDarkMode
-          ? ThemeMode.dark
-          : ThemeMode.light,
+      themeMode: ThemeMode.system,
+
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
     );

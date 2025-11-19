@@ -1,6 +1,6 @@
 class Round {
   final int? id;
-  final int gameId; // Foreign Key
+  final int? gameId; // Foreign Key
   final int number;
   final int team1Points;
   final int team2Points;
@@ -9,7 +9,7 @@ class Round {
 
   Round({
     this.id,
-    required this.gameId,
+    this.gameId,
     required this.number,
     required this.team1Points,
     required this.team2Points,
@@ -20,7 +20,7 @@ class Round {
   factory Round.fromMap(Map<String, dynamic> map) {
     return Round(
       id: map['id'] as int?,
-      gameId: map['gameId'] as int,
+      gameId: map['gameId'] as int?,
       number: map['number'] as int,
       team1Points: map['team1Points'] as int,
       team2Points: map['team2Points'] as int,
