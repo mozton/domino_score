@@ -2,7 +2,7 @@ import 'package:dominos_score/widgets/buttons/body_select_point_to_wind_v1.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-void selectPointToWin(BuildContext context) {
+void selectScoreToWin(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) {

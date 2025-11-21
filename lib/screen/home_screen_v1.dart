@@ -13,8 +13,6 @@ class HomeScreenV1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<GameProvider>(
       builder: (context, prov, child) {
-        DatabaseHelper db = DatabaseHelper();
-
         return Container(
           height: double.infinity,
           width: double.infinity,
@@ -38,8 +36,7 @@ class HomeScreenV1 extends StatelessWidget {
                     children: [
                       // Cards Teams & Buttons Change Name & Add Score
                       CardTeam(
-                        teamName: prov.currentGame!.teams[0].name,
-                        // 'Team 1',
+                        teamName: 'Team 1',
                         points: 0,
                         colorCard: const Color(0xFFF7E7AF),
                         colorButton: Color(0xFFD4AF37),
@@ -48,8 +45,7 @@ class HomeScreenV1 extends StatelessWidget {
                         },
                       ),
                       CardTeam(
-                        teamName: prov.currentGame!.teams[1].name,
-                        // 'Team2',
+                        teamName: 'Team2',
                         points: 0,
                         colorCard: const Color(0xFFFFFFFF),
                         colorButton: const Color(0xFF1E2B43),

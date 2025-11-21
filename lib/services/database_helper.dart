@@ -62,6 +62,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         gameId INTEGER,
         name TEXT NOT NULL,
+        player1 TEXT,
+        player2 TEXT,
         FOREIGN KEY (gameId) REFERENCES games(id) ON DELETE CASCADE
         )
 ''');
@@ -93,6 +95,17 @@ class DatabaseHelper {
     print('Se creo juego #$gameId');
     return gameId;
   }
+
+  Future<int> updatePointToWin(int gameId, int newScore) async {
+    final db = await database;
+
+    await db.update(
+      'games',
+      {'pointsToWin': newScore},
+      where: 'id = ?',
+      whereArgs: [gameId],
+    );
+  }
   // ========================== // TEAMS // ========================== //
 
   Future<int> insertTeam(int gameId, Team team) async {
@@ -102,6 +115,8 @@ class DatabaseHelper {
       'id': team.id,
       'gameId': gameId,
       'name': team.name,
+      'player1': team.player1,
+      'player2': team.player2,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -114,6 +129,29 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [teamId],
     );
+  }
+
+  Future<Team?> getTeamById(int teamId) async {
+    final db = await database;
+
+    final result = await db.query(
+      'teams',
+      where: 'id = ?',
+      whereArgs: [teamId],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      final t = result.first;
+
+      return Team(
+        id: t['id'] as int,
+        gameId: t['gameId'] as int?,
+        name: t['name'] as String,
+      );
+    }
+
+    return null; // No existe ese team
   }
 
   // ========================== // ROUNDS // ========================== //

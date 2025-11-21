@@ -8,38 +8,76 @@ class GameProvider extends ChangeNotifier {
   String _selectedTeam = '';
 
   int pointsToWin = 200;
+  int get seletPointToWin => pointsToWin;
 
-  GameModel? currentGame = GameModel(
+  late GameModel currentGame = GameModel(
     actualRound: 0,
     pointsToWin: 200,
     createdAt: DateTime.now(),
-    teams: [
-      Team(id: 1, name: 'TEAM 1'),
-      Team(id: 2, name: 'TEAM 2'),
-    ],
+    teams: [],
     rounds: [],
   );
   List<GameModel> allGames = [];
 
   GameProvider() {
-    loadGameOnStar();
+    initGameOnStartup();
   }
 
-  Future<void> loadGameOnStar() async {
-    allGames = await dbHelper.getGames();
+  Future<void> initGameOnStartup() async {
+    // 1. Buscar si hay juegos en la BD
+    final games = await dbHelper.getGames();
 
-    if (allGames.isNotEmpty) {
-      currentGame = allGames.last;
-      print('Ultimo juego cargado: ${currentGame!.id}');
-    } else {
-      print('No hay juegos');
+    if (games.isNotEmpty) {
+      // Si ya existe un juego, usar el último
+      currentGame = games.last;
+      print("Juego existente cargado: ID ${currentGame.id}");
+      notifyListeners();
+      return;
     }
+
+    // 2. Si NO existe ningún juego → crear uno
+    print("No hay juegos, creando uno nuevo...");
+
+    final newGame = GameModel(
+      actualRound: 0,
+      pointsToWin: 200,
+      createdAt: DateTime.now(),
+      teams: [],
+      rounds: [],
+    );
+
+    // 3. Insertar juego en la BD
+    final gameId = await dbHelper.createGame(newGame);
+    newGame.id = gameId;
+
+    // 4. Insertar equipos por defecto
+    final team1 = Team(id: null, gameId: gameId, name: "Team 1");
+    final team2 = Team(id: null, gameId: gameId, name: "Team 2");
+
+    final team1Id = await dbHelper.insertTeam(gameId, team1);
+    final team2Id = await dbHelper.insertTeam(gameId, team2);
+
+    newGame.teams.add(Team(id: team1Id, gameId: gameId, name: "Team 1"));
+
+    newGame.teams.add(Team(id: team2Id, gameId: gameId, name: "Team 2"));
+
+    currentGame = newGame;
+
+    print("Juego creado automáticamente con ID $gameId");
     notifyListeners();
   }
 
-  int? actualIdTeam1;
+  // Future<void> loadGameOnStar() async {
+  //   allGames = await dbHelper.getGames();
 
-  int? actualIdTeam2;
+  //   if (allGames.isNotEmpty) {
+  //     currentGame = allGames.last;
+  //     print('Ultimo juego cargado: ${currentGame.id}');
+  //   } else {
+  //     print('No hay juegos');
+  //   }
+  //   notifyListeners();
+  // }
 
   void updateName() {
     notifyListeners();
@@ -49,7 +87,7 @@ class GameProvider extends ChangeNotifier {
     // 1. Crear el objeto del juego sin ID
     final newGame = GameModel(
       actualRound: 0,
-      pointsToWin: pointToWin,
+      pointsToWin: seletPointToWin,
       createdAt: DateTime.now(),
       teams: [],
       rounds: [],
@@ -67,34 +105,29 @@ class GameProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> updateScoreToWin() async {
+    await dbHelper.updatePointToWin(currentGame.id!, pointsToWin);
+    currentGame.pointsToWin = pointsToWin;
+
+    print('Game con ID ${currentGame.id} Puntos insertados: $pointsToWin');
+    print(currentGame.pointsToWin);
+
+    notifyListeners();
+  }
   // ============================== // TEAMS // ============================== //
 
   Future<void> addTeam(Team team, int teamId) async {
-    if (currentGame == null) {
-      print("ERROR: No hay juego creado todavía.");
-      return;
-    }
-
-    final gameId = currentGame!.id;
+    final gameId = currentGame.id;
 
     // 1. Insertar en DB y obtener el ID real
-    // final teamId = await dbHelper.insertTeam(gameId!, team);
+    final teamId = await dbHelper.insertTeam(gameId!, team);
 
     // 2. Crear un nuevo objeto Team con ese ID
     final newTeam = Team(id: teamId, gameId: gameId, name: team.name);
 
-    // 3. Agregarlo al currentGame
-    // if (newTeam.id == 1) {
-    //   actualTeam1 = newTeam.name;
-    // } else if (newTeam.id == 2) {
-    //   actualTeam2 = newTeam.name;
-    // }
-
-    currentGame!.teams.add(newTeam);
+    currentGame.teams.add(newTeam);
     print("Equipo agregado con ID $teamId al juego $gameId");
-
-    // actualTeam1 = newTeam.name;
-    actualIdTeam1 = newTeam.id;
 
     notifyListeners();
   }
@@ -102,28 +135,24 @@ class GameProvider extends ChangeNotifier {
   // UpdateName
 
   Future<void> updateTeamName(int teamId, String newName) async {
-    if (currentGame == null) {
-      print("ERROR: No hay juego cargado.");
-      return;
-    }
-
     // 1. Update en la BD
     final result = await dbHelper.updateTeamName(teamId, newName);
 
     if (result > 0) {
-      // 2. Update en memoria (currentGame)
-      final index = currentGame!.teams.indexWhere((team) => team.id == teamId);
+      // 2. Update en memoria
+      final index = currentGame.teams.indexWhere((team) => team.id == teamId);
 
       if (index != -1) {
-        final oldTeam = currentGame!.teams[index];
+        final oldTeam = currentGame.teams[index];
 
-        currentGame!.teams[index] = Team(
+        currentGame.teams[index] = Team(
           id: oldTeam.id,
           gameId: oldTeam.gameId,
           name: newName,
         );
 
         print("Team actualizado localmente.");
+        print("Nuevo nombre: ${currentGame.teams[index].name}");
       }
     }
 
@@ -151,7 +180,6 @@ class GameProvider extends ChangeNotifier {
   // String get team1Name => _game.team1.name;
   // String get team2Name => _game.team2.name;
   // int get actualRound => _game.actualRound;
-  int get pointToWin => pointsToWin;
 
   // List<Round> get rounds => _game.rounds;
   // Controllers
@@ -172,8 +200,8 @@ class GameProvider extends ChangeNotifier {
   // set team2Name(String name) => _game.team2.name = name;
 
   // Puntos totales
-  final List<int> _pointsToWin = [100, 200, 300];
-  List<int> get pointsToWins => _pointsToWin;
+  final List<int> _pointsToWinList = [100, 200, 300];
+  List<int> get pointsToWins => _pointsToWinList;
 
   // int get team1Total {
   //   int total = 0;

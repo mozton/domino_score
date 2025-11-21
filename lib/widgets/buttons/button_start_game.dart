@@ -13,7 +13,7 @@ class ButtonStartGame extends StatelessWidget {
     final prov = context.read<GameProvider>();
 
     return InkWell(
-      onTap: () => selectPointToWin(context),
+      onTap: () => selectScoreToWin(context),
 
       child: Container(
         height: size.height * 0.0504,
