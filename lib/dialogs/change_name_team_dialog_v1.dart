@@ -1,4 +1,3 @@
-import 'package:dominos_score/model/models.dart';
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:dominos_score/widgets/change_name_team_widget_v1.dart';
 import 'package:flutter/material.dart';
@@ -46,10 +45,7 @@ void addNameTeam2Dialog(BuildContext context) {
             controller: context.read<GameProvider>().team2NameController,
             onTap: () {
               final prov = context.read<GameProvider>();
-              final team = Team(
-                id: null,
-                name: prov.team2NameController.text.trim(),
-              );
+              prov.updateTeamName(2, prov.team2NameController.text.trim());
 
               prov.team2NameController.clear();
               Navigator.pop(context);

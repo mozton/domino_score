@@ -53,7 +53,7 @@ class HomeScreenV1 extends StatelessWidget {
                               colorCard: const Color(0xFFFFFFFF),
                               colorButton: const Color(0xFF1E2B43),
                               onTap: () {
-                                addNameTeam1Dialog(context);
+                                addNameTeam2Dialog(context);
                               },
                             ),
                           ],
