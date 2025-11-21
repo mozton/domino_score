@@ -19,7 +19,7 @@ void addNameTeam1Dialog(BuildContext context) {
             onTap: () {
               final prov = context.read<GameProvider>();
               // final team = Team(name: prov.team1NameController.text.trim());
-              prov.updateTeamName(0, prov.team1NameController.text.trim());
+              prov.updateTeamName(1, prov.team1NameController.text.trim());
               // print(prov.actualTeam1);
               prov.team1NameController.clear();
               Navigator.pop(context);

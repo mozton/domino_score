@@ -97,7 +97,7 @@ class DatabaseHelper {
   Future<int> updatePointToWin(int gameId, int newScore) async {
     final db = await database;
 
-    await db.update(
+    return await db.update(
       'games',
       {'pointsToWin': newScore},
       where: 'id = ?',
@@ -150,6 +150,14 @@ class DatabaseHelper {
     }
 
     return null; // No existe ese team
+  }
+
+  Future getTams() async {
+    final db = await database;
+
+    final teamMaps = await db.query('teams');
+
+    print(teamMaps);
   }
 
   // ========================== // ROUNDS // ========================== //

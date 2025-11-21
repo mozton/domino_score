@@ -138,6 +138,11 @@ class GameProvider extends ChangeNotifier {
     // 1. Update en la BD
     final result = await dbHelper.updateTeamName(teamId, newName);
 
+    final teams = await dbHelper.getTams();
+
+    // print(teams);
+
+    print(result);
     if (result > 0) {
       // 2. Update en memoria
       final index = currentGame.teams.indexWhere((team) => team.id == teamId);

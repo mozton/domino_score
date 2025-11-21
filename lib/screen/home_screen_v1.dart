@@ -13,63 +13,70 @@ class HomeScreenV1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<GameProvider>(
       builder: (context, prov, child) {
-        return Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [const Color(0xFFE4E9F2), const Color(0xFFFAFAFA)],
-            ),
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
+        final teams = prov.currentGame.teams;
 
-            appBar: _appBarHome(context),
-            body: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Cards Teams & Buttons Change Name & Add Score
-                      CardTeam(
-                        teamName: 'Team 1',
-                        points: 0,
-                        colorCard: const Color(0xFFF7E7AF),
-                        colorButton: Color(0xFFD4AF37),
-                        onTap: () {
-                          addNameTeam1Dialog(context);
-                        },
-                      ),
-                      CardTeam(
-                        teamName: 'Team2',
-                        points: 0,
-                        colorCard: const Color(0xFFFFFFFF),
-                        colorButton: const Color(0xFF1E2B43),
-                        onTap: () {
-                          addNameTeam1Dialog(context);
-                        },
-                      ),
-                    ],
+        return prov.currentGame.teams.isNotEmpty
+            ? Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [const Color(0xFFE4E9F2), const Color(0xFFFAFAFA)],
                   ),
+                ),
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
 
-                  SizedBox(height: 27),
+                  appBar: _appBarHome(context),
+                  body: SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Cards Teams & Buttons Change Name & Add Score
+                            CardTeam(
+                              teamName: teams[0].name,
+                              points: 0,
+                              colorCard: const Color(0xFFF7E7AF),
+                              colorButton: Color(0xFFD4AF37),
+                              onTap: () {
+                                addNameTeam1Dialog(context);
+                              },
+                            ),
+                            CardTeam(
+                              teamName: teams[1].name,
+                              points: 0,
+                              colorCard: const Color(0xFFFFFFFF),
+                              colorButton: const Color(0xFF1E2B43),
+                              onTap: () {
+                                addNameTeam1Dialog(context);
+                              },
+                            ),
+                          ],
+                        ),
 
-                  // Score List View
-                  ScoreList(nameTeam1: 'Team1', nameTeam2: 'Team2'),
+                        SizedBox(height: 27),
 
-                  SizedBox(height: 17),
+                        // Score List View
+                        ScoreList(
+                          nameTeam1: teams[0].name,
+                          nameTeam2: teams[1].name,
+                        ),
 
-                  // Button Start Game & New Game
-                  ButtonStartGame(),
-                ],
-              ),
-            ),
-          ),
-        );
+                        SizedBox(height: 17),
+
+                        // Button Start Game & New Game
+                        ButtonStartGame(),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Container();
       },
     );
   }
