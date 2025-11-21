@@ -20,11 +20,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final prov = Provider.of<GameProvider>(context, listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: Routes.routes(),
-      initialRoute: '/homescreenv1',
+      initialRoute: '/',
       themeMode: ThemeMode.system,
 
       theme: ThemeData.light(),

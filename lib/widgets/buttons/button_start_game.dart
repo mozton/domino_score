@@ -1,5 +1,7 @@
+import 'package:dominos_score/dialogs/new_game_diaglo_v1.dart';
 import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
-import 'package:dominos_score/provider/providers.dart';
+import 'package:dominos_score/provider/game_provider.dart';
+
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,18 +13,25 @@ class ButtonStartGame extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final prov = context.read<GameProvider>();
+    final condition1 = prov.currentGame.teams[0].name == 'Team 1';
+    final condition2 = prov.currentGame.teams[1].name == 'Team 2';
+    final condition3 = prov.currentGame.pointsToWin <= 0;
 
     return InkWell(
-      onTap: () => selectScoreToWin(context),
+      onTap: condition1 || condition2
+          ? null
+          : condition3
+          ? () => selectScoreToWin(context)
+          : () => newGameOrResetGame(context, ''),
 
       child: Container(
         height: size.height * 0.0504,
         width: size.width * 0.508,
         decoration: BoxDecoration(
-          color: Color(0xFFB28B32),
-          // context.watch<GameProvider>().isStartEnable
-          //     ? Color(0xFFB28B32)
-          //     : Color(0xFFB28B32).withOpacity(0.45),
+          color: condition1 || condition2
+              ? Color(0xFFB28B32).withOpacity(0.5)
+              : Color(0xFFB28B32),
+
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
@@ -44,10 +53,8 @@ class ButtonStartGame extends StatelessWidget {
               left: 55,
               top: 13,
               child: Text(
-                'Empezar Partida',
-                // context.read<GameProvider>().canStartGame
-                //     ? 'Nueva Partida'
-                //     : 'Empezar Partida',
+                condition3 ? ' Empezar Partida' : '  Nueva Partida',
+
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

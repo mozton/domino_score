@@ -7,7 +7,7 @@ class GameProvider extends ChangeNotifier {
   // late GameModel _game;
   String _selectedTeam = '';
 
-  int pointsToWin = 200;
+  int pointsToWin = 0;
   int get seletPointToWin => pointsToWin;
 
   late GameModel currentGame = GameModel(
@@ -22,6 +22,7 @@ class GameProvider extends ChangeNotifier {
   GameProvider() {
     initGameOnStartup();
   }
+  // ========================  Initialization  ======================== //
 
   Future<void> initGameOnStartup() async {
     // 1. Buscar si hay juegos en la BD
@@ -40,7 +41,7 @@ class GameProvider extends ChangeNotifier {
 
     final newGame = GameModel(
       actualRound: 0,
-      pointsToWin: 200,
+      pointsToWin: pointsToWin,
       createdAt: DateTime.now(),
       teams: [],
       rounds: [],
@@ -67,27 +68,23 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> loadGameOnStar() async {
-  //   allGames = await dbHelper.getGames();
+  // Selected points To Win
 
-  //   if (allGames.isNotEmpty) {
-  //     currentGame = allGames.last;
-  //     print('Ultimo juego cargado: ${currentGame.id}');
-  //   } else {
-  //     print('No hay juegos');
-  //   }
-  //   notifyListeners();
-  // }
+  int? _pointSelect = -2;
+  int? get pointToWinIsSelected => _pointSelect;
 
-  void updateName() {
+  void selectPointToWin(int isSelected) {
+    _pointSelect = isSelected;
     notifyListeners();
   }
+
+  // ======================== // GAMES //  ======================== //
 
   Future<void> createGame() async {
     // 1. Crear el objeto del juego sin ID
     final newGame = GameModel(
       actualRound: 0,
-      pointsToWin: seletPointToWin,
+      pointsToWin: pointsToWin,
       createdAt: DateTime.now(),
       teams: [],
       rounds: [],
@@ -117,6 +114,8 @@ class GameProvider extends ChangeNotifier {
   }
   // ============================== // TEAMS // ============================== //
 
+  // Add Teams
+
   Future<void> addTeam(Team team, int teamId) async {
     final gameId = currentGame.id;
 
@@ -132,13 +131,13 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // UpdateName
+  // UpdateTeamsName
 
   Future<void> updateTeamName(int teamId, String newName) async {
     // 1. Update en la BD
     final result = await dbHelper.updateTeamName(teamId, newName);
 
-    print(result);
+    // print(result);
     if (result > 0) {
       // 2. Update en memoria
       final index = currentGame.teams.indexWhere((team) => team.id == teamId);
@@ -156,34 +155,10 @@ class GameProvider extends ChangeNotifier {
         print("Nuevo nombre: ${currentGame.teams[index].name}");
       }
     }
-
     notifyListeners();
   }
 
-  // final DatabaseHelper _databaseHelper = DatabaseHelper();
-
-  // GameProvider() {
-  //   _databaseHelper.getGames();
-  // _game = GameModel(
-  //     rounds: [],
-  //     actualRound: 1,
-  //     team1: (Team(id: 1, name: 'TEAM 1')),
-  //     team2: (Team(id: 2, name: 'TEAM 2')),
-  //     pointsToWin: pointsToWin,
-  //   );
-  //   // _databaseHelper.createGame(_game);
-
-  //   isStartEnable;
-  // }
-
-  // Getters
-  String get selectedTeam => _selectedTeam;
-  // String get team1Name => _game.team1.name;
-  // String get team2Name => _game.team2.name;
-  // int get actualRound => _game.actualRound;
-
-  // List<Round> get rounds => _game.rounds;
-  // Controllers
+  // ======================== // Goblal Controllers // ======================== //
 
   final TextEditingController _pointController = TextEditingController();
   TextEditingController get pointController => _pointController;
@@ -194,108 +169,32 @@ class GameProvider extends ChangeNotifier {
   final TextEditingController _team2NameController = TextEditingController();
   TextEditingController get team2NameController => _team2NameController;
 
-  // Setters for change name of teams
-
-  // set team1Name(String name) => _game.team1.name = name;
-
-  // set team2Name(String name) => _game.team2.name = name;
-
   // Puntos totales
   final List<int> _pointsToWinList = [100, 200, 300];
   List<int> get pointsToWins => _pointsToWinList;
 
-  // int get team1Total {
-  //   int total = 0;
-  //   for (var round in _game.rounds) {
-  //     total += round.pointTeam1;
+  // ======================== // ROUNDS // ======================== //
 
-  //     // Verificar si alcanzó 200 puntos
-  //     if (total >= pointsToWin) {
-  //       // _declararGanador(team1Name);
-  //       break; // Opcional
-  //     }
-  //   }
-  //   return total;
-  // }
-
-  // int get team2Total {
-  //   int total = 0;
-  //   for (var round in _game.rounds) {
-  //     total += round.pointTeam2;
-
-  //     if (total >= pointsToWin) {
-  //       // _declararGanador(team2Name);
-  //       break; // Opcional
-  //     }
-  //   }
-  //   return total;
-  // }
-
-  // Método para manejar cuando un equipo gana
-  // _declararGanador(String teamName) {}
-
-  // Métodos
-
-  void clearSelection() {
-    _selectedTeam = '';
-    notifyListeners();
-  }
-
-  // void addRound(String team, int points) async {
-  //   final newRound = Round(
-  //     round: _game.actualRound,
-  //     pointTeam1: 0,
-  //     pointTeam2: 0,
-  //   );
-
-  //   if (team == team1Name) {
-  //     newRound.pointTeam1 = points;
-  //   } else if (team == team2Name) {
-  //     newRound.pointTeam2 = points;
-  //   }
-
-  //   _game.rounds.add(newRound);
-  //   _game.actualRound++;
-
-  //   notifyListeners();
-  // }
+  // Delete points in round
 
   void deletePoint(int index) {
     // rounds.removeAt(index);
     notifyListeners();
   }
 
-  // void createNewGame() {
-  //   _game = GameModel(
-  //     rounds: [],
-  //     actualRound: 1,
-  //     team1: _game.team1,
-  //     team2: _game.team2,
-  //     pointsToWin: pointsToWin,
-  //   );
-  //   _selectedTeam = '';
+  // Select Round
 
-  //   notifyListeners();
-  // }
+  int? _roundSelected;
+  int? get roundSelected => _roundSelected;
 
-  // void createGameNewTeam() {
-  //   _game = GameModel(
-  //     rounds: [],
-  //     actualRound: 1,
-  //     team1: (Team(id: 1, name: 'TEAM 1')),
-  //     team2: (Team(id: 2, name: 'TEAM 2')),
-  //     pointsToWin: pointsToWin,
-  //   );
-  //   _pointSelect = -2;
-  //   //TODO: Cuando otro equipo inicie partida los puntos ya se quedaran predeterminados
-  //   //en el valor seleccionado inicialmente, se establecera la primera vez y luego se hara desde settings
+  void selectRoundByIndex(int? index) {
+    _roundSelected = index;
+    notifyListeners();
+  }
 
-  //   notifyListeners();
-  // }
+  // TODO: Mover estos Setting al shared preferences
+  // ======================== // SETTINGS // ======================== //
 
-  void pointTotal(int points) {}
-
-  // Theme Mode
   bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
 
@@ -321,51 +220,4 @@ class GameProvider extends ChangeNotifier {
     focusNode.dispose();
     super.dispose();
   }
-
-  // ======================== Select Round ======================== //
-
-  int? _roundSelected;
-  int? get roundSelected => _roundSelected;
-
-  void selectRoundByIndex(int? index) {
-    _roundSelected = index;
-    notifyListeners();
-  }
-
-  // ========================  Point Select to Win ======================== //
-
-  int? _pointSelect = -2;
-  int? get pointToWinIsSelected => _pointSelect;
-
-  void selectPointToWin(int isSelected) {
-    _pointSelect = isSelected;
-    notifyListeners();
-  }
-
-  // ======================== Events ======================== //
-
-  // bool get isStartEnable {
-  //   return team1Name != 'TEAM 1' && team2Name != 'TEAM 2';
-  // }
-
-  // void setNameTeam1() {
-  //   team1Name = team1NameController.text.trim();
-
-  //   notifyListeners();
-  // }
-
-  // void setNameTeam2() {
-  //   team2Name = _team2NameController.text.trim();
-  //   notifyListeners();
-  // }
-
-  // void reset() {
-  //   team1Name;
-  //   team1Name;
-  //   notifyListeners();
-  // }
-
-  // bool get canStartGame {
-  //   return team1Name != 'TEAM 1' && team2Name != 'TEAM 2' && pointsToWin != 0;
-  // }
 }
