@@ -21,6 +21,8 @@ class GameProvider extends ChangeNotifier {
 
   GameProvider() {
     initGameOnStartup();
+
+    // final actualRound = currentGame.rounds.last.number;
   }
   // ========================  Initialization  ======================== //
 
@@ -65,6 +67,7 @@ class GameProvider extends ChangeNotifier {
     currentGame = newGame;
 
     print("Juego creado automáticamente con ID $gameId");
+    // print(currentGame.actualRound);
     notifyListeners();
   }
 
@@ -98,7 +101,30 @@ class GameProvider extends ChangeNotifier {
 
     // Save in provider
     currentGame = newGame;
-    print("Nuevo juego creado con ID: $gameId");
+    // print("Nuevo juego creado con ID: $gameId");
+
+    notifyListeners();
+  }
+
+  Future<void> createGameSameTeam() async {
+    // 1. Crear el objeto del juego sin ID
+    final newGame = GameModel(
+      actualRound: 0,
+      pointsToWin: pointsToWin,
+      createdAt: DateTime.now(),
+      teams: [],
+      rounds: [],
+    );
+
+    // 2. Crear el juego en la DB y obtener el ID generado
+    final gameId = await dbHelper.createGame(newGame);
+
+    // 3. Asignar el ID a tu modelo local
+    newGame.id = gameId;
+
+    // Save in provider
+    currentGame = newGame;
+    // print("Nuevo juego creado con ID: $gameId");
 
     notifyListeners();
   }
@@ -106,9 +132,6 @@ class GameProvider extends ChangeNotifier {
   Future<void> updateScoreToWin() async {
     await dbHelper.updatePointToWin(currentGame.id!, pointsToWin);
     currentGame.pointsToWin = pointsToWin;
-
-    print('Game con ID ${currentGame.id} Puntos insertados: $pointsToWin');
-    print(currentGame.pointsToWin);
 
     notifyListeners();
   }
@@ -175,11 +198,46 @@ class GameProvider extends ChangeNotifier {
 
   // ======================== // ROUNDS // ======================== //
 
+  //Add Round
+
+  Future<void> addRound(int pointsTeam1, int pointsTeam2) async {
+    final actualRound = currentGame.actualRound += 1;
+
+    Round newRound = Round(
+      number: actualRound,
+      team1Points: pointsTeam1,
+      team2Points: pointsTeam2,
+    );
+
+    final int newId = await dbHelper.insertRound(currentGame.id!, newRound);
+
+    newRound.id = newId;
+
+    currentGame.rounds.add(newRound);
+
+    await dbHelper.updateActualRound(currentGame.id!, actualRound);
+    // await dbHelper.updateTotalScoreTeam(currentGame.id!, totalTeam1Points);
+
+    notifyListeners();
+  }
+
+  int get totalTeam1Points {
+    return currentGame.rounds.fold(0, (sum, round) => sum + round.team1Points);
+  }
+
+  int get totalTeam2Points {
+    return currentGame.rounds.fold(0, (sum, round) => sum + round.team2Points);
+  }
+
   // Delete points in round
 
-  void deletePoint(int index) {
-    // rounds.removeAt(index);
-    notifyListeners();
+  Future<void> deleteRound(int roundId) async {
+    currentGame.rounds.removeWhere((r) {
+      print(r.id);
+      return r.id == roundId;
+    });
+
+    await dbHelper.deleteRound(roundId);
   }
 
   // Select Round
@@ -193,6 +251,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   // TODO: Mover estos Setting al shared preferences
+
   // ======================== // SETTINGS // ======================== //
 
   bool _isDarkMode = false;

@@ -13,14 +13,14 @@ class ButtonStartGame extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final prov = context.read<GameProvider>();
-    final condition1 = prov.currentGame.teams[0].name == 'Team 1';
-    final condition2 = prov.currentGame.teams[1].name == 'Team 2';
-    final condition3 = prov.currentGame.pointsToWin <= 0;
+    final team1IsNoEmty = prov.currentGame.teams[0].name == 'Team 1';
+    final team2IsNoEmty = prov.currentGame.teams[1].name == 'Team 2';
+    final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
     return InkWell(
-      onTap: condition1 || condition2
+      onTap: team1IsNoEmty || team2IsNoEmty
           ? null
-          : condition3
+          : isScoreSelect
           ? () => selectScoreToWin(context)
           : () => newGameOrResetGame(context, ''),
 
@@ -28,7 +28,7 @@ class ButtonStartGame extends StatelessWidget {
         height: size.height * 0.0504,
         width: size.width * 0.508,
         decoration: BoxDecoration(
-          color: condition1 || condition2
+          color: team1IsNoEmty || team2IsNoEmty
               ? Color(0xFFB28B32).withOpacity(0.5)
               : Color(0xFFB28B32),
 
@@ -53,7 +53,7 @@ class ButtonStartGame extends StatelessWidget {
               left: 55,
               top: 13,
               child: Text(
-                condition3 ? ' Empezar Partida' : '  Nueva Partida',
+                isScoreSelect ? ' Empezar Partida' : '  Nueva Partida',
 
                 style: TextStyle(
                   fontSize: 13,

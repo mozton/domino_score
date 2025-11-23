@@ -62,6 +62,7 @@ class DatabaseHelper {
         name TEXT NOT NULL,
         player1 TEXT,
         player2 TEXT,
+        totalScore INTEGER,
         FOREIGN KEY (gameId) REFERENCES games(id) ON DELETE CASCADE
         )
 ''');
@@ -106,6 +107,8 @@ class DatabaseHelper {
   }
   // ========================== // TEAMS // ========================== //
 
+  //  Add Teams
+
   Future<int> insertTeam(int gameId, Team team) async {
     final db = await database;
 
@@ -115,8 +118,11 @@ class DatabaseHelper {
       'name': team.name,
       'player1': team.player1,
       'player2': team.player2,
+      'totalScore': team.totalScore,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  // Update teamName
 
   Future<int> updateTeamName(int teamId, String newName) async {
     final db = await database;
@@ -128,6 +134,21 @@ class DatabaseHelper {
       whereArgs: [teamId],
     );
   }
+
+  // Update totalScore
+
+  Future<int> updateTotalScoreTeam(int teamId, int newTotal) async {
+    final db = await database;
+
+    return await db.update(
+      'teams',
+      {'totalScore': newTotal},
+      where: 'id = ?',
+      whereArgs: [teamId],
+    );
+  }
+
+  // Get team by Id
 
   Future<Team?> getTeamById(int teamId) async {
     final db = await database;
@@ -152,15 +173,9 @@ class DatabaseHelper {
     return null; // No existe ese team
   }
 
-  Future getTams() async {
-    final db = await database;
-
-    final teamMaps = await db.query('teams');
-
-    print(teamMaps);
-  }
-
   // ========================== // ROUNDS // ========================== //
+
+  // Add rounds
 
   Future<int> insertRound(int gameId, Round round) async {
     final db = await database;
@@ -174,6 +189,29 @@ class DatabaseHelper {
       'team4Points': round.team4Points,
     });
   }
+
+  // Update actualRound
+
+  Future<int> updateActualRound(int gameId, int actualRound) async {
+    final db = await database;
+
+    return await db.update(
+      'games',
+      {'actualRound': actualRound},
+      where: 'id = ?',
+      whereArgs: [gameId],
+    );
+  }
+
+  // Delete round by id
+
+  Future<int> deleteRound(int id) async {
+    final db = await database;
+
+    return await db.delete('rounds', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --------------------------------------------------\--
 
   Future<List<GameModel>> getGames() async {
     final db = await database;

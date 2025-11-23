@@ -26,7 +26,9 @@ class CardTeam extends StatelessWidget {
           color: colorCard,
           shadowColor: const Color(0x1F000000),
           borderOnForeground: false,
-          child: Container(
+          child: AnimatedContainer(
+            curve: Curves.linear,
+            duration: Duration(milliseconds: 300),
             height: MediaQuery.of(context).size.height * 0.12,
             width: MediaQuery.of(context).size.width * 0.43,
             padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: 24),

@@ -1,5 +1,5 @@
 class Round {
-  final int? id;
+  int? id;
   final int? gameId; // Foreign Key
   final int number;
   final int team1Points;

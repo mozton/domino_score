@@ -1,8 +1,9 @@
+import 'package:dominos_score/model/round_model.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void deleteRoundDialogV1(BuildContext context, int index, int round) {
+void deleteRoundDialogV1(BuildContext context, int index, Round round) {
   final size = MediaQuery.of(context).size;
   showDialog(
     context: context,
@@ -38,15 +39,13 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
               Image(
                 height: 30,
                 width: 30,
-                color:
-                    //  Color(0xFFB30000),
-                    Color(0xFFF2B610),
+                color: Color(0xFFF2B610),
                 image: AssetImage('assets/icon/alertcircle.png'),
               ),
               SizedBox(height: 13),
 
               // TextDialog
-              textDialog(context, index, round),
+              textDialog(context, index, round.number),
 
               SizedBox(height: 25),
               Row(
@@ -58,7 +57,6 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
                     Color(0xFFB30000),
                     () {
                       Navigator.pop(context);
-                      // context.read<GameProvider>().setSelectedIndex(null);
                     },
                   ),
                   buttonCancelAndDelete(
@@ -66,8 +64,7 @@ void deleteRoundDialogV1(BuildContext context, int index, int round) {
                     'Eliminar',
                     Color(0xFFC8C8C8),
                     () {
-                      // print('Elimino el index $index');
-                      context.read<GameProvider>().deletePoint(index);
+                      context.read<GameProvider>().deleteRound(round.id!);
                       context.read<GameProvider>().selectRoundByIndex(null);
                       Navigator.pop(context);
                     },

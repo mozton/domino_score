@@ -6,8 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ViewWinAndNewGame extends StatelessWidget {
-  String teamWiner;
-  ViewWinAndNewGame({super.key, required this.teamWiner});
+  final String teamWiner;
+  const ViewWinAndNewGame({super.key, required this.teamWiner});
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +28,15 @@ class ViewWinAndNewGame extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(height: 15),
-          Container(
-            height: 4,
-            width: size.width * (120 / 393),
-            decoration: BoxDecoration(
-              color: Color(0xFF1E2B43),
-              borderRadius: BorderRadius.circular(25),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              height: 4,
+              width: size.width * (120 / 393),
+              decoration: BoxDecoration(
+                color: Color(0xFF1E2B43),
+                borderRadius: BorderRadius.circular(25),
+              ),
             ),
           ),
           SizedBox(height: 65),
@@ -80,7 +83,6 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/flame.png',
                 titleButton: 'Mismo equipo',
                 onTap: () {
-                  // context.read<GameProvider>().createNewGame();
                   Navigator.pop(context);
                 },
               ),

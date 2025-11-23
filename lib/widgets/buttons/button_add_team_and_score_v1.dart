@@ -1,4 +1,6 @@
+import 'package:dominos_score/provider/game_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ButtonAddTeamAndScoreV1 extends StatelessWidget {
   Color colorButton;
@@ -12,6 +14,9 @@ class ButtonAddTeamAndScoreV1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final prov = context.read<GameProvider>();
+    final isScoreSelect = prov.currentGame.pointsToWin <= 0;
+
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       splashColor: colorButton.withOpacity(0.1),
@@ -37,10 +42,9 @@ class ButtonAddTeamAndScoreV1 extends StatelessWidget {
             child: Image(
               height: 20,
               width: 20,
-              image: AssetImage('assets/icon/pencil-plus.png'),
-              //  context.read<GameProvider>().canStartGame
-              //     ? AssetImage('assets/icon/plus.png')
-              //     : AssetImage('assets/icon/pencil-plus.png'),
+              image: isScoreSelect
+                  ? AssetImage('assets/icon/pencil-plus.png')
+                  : AssetImage('assets/icon/plus.png'),
               color: colorButton != Color(0xFFD4AF37)
                   ? Colors.white
                   : Colors.black,

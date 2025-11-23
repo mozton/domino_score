@@ -1,3 +1,4 @@
+import 'package:dominos_score/dialogs/delete_round_dialog_v1.dart';
 import 'package:dominos_score/model/round_model.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class ScoreList extends StatelessWidget {
   Widget build(BuildContext context) {
     final prov = Provider.of<GameProvider>(context);
     final size = MediaQuery.of(context).size;
+
     final poppnins = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w700,
@@ -61,12 +63,8 @@ class RoundView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // escuchar para que el ListView se rebuild cuando cambie selectedIndex
-    final prov = Provider.of<GameProvider>(context);
 
-    // final reversedRound = prov.rounds.reversed.toList();
-    final List<Round> rounds = [];
     final size = MediaQuery.of(context).size;
-
     final poppins = TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w500,
@@ -74,79 +72,100 @@ class RoundView extends StatelessWidget {
       color: Color(0xFF1E2B43),
     );
 
-    if (rounds.isEmpty) {
-      return const Center(child: Text('No hay rondas registradas'));
-    }
+    return Consumer<GameProvider>(
+      builder: (BuildContext context, prov, _) {
+        final rounds = prov.currentGame.rounds;
 
-    return SingleChildScrollView(
-      child: SizedBox(
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          reverse: true,
-          shrinkWrap: true,
-          itemCount: rounds.length,
+        print(prov.currentGame.rounds);
 
-          itemBuilder: (context, index) {
-            // final round = prov.rounds[index];
-            final isSelected = prov.roundSelected == (index);
-
-            return GestureDetector(
-              onTap: () {
-                if (isSelected) {
-                  // TODO: deleteRoundDialogV1(context, index, round.round);
-                } else {
-                  prov.selectRoundByIndex(index);
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 5,
-                  bottom: 5,
-                  left: 8,
-                  right: 8,
-                ),
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  height: size.height * 0.0410,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? Color(0xFFB00020).withOpacity(0.9) // selected (rojo)
-                        : Color(0xFFF7F8FA), // not selected (normal)
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(width: 1, color: Color(0xFFDADDE2)),
-                  ),
-
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 300),
-                    switchInCurve: Curves.easeInOut,
-                    switchOutCurve: Curves.easeInOut,
-                    transitionBuilder: (child, animation) =>
-                        FadeTransition(opacity: animation, child: child),
-                    child: isSelected
-                        ? Center(
-                            key: ValueKey('trash_$index'),
-                            child: Image.asset(
-                              'assets/icon/trash.png',
-                              width: 20,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Row(
-                            key: ValueKey('row_$index'),
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              // TODO:       Text('${round.round}', style: poppins),
-                              // TODO:      Text('${round.pointTeam1}', style: poppins),
-                              // TODO:     Text('${round.pointTeam2}', style: poppins),
-                            ],
-                          ),
-                  ),
-                ),
+        if (rounds.isEmpty) {
+          return const Center(
+            child: Text(
+              'No hay rondas registradas',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Poppins',
+                color: Color(0xFF1E2B43),
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          );
+        }
+
+        return SingleChildScrollView(
+          child: SizedBox(
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              reverse: true,
+              shrinkWrap: true,
+              itemCount: rounds.length,
+
+              itemBuilder: (context, index) {
+                final round = rounds[index];
+                final isSelected = prov.roundSelected == (index);
+
+                return GestureDetector(
+                  onTap: () {
+                    if (isSelected) {
+                      deleteRoundDialogV1(context, index, round);
+                    } else {
+                      prov.selectRoundByIndex(index);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 5,
+                      bottom: 5,
+                      left: 8,
+                      right: 8,
+                    ),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      height: size.height * 0.0410,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Color(0xFFB00020).withOpacity(
+                                0.9,
+                              ) // selected (rojo)
+                            : Color(0xFFF7F8FA), // not selected (normal)
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(width: 1, color: Color(0xFFDADDE2)),
+                      ),
+
+                      child: AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        switchInCurve: Curves.easeInOut,
+                        switchOutCurve: Curves.easeInOut,
+                        transitionBuilder: (child, animation) =>
+                            FadeTransition(opacity: animation, child: child),
+                        child: isSelected
+                            ? Center(
+                                key: ValueKey('trash_$index'),
+                                child: Image.asset(
+                                  'assets/icon/trash.png',
+                                  width: 20,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Row(
+                                key: ValueKey('row_$index'),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text('${round.number}', style: poppins),
+                                  Text('${round.team1Points}', style: poppins),
+                                  Text('${round.team2Points}', style: poppins),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
