@@ -42,7 +42,13 @@ class AddScore extends StatelessWidget {
                   cursorColor: Color(0xFFD9D9D9),
                   decoration: InputDecoration(
                     counterText: '',
-
+                    hintText: 'Agrega puntos',
+                    hintStyle: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF1E2B43).withOpacity(0.5),
+                    ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFD9D9D9)),
                     ),

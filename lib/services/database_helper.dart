@@ -19,6 +19,7 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'DominoScoreDB.db');
     // DeleteDatabase
+    // deleteDB();
 
     return await openDatabase(
       path,
@@ -41,7 +42,7 @@ class DatabaseHelper {
 
     // Borrar el archivo completo de la base de datos
     await deleteDatabase(path);
-    print('Base de Datos Borrada');
+    // print('Base de Datos Borrada');
   }
 
   Future<void> _createTables(Database db, int version) async {

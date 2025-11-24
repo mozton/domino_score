@@ -7,30 +7,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ButtonStartGame extends StatelessWidget {
-  ButtonStartGame({super.key});
+  const ButtonStartGame({super.key});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final prov = context.read<GameProvider>();
-    final team1IsNoEmty = prov.currentGame.teams[0].name == 'Team 1';
-    final team2IsNoEmty = prov.currentGame.teams[1].name == 'Team 2';
+    // final team1IsNoEmty = prov.currentGame.teams[0].name == 'Team 1';
+    // final team2IsNoEmty = prov.currentGame.teams[1].name == 'Team 2';
     final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
     return InkWell(
-      onTap: team1IsNoEmty || team2IsNoEmty
-          ? null
-          : isScoreSelect
+      onTap: isScoreSelect
           ? () => selectScoreToWin(context)
-          : () => newGameOrResetGame(context, ''),
+          : () => newGameOrResetGame(context, 'Quieres una nueva partida?'),
 
       child: Container(
         height: size.height * 0.0504,
         width: size.width * 0.508,
         decoration: BoxDecoration(
-          color: team1IsNoEmty || team2IsNoEmty
-              ? Color(0xFFB28B32).withOpacity(0.5)
-              : Color(0xFFB28B32),
+          color: Color(0xFFB28B32),
 
           borderRadius: BorderRadius.circular(22),
           boxShadow: [

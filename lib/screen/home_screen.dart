@@ -1,7 +1,8 @@
 import 'package:dominos_score/dialogs/add_score_dialog_v1.dart';
 import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
+
 import 'package:dominos_score/provider/providers.dart';
-import 'package:dominos_score/services/database_helper.dart';
+
 import 'package:dominos_score/widgets/buttons/button_start_game.dart';
 import 'package:dominos_score/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,10 @@ class HomeScreen extends StatelessWidget {
     return Consumer<GameProvider>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
-        final isScoreSelect = prov.currentGame.pointsToWin <= 0;
+        // final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
         //TODO: corregir parpadeo
+
         return prov.currentGame.teams.isNotEmpty
             ? Container(
                 height: double.infinity,
@@ -46,18 +48,16 @@ class HomeScreen extends StatelessWidget {
                               points: prov.totalTeam1Points,
                               colorCard: const Color(0xFFF7E7AF),
                               colorButton: Color(0xFFD4AF37),
-                              onTap: isScoreSelect
-                                  ? () => addNameTeam1Dialog(context)
-                                  : () => addScoreTeam1(context),
+                              onTap: () => addScoreTeam1(context),
+                              onTapname: () => addNameTeam1Dialog(context),
                             ),
                             CardTeam(
                               teamName: teams[1].name,
                               points: prov.totalTeam2Points,
                               colorCard: const Color(0xFFFFFFFF),
                               colorButton: const Color(0xFF1E2B43),
-                              onTap: isScoreSelect
-                                  ? () => addNameTeam2Dialog(context)
-                                  : () => addScoreTeam2(context),
+                              onTap: () => addScoreTeam2(context),
+                              onTapname: () => addNameTeam2Dialog(context),
                             ),
                           ],
                         ),
@@ -104,8 +104,8 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.only(right: 20),
           child: InkWell(
             onTap: () {
-              DatabaseHelper db = DatabaseHelper();
-              db.deleteDB();
+              // DatabaseHelper db = DatabaseHelper();
+              // db.deleteDB();
             },
             child: Image(
               height: 28,

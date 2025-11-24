@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as Math;
 
 class IconDomino extends StatelessWidget {
-  Color colorIcon;
-  IconDomino({super.key, required this.colorIcon});
+  final Color colorIcon;
+  const IconDomino({super.key, required this.colorIcon});
 
   @override
   Widget build(BuildContext context) {

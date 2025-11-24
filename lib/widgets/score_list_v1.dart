@@ -1,12 +1,12 @@
 import 'package:dominos_score/dialogs/delete_round_dialog_v1.dart';
-import 'package:dominos_score/model/round_model.dart';
+
 import 'package:dominos_score/provider/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScoreList extends StatelessWidget {
-  String nameTeam1;
-  String nameTeam2;
+  final String nameTeam1;
+  final String nameTeam2;
 
   ScoreList({super.key, required this.nameTeam1, required this.nameTeam2});
 
@@ -76,7 +76,7 @@ class RoundView extends StatelessWidget {
       builder: (BuildContext context, prov, _) {
         final rounds = prov.currentGame.rounds;
 
-        print(prov.currentGame.rounds);
+        // print(prov.currentGame.rounds);
 
         if (rounds.isEmpty) {
           return const Center(

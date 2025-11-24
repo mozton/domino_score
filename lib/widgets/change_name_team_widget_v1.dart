@@ -32,10 +32,11 @@ class ChangeNameTeam extends StatelessWidget {
                 child: TextFormField(
                   validator: (value) {
                     if (value!.isEmpty) {
-                      print('value is need');
+                      // print('value is need');
                     }
                   },
                   controller: controller,
+
                   maxLines: 1,
                   keyboardType: TextInputType.name,
                   textCapitalization: TextCapitalization.words,
@@ -44,7 +45,13 @@ class ChangeNameTeam extends StatelessWidget {
 
                   decoration: InputDecoration(
                     counterText: '',
-
+                    hintText: 'Nombre de team',
+                    hintStyle: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF1E2B43).withOpacity(0.5),
+                    ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFD9D9D9)),
                     ),

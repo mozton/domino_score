@@ -23,7 +23,7 @@ void addScoreTeam1(BuildContext context) {
               provider.addRound(30, 0);
               provider.focusNode.unfocus();
               provider.pointController.clear();
-              FocusScope.of(context).unfocus();
+              provider.focusNode.unfocus();
               Navigator.pop(context);
               Future.delayed(Duration.zero);
 
@@ -31,6 +31,9 @@ void addScoreTeam1(BuildContext context) {
                   provider.currentGame.pointsToWin) {
                 newGameOrResetGame(context, provider.currentGame.teams[0].name);
               }
+              print(
+                'total1: ${provider.totalTeam1Points} totalwin: ${provider.currentGame.pointsToWin} ',
+              );
             },
             onTap: () {
               final points = int.tryParse(provider.pointController.text) ?? 0;
@@ -38,9 +41,7 @@ void addScoreTeam1(BuildContext context) {
                 provider.addRound(points, 0);
                 provider.pointController.clear();
                 provider.focusNode.unfocus();
-                FocusScope.of(context).unfocus();
                 Navigator.pop(context);
-
                 Future.delayed(Duration.zero);
 
                 if (provider.totalTeam1Points >=
@@ -50,6 +51,9 @@ void addScoreTeam1(BuildContext context) {
                     provider.currentGame.teams[0].name,
                   );
                 }
+                print(
+                  'total1: ${provider.totalTeam1Points} totalwin: ${provider.currentGame.pointsToWin} ',
+                );
 
                 return;
               }

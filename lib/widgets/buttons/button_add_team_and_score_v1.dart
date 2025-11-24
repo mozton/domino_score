@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ButtonAddTeamAndScoreV1 extends StatelessWidget {
-  Color colorButton;
-  VoidCallback onTap;
+  final Color colorButton;
+  final VoidCallback onTap;
 
-  ButtonAddTeamAndScoreV1({
+  const ButtonAddTeamAndScoreV1({
     super.key,
     required this.colorButton,
     required this.onTap,
@@ -20,37 +20,37 @@ class ButtonAddTeamAndScoreV1 extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       splashColor: colorButton.withOpacity(0.1),
-      onTap: onTap,
+      onTap: isScoreSelect ? null : onTap,
       child: Card(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.0316,
-          width: MediaQuery.of(context).size.width * 0.278,
+        child: isScoreSelect
+            ? SizedBox.shrink()
+            : Container(
+                height: MediaQuery.of(context).size.height * 0.0316,
+                width: MediaQuery.of(context).size.width * 0.278,
 
-          decoration: BoxDecoration(
-            color: colorButton,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: colorButton.withOpacity(0.5),
-                offset: const Offset(4, 4),
-                blurRadius: 10,
-                spreadRadius: 0,
+                decoration: BoxDecoration(
+                  color: colorButton,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorButton.withOpacity(0.5),
+                      offset: const Offset(4, 4),
+                      blurRadius: 10,
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Image(
+                    height: 20,
+                    width: 20,
+                    image: AssetImage('assets/icon/plus.png'),
+                    color: colorButton != Color(0xFFD4AF37)
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                ),
               ),
-            ],
-          ),
-          child: Center(
-            child: Image(
-              height: 20,
-              width: 20,
-              image: isScoreSelect
-                  ? AssetImage('assets/icon/pencil-plus.png')
-                  : AssetImage('assets/icon/plus.png'),
-              color: colorButton != Color(0xFFD4AF37)
-                  ? Colors.white
-                  : Colors.black,
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:dominos_score/widgets/icon_domino_5-1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MenuSelectPointV1 extends StatelessWidget {
+class MenuSelectPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<GameProvider>(context);

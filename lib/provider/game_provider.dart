@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class GameProvider extends ChangeNotifier {
   final DatabaseHelper dbHelper = DatabaseHelper();
   // late GameModel _game;
-  String _selectedTeam = '';
+  // String _selectedTeam = '';
 
   int pointsToWin = 0;
   int get seletPointToWin => pointsToWin;
@@ -67,7 +67,7 @@ class GameProvider extends ChangeNotifier {
     currentGame = newGame;
 
     print("Juego creado automáticamente con ID $gameId");
-    // print(currentGame.actualRound);
+    print(currentGame.actualRound);
     notifyListeners();
   }
 
@@ -106,13 +106,16 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createGameSameTeam() async {
+  Future<void> createGameOtherTeam() async {
     // 1. Crear el objeto del juego sin ID
+
+    final team1 = Team(id: null, name: "Team 1");
+    final team2 = Team(id: null, name: "Team 2");
     final newGame = GameModel(
       actualRound: 0,
       pointsToWin: pointsToWin,
       createdAt: DateTime.now(),
-      teams: [],
+      teams: [team1, team2],
       rounds: [],
     );
 
@@ -122,6 +125,36 @@ class GameProvider extends ChangeNotifier {
     // 3. Asignar el ID a tu modelo local
     newGame.id = gameId;
 
+    newGame.teams.add(team1);
+    newGame.teams.add(team2);
+    // Save in provider
+    currentGame = newGame;
+    // print("Nuevo juego creado con ID: $gameId");
+
+    notifyListeners();
+  }
+
+  Future<void> createGameSameTeam() async {
+    // 1. Crear el objeto del juego sin ID
+
+    final team1 = Team(name: currentGame.teams[0].name);
+    final team2 = Team(name: currentGame.teams[1].name);
+    final newGame = GameModel(
+      actualRound: 0,
+      pointsToWin: pointsToWin,
+      createdAt: DateTime.now(),
+      teams: [team1, team2],
+      rounds: [],
+    );
+
+    // 2. Crear el juego en la DB y obtener el ID generado
+    final gameId = await dbHelper.createGame(newGame);
+
+    // 3. Asignar el ID a tu modelo local
+    newGame.id = gameId;
+
+    newGame.teams.add(team1);
+    newGame.teams.add(team2);
     // Save in provider
     currentGame = newGame;
     // print("Nuevo juego creado con ID: $gameId");
@@ -149,7 +182,7 @@ class GameProvider extends ChangeNotifier {
     final newTeam = Team(id: teamId, gameId: gameId, name: team.name);
 
     currentGame.teams.add(newTeam);
-    print("Equipo agregado con ID $teamId al juego $gameId");
+    // print("Equipo agregado con ID $teamId al juego $gameId");
 
     notifyListeners();
   }
@@ -174,8 +207,8 @@ class GameProvider extends ChangeNotifier {
           name: newName,
         );
 
-        print("Team actualizado localmente.");
-        print("Nuevo nombre: ${currentGame.teams[index].name}");
+        // print("Team actualizado localmente.");
+        // print("Nuevo nombre: ${currentGame.teams[index].name}");
       }
     }
     notifyListeners();
@@ -209,14 +242,11 @@ class GameProvider extends ChangeNotifier {
       team2Points: pointsTeam2,
     );
 
+    currentGame.rounds.add(newRound);
     final int newId = await dbHelper.insertRound(currentGame.id!, newRound);
 
     newRound.id = newId;
-
-    currentGame.rounds.add(newRound);
-
     await dbHelper.updateActualRound(currentGame.id!, actualRound);
-    // await dbHelper.updateTotalScoreTeam(currentGame.id!, totalTeam1Points);
 
     notifyListeners();
   }
@@ -233,7 +263,7 @@ class GameProvider extends ChangeNotifier {
 
   Future<void> deleteRound(int roundId) async {
     currentGame.rounds.removeWhere((r) {
-      print(r.id);
+      // print(r.id);
       return r.id == roundId;
     });
 

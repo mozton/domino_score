@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dominos_score/provider/game_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ViewWinAndNewGame extends StatelessWidget {
@@ -56,6 +55,7 @@ class ViewWinAndNewGame extends StatelessWidget {
             ),
           ),
           Text(
+            textAlign: TextAlign.center,
             ' "$teamWiner" ',
             style: TextStyle(
               fontFamily: 'Poppins',
@@ -83,6 +83,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/flame.png',
                 titleButton: 'Mismo equipo',
                 onTap: () {
+                  context.read<GameProvider>().createGameSameTeam();
                   Navigator.pop(context);
                 },
               ),
@@ -92,8 +93,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/users-group.png',
                 titleButton: 'Otro equipo',
                 onTap: () {
-                  // context.read<GameProvider>().createGameNewTeam();
-                  context.read<GameProvider>().pointsToWin = 0;
+                  context.read<GameProvider>().createGameOtherTeam();
                   Navigator.pop(context);
                 },
               ),
@@ -113,7 +113,6 @@ class _Buttons extends StatelessWidget {
   final VoidCallback onTap;
 
   const _Buttons({
-    super.key,
     required this.buttonColor,
     this.borderColor,
     required this.assentImage,

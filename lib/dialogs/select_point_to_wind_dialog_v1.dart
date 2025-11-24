@@ -1,6 +1,5 @@
-import 'package:dominos_score/widgets/buttons/body_select_point_to_wind_v1.dart';
+import 'package:dominos_score/widgets/buttons/button_menu_select_point.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 void selectScoreToWin(BuildContext context) {
   showDialog(
@@ -42,7 +41,7 @@ void selectScoreToWin(BuildContext context) {
                 ),
                 SizedBox(height: 15),
 
-                MenuSelectPointV1(),
+                MenuSelectPoint(),
 
                 SizedBox(height: 20),
               ],
