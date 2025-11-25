@@ -1,11 +1,13 @@
+import 'package:dominos_score/services/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:dominos_score/router/router.dart';
 import 'package:dominos_score/provider/providers.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Prefs.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(

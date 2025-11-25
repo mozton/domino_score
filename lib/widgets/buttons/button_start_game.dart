@@ -13,14 +13,25 @@ class ButtonStartGame extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final prov = context.read<GameProvider>();
-    // final team1IsNoEmty = prov.currentGame.teams[0].name == 'Team 1';
-    // final team2IsNoEmty = prov.currentGame.teams[1].name == 'Team 2';
+
     final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
     return InkWell(
       onTap: isScoreSelect
           ? () => selectScoreToWin(context)
-          : () => newGameOrResetGame(context, 'Quieres una nueva partida?'),
+          : () {
+              if (prov.totalTeam1Points >= prov.currentGame.pointsToWin ||
+                  prov.totalTeam2Points >= prov.currentGame.pointsToWin) {
+                newGameOrResetGame(context, '');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text('Termine la partida actual'),
+                  ),
+                );
+              }
+            },
 
       child: Container(
         height: size.height * 0.0504,

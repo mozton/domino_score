@@ -56,10 +56,10 @@ class ViewWinAndNewGame extends StatelessWidget {
           ),
           Text(
             textAlign: TextAlign.center,
-            ' "$teamWiner" ',
+            teamWiner,
             style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: 32,
+              fontSize: 22,
               fontWeight: FontWeight.w700,
               color: Color(0xFFC6A15B),
             ),

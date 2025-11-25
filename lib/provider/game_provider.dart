@@ -109,27 +109,32 @@ class GameProvider extends ChangeNotifier {
   Future<void> createGameOtherTeam() async {
     // 1. Crear el objeto del juego sin ID
 
-    final team1 = Team(id: null, name: "Team 1");
-    final team2 = Team(id: null, name: "Team 2");
     final newGame = GameModel(
       actualRound: 0,
       pointsToWin: pointsToWin,
       createdAt: DateTime.now(),
-      teams: [team1, team2],
+      teams: [],
       rounds: [],
     );
 
     // 2. Crear el juego en la DB y obtener el ID generado
     final gameId = await dbHelper.createGame(newGame);
 
-    // 3. Asignar el ID a tu modelo local
     newGame.id = gameId;
 
-    newGame.teams.add(team1);
-    newGame.teams.add(team2);
-    // Save in provider
+    final team1 = Team(id: null, gameId: gameId, name: "Team 1");
+    final team2 = Team(id: null, gameId: gameId, name: "Team 2");
+
+    final team1Id = await dbHelper.insertTeam(gameId, team1);
+    final team2Id = await dbHelper.insertTeam(gameId, team2);
+
+    newGame.teams.add(Team(id: team1Id, gameId: gameId, name: "Team 1"));
+
+    newGame.teams.add(Team(id: team2Id, gameId: gameId, name: "Team 2"));
+
     currentGame = newGame;
-    // print("Nuevo juego creado con ID: $gameId");
+
+    print("Nuevo juego creado con ID: $gameId");
 
     notifyListeners();
   }
@@ -137,13 +142,11 @@ class GameProvider extends ChangeNotifier {
   Future<void> createGameSameTeam() async {
     // 1. Crear el objeto del juego sin ID
 
-    final team1 = Team(name: currentGame.teams[0].name);
-    final team2 = Team(name: currentGame.teams[1].name);
     final newGame = GameModel(
       actualRound: 0,
       pointsToWin: pointsToWin,
       createdAt: DateTime.now(),
-      teams: [team1, team2],
+      teams: [],
       rounds: [],
     );
 
@@ -153,11 +156,21 @@ class GameProvider extends ChangeNotifier {
     // 3. Asignar el ID a tu modelo local
     newGame.id = gameId;
 
-    newGame.teams.add(team1);
-    newGame.teams.add(team2);
-    // Save in provider
+    final team1Name = currentGame.teams[0].name;
+    final team2Name = currentGame.teams[1].name;
+    final team1 = Team(id: null, gameId: gameId, name: team1Name);
+    final team2 = Team(id: null, gameId: gameId, name: team2Name);
+
+    final team1Id = await dbHelper.insertTeam(gameId, team1);
+    final team2Id = await dbHelper.insertTeam(gameId, team2);
+
+    newGame.teams.add(Team(id: team1Id, gameId: gameId, name: team1Name));
+
+    newGame.teams.add(Team(id: team2Id, gameId: gameId, name: team2Name));
+
     currentGame = newGame;
-    // print("Nuevo juego creado con ID: $gameId");
+
+    print("Nuevo juego creado con ID: $gameId");
 
     notifyListeners();
   }

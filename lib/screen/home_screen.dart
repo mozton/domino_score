@@ -2,6 +2,8 @@ import 'package:dominos_score/dialogs/add_score_dialog_v1.dart';
 import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
 
 import 'package:dominos_score/provider/providers.dart';
+import 'package:dominos_score/screen/views/setting_screen.dart';
+import 'package:dominos_score/services/database_helper.dart';
 
 import 'package:dominos_score/widgets/buttons/button_start_game.dart';
 import 'package:dominos_score/widgets/widgets.dart';
@@ -16,6 +18,7 @@ class HomeScreen extends StatelessWidget {
     return Consumer<GameProvider>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
+
         // final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
         //TODO: corregir parpadeo
@@ -33,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
-
+                  drawer: SettingScreen(),
                   appBar: _appBarHome(context),
                   body: SingleChildScrollView(
                     physics: NeverScrollableScrollPhysics(),
@@ -79,7 +82,21 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               )
-            : Container();
+            : Container(
+                color: Colors.white,
+                child: Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      DatabaseHelper dbHelper = DatabaseHelper();
+                      await dbHelper.deleteDB();
+                    },
+                    child: Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              );
       },
     );
   }
@@ -104,8 +121,7 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.only(right: 20),
           child: InkWell(
             onTap: () {
-              // DatabaseHelper db = DatabaseHelper();
-              // db.deleteDB();
+              Navigator.pushNamed(context, '/setting');
             },
             child: Image(
               height: 28,

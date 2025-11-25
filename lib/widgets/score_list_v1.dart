@@ -83,10 +83,10 @@ class RoundView extends StatelessWidget {
             child: Text(
               'No hay rondas registradas',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Poppins',
-                color: Color(0xFF1E2B43),
+                color: Colors.black38,
               ),
             ),
           );
