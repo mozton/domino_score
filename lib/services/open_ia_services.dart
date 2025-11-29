@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class OpenAIService {
-  static const String _apiKey = "";
+  static const String _apiKey = "api_key_removed";
   static const String _baseUrl = "https://api.openai.com/v1/chat/completions";
 
   Future<String> sendMessage(String message) async {

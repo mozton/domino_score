@@ -18,5 +18,3 @@ samples, guidance on mobile development, and a full API reference.
 
 /📱 Width: 393 px
 /📱 Height: 852 px
-
-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
