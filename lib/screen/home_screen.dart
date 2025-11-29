@@ -108,6 +108,7 @@ class HomeScreen extends StatelessWidget {
       automaticallyImplyLeading: false,
       toolbarHeight: MediaQuery.of(context).size.height * 0.099,
       backgroundColor: const Color(0xFFE4E9F2),
+
       title: Text(
         'Dominos App',
         style: TextStyle(

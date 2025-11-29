@@ -1,4 +1,6 @@
+import 'package:dominos_score/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -61,7 +63,15 @@ class SettingScreen extends StatelessWidget {
             title: "Logout",
             titleColor: Colors.red,
             iconColor: Colors.red,
-            onTap: () {},
+            onTap: () {
+              final authServices = Provider.of<AuthService>(
+                context,
+                listen: false,
+              );
+
+              authServices.loguot();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
           ),
         ],
       ),

@@ -45,4 +45,31 @@ class GameModel {
       rounds: rounds,
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'actualRound': actualRound,
+      'pointsToWin': pointsToWin,
+      'createdAt': createdAt.toIso8601String(),
+      'winnerTeamName': winnerTeamName,
+      'teams': teams.map((t) => t.toJson()).toList(),
+      'rounds': rounds.map((r) => r.toJson()).toList(),
+    };
+  }
+
+  factory GameModel.fromJson(
+    Map<String, dynamic> json, {
+    required List<Team> teams,
+    required List<Round> rounds,
+  }) {
+    return GameModel(
+      id: json['id'] as int?,
+      actualRound: json['actualRound'] as int,
+      pointsToWin: json['pointsToWin'] as int,
+      createdAt: DateTime.parse(json['createdAt']),
+      winnerTeamName: json['winnerTeamName'] as String?,
+      teams: teams,
+      rounds: rounds,
+    );
+  }
 }

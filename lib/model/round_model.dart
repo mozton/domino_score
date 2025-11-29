@@ -40,4 +40,28 @@ class Round {
       'team4Points': team4Points,
     };
   }
+
+  factory Round.fromJson(Map<String, dynamic> json) {
+    return Round(
+      id: json['id'] as int?,
+      gameId: json['gameId'] as int?,
+      number: json['number'] as int,
+      team1Points: json['team1Points'] as int,
+      team2Points: json['team2Points'] as int,
+      team3Points: json['team3Points'] as int?,
+      team4Points: json['team4Points'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'gameId': gameId,
+      'number': number,
+      'team1Points': team1Points,
+      'team2Points': team2Points,
+      'team3Points': team3Points,
+      'team4Points': team4Points,
+    };
+  }
 }

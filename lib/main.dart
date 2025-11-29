@@ -1,3 +1,5 @@
+import 'package:dominos_score/auth/services/auth_service.dart';
+import 'package:dominos_score/services/notifications_service.dart';
 import 'package:dominos_score/services/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:dominos_score/router/router.dart';
@@ -11,7 +13,10 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => GameProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => GameProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -24,8 +29,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
+      scaffoldMessengerKey: NotificationsService.messangerKey,
       routes: Routes.routes(),
-      initialRoute: '/',
+      initialRoute: '/checking',
       themeMode: ThemeMode.system,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),

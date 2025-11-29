@@ -1,4 +1,6 @@
+import 'package:dominos_score/widgets/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddScore extends StatelessWidget {
   final Color colorButton;
@@ -19,6 +21,7 @@ class AddScore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final picker = ImagePickerService();
 
     return Container(
       height: size.height * (194 / 750),
@@ -79,6 +82,18 @@ class AddScore extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // Positioned(
+              //   child: IconButton(
+              //     onPressed: () async {
+              //       final XFile? image = await picker.pickFromCamera();
+              //       picker.pickFromCamera();
+
+              //       print(image?.path);
+              //     },
+              //     icon: Icon(Icons.camera_alt_outlined),
+              //   ),
+              // ),
             ],
           ),
 

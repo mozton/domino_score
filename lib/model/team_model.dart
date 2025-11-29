@@ -36,4 +36,26 @@ class Team {
       'totalScore': totalScore,
     };
   }
+
+  factory Team.fromJson(Map<String, dynamic> json) {
+    return Team(
+      id: json['id'] as int?,
+      gameId: json['gameId'] as int?,
+      name: json['name'] as String,
+      player1: json['player1'] as String?,
+      player2: json['player2'] as String?,
+      totalScore: json['totalScore'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'gameId': gameId,
+      'name': name,
+      'player1': player1,
+      'player2': player2,
+      'totalScore': totalScore,
+    };
+  }
 }
