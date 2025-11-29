@@ -5,12 +5,15 @@ class AddScore extends StatelessWidget {
   final VoidCallback onTap;
   final TextEditingController controller;
   final VoidCallback onTapPass;
+  final VoidCallback onGetDominoesPointbyImage;
+
   const AddScore({
     super.key,
     required this.onTap,
     required this.colorButton,
     required this.controller,
     required this.onTapPass,
+    required this.onGetDominoesPointbyImage,
   });
 
   @override
@@ -18,7 +21,7 @@ class AddScore extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * (194 / 852),
+      height: size.height * (194 / 750),
       width: size.width * (280 / 393),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -103,6 +106,24 @@ class AddScore extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          SizedBox(height: 15),
+          GestureDetector(
+            onTap: onGetDominoesPointbyImage,
+            child: Container(
+              height: 40,
+              width: 250,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.black),
+              ),
+              child: Center(
+                child: IconButton(
+                  onPressed: onGetDominoesPointbyImage,
+                  icon: Icon(Icons.camera_front),
+                ),
+              ),
+            ),
           ),
         ],
       ),
