@@ -66,6 +66,3 @@ class AuthService extends ChangeNotifier {
     return await storage.read(key: 'token') ?? '';
   }
 }
-
-
-// https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
