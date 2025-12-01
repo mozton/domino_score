@@ -1,4 +1,4 @@
-import 'package:dominos_score/widgets/buttons/button_menu_select_point.dart';
+import 'package:dominos_score/view/widgets/buttons/button_menu_select_point.dart';
 import 'package:flutter/material.dart';
 
 void selectScoreToWin(BuildContext context) {

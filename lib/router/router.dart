@@ -1,8 +1,9 @@
-import 'package:dominos_score/auth/screens/check_out_screen.dart';
-import 'package:dominos_score/auth/screens/login_screen.dart';
-import 'package:dominos_score/auth/screens/register_screen.dart';
-import 'package:dominos_score/screen/screens.dart';
-import 'package:dominos_score/screen/views/setting_screen.dart';
+import 'package:dominos_score/view/screen/auth/checking_screen.dart';
+import 'package:dominos_score/view/screen/auth/login_screen.dart';
+import 'package:dominos_score/view/screen/auth/register_screen.dart';
+import 'package:dominos_score/view/screen/setting/setting_screen.dart';
+
+import 'package:dominos_score/view/screens.dart';
 
 import 'package:flutter/material.dart';
 

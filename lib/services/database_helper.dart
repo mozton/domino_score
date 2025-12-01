@@ -1,4 +1,6 @@
-import 'package:dominos_score/model/models.dart';
+import 'package:dominos_score/models/models.dart';
+import 'package:dominos_score/models/game/team_model.dart';
+import 'package:dominos_score/models/game/round_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

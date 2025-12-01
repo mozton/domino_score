@@ -1,5 +1,5 @@
-import 'package:dominos_score/model/round_model.dart';
-import 'package:dominos_score/provider/providers.dart';
+import 'package:dominos_score/models/game/round_model.dart';
+import 'package:dominos_score/viewmodel/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,5 +1,5 @@
-import 'package:dominos_score/provider/game_provider.dart';
-import 'package:dominos_score/widgets/change_name_team_widget_v1.dart';
+import 'package:dominos_score/viewmodel/game_provider.dart';
+import 'package:dominos_score/view/widgets/change_name_team_widget_v1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
