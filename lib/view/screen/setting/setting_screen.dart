@@ -1,4 +1,4 @@
-import 'package:dominos_score/services/auth_services.dart';
+import 'package:dominos_score/services/cloud/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

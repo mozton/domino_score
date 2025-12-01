@@ -7,7 +7,6 @@ class GameModel {
   int pointsToWin;
   DateTime createdAt;
   String? winnerTeamName;
-
   List<Team> teams;
   List<Round> rounds;
 

@@ -1,4 +1,4 @@
-import 'package:dominos_score/viewmodel/game_provider.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +8,7 @@ void cupertinoPicker(BuildContext context, List<int> points) {
   showCupertinoModalPopup(
     context: context,
     builder: (context) {
-      return Consumer<GameProvider>(
+      return Consumer<GameViewModel>(
         builder: (context, prov, child) => Container(
           height: 250,
           color: Colors.white,
@@ -61,7 +61,7 @@ void showPointsDialog(BuildContext context, List<int> points) {
   showDialog(
     context: context,
     builder: (context) {
-      return Consumer<GameProvider>(
+      return Consumer<GameViewModel>(
         builder: (context, prov, child) {
           int selectedValue = prov.pointsToWin;
 

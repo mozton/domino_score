@@ -1,11 +1,9 @@
-// Este archivo requiere que hayas envuelto la app con ChangeNotifierProvider<CameraViewModel>
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-
 import 'package:dominos_score/viewmodel/camera_viewmodel.dart';
-import 'package:dominos_score/viewmodel/game_provider.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 
 class CameraSheet extends StatelessWidget {
   final int teamIndex;
@@ -90,7 +88,7 @@ class CameraSheet extends StatelessWidget {
                 final points = await viewModel.processImage(image);
 
                 // 4. Actualizar estado del juego (Lógica de negocio)
-                final provider = sheetContext.read<GameProvider>();
+                final provider = sheetContext.read<GameViewModel>();
                 if (teamIndex == 0) {
                   provider.addRound(points, 0);
                 } else {

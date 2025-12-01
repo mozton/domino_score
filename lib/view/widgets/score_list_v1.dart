@@ -1,6 +1,6 @@
 import 'package:dominos_score/dialogs/delete_round_dialog_v1.dart';
 
-import 'package:dominos_score/viewmodel/providers.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +12,7 @@ class ScoreList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<GameProvider>(context);
+    final prov = Provider.of<GameViewModel>(context);
     final size = MediaQuery.of(context).size;
 
     final poppnins = TextStyle(
@@ -72,7 +72,7 @@ class RoundView extends StatelessWidget {
       color: Color(0xFF1E2B43),
     );
 
-    return Consumer<GameProvider>(
+    return Consumer<GameViewModel>(
       builder: (BuildContext context, prov, _) {
         final rounds = prov.currentGame.rounds;
 

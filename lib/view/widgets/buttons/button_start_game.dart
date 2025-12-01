@@ -1,6 +1,6 @@
 import 'package:dominos_score/dialogs/new_game_diaglo_v1.dart';
 import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
-import 'package:dominos_score/viewmodel/game_provider.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 
 import 'package:dominos_score/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class ButtonStartGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final prov = context.read<GameProvider>();
+    final prov = context.read<GameViewModel>();
 
     final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 

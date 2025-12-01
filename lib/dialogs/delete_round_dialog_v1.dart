@@ -1,5 +1,5 @@
 import 'package:dominos_score/models/game/round_model.dart';
-import 'package:dominos_score/viewmodel/providers.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +24,7 @@ void deleteRoundDialogV1(BuildContext context, int index, Round round) {
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
-                      context.read<GameProvider>().selectRoundByIndex(null);
+                      context.read<GameViewModel>().selectRoundByIndex(null);
                     },
                     child: Image(
                       height: 23,
@@ -64,8 +64,8 @@ void deleteRoundDialogV1(BuildContext context, int index, Round round) {
                     'Eliminar',
                     Color(0xFFC8C8C8),
                     () {
-                      context.read<GameProvider>().deleteRound(round.id!);
-                      context.read<GameProvider>().selectRoundByIndex(null);
+                      context.read<GameViewModel>().deleteRound(round.id!);
+                      context.read<GameViewModel>().selectRoundByIndex(null);
                       Navigator.pop(context);
                     },
                   ),

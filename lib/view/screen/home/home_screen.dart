@@ -1,9 +1,8 @@
 import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
+import 'package:dominos_score/services/local/database_helper.dart';
 import 'package:dominos_score/utils/ui_helpers.dart';
 
-import 'package:dominos_score/viewmodel/providers.dart';
-
-import 'package:dominos_score/services/database_helper.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 
 import 'package:dominos_score/view/widgets/buttons/button_start_game.dart';
 import 'package:dominos_score/view/widgets/widgets.dart';
@@ -15,7 +14,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameProvider>(
+    return Consumer<GameViewModel>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
 

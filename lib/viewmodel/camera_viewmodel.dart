@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:dominos_score/services/dominos_counter.dart';
-import 'package:dominos_score/services/camera_service.dart';
+import 'package:dominos_score/services/cloud/dominos_counter_service.dart';
+import 'package:dominos_score/services/local/camera_service.dart';
 import 'package:flutter/material.dart';
 
 class CameraViewModel extends ChangeNotifier {

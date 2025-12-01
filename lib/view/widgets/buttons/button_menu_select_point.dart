@@ -1,4 +1,4 @@
-import 'package:dominos_score/viewmodel/providers.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/view/widgets/icon_domino_5-1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class MenuSelectPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<GameProvider>(context);
+    final prov = Provider.of<GameViewModel>(context);
     final size = MediaQuery.of(context).size;
 
     // final valueListenable = ValueNotifier<String?>(null);
@@ -62,7 +62,7 @@ class MenuSelectPoint extends StatelessWidget {
         SizedBox(height: 15),
         GestureDetector(
           onTap: () {
-            final prov = context.read<GameProvider>();
+            final prov = context.read<GameViewModel>();
             prov.updateScoreToWin();
 
             Navigator.pop(context);

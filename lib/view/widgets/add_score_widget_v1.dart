@@ -96,7 +96,7 @@ class AddScore extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _ButtonSaveName(
+              _ButtonSaveScore(
                 colorButton: colorButton,
                 onTap: () => onAddPoints(controller.text),
               ),
@@ -126,10 +126,10 @@ class AddScore extends StatelessWidget {
   }
 }
 
-class _ButtonSaveName extends StatelessWidget {
+class _ButtonSaveScore extends StatelessWidget {
   final Color colorButton;
   final VoidCallback onTap;
-  const _ButtonSaveName({required this.onTap, required this.colorButton});
+  const _ButtonSaveScore({required this.onTap, required this.colorButton});
 
   @override
   Widget build(BuildContext context) {

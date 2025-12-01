@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DominosCounter {
   final dio = Dio();
 
   Future<int> getDominosPointFromImg(String base64Image) async {
-    final apiKey = "";
+    final apiKey = dotenv.env['ROBOFLOW_API_KEY'] ?? "";
 
     final response = await dio.post(
       "https://serverless.roboflow.com/dominoe-pips/9",

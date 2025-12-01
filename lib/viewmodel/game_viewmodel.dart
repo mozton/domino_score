@@ -2,10 +2,10 @@ import 'package:dominos_score/models/models.dart';
 import 'package:dominos_score/models/game/game_model.dart';
 import 'package:dominos_score/models/game/team_model.dart';
 import 'package:dominos_score/models/game/round_model.dart';
-import 'package:dominos_score/services/database_helper.dart';
+import 'package:dominos_score/services/local/database_helper.dart';
 import 'package:flutter/material.dart';
 
-class GameProvider extends ChangeNotifier {
+class GameViewModel extends ChangeNotifier {
   final DatabaseHelper dbHelper = DatabaseHelper();
   // late GameModel _game;
   // String _selectedTeam = '';
@@ -22,7 +22,7 @@ class GameProvider extends ChangeNotifier {
   );
   List<GameModel> allGames = [];
 
-  GameProvider() {
+  GameViewModel() {
     initGameOnStartup();
 
     // final actualRound = currentGame.rounds.last.number;
