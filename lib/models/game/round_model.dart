@@ -1,4 +1,4 @@
-class Round {
+class RoundModel {
   int? id;
   final int? gameId; // Foreign Key
   final int number;
@@ -7,7 +7,7 @@ class Round {
   final int? team3Points;
   final int? team4Points;
 
-  Round({
+  RoundModel({
     this.id,
     this.gameId,
     required this.number,
@@ -17,8 +17,8 @@ class Round {
     this.team4Points,
   });
 
-  factory Round.fromMap(Map<String, dynamic> map) {
-    return Round(
+  factory RoundModel.fromMap(Map<String, dynamic> map) {
+    return RoundModel(
       id: map['id'] as int?,
       gameId: map['gameId'] as int?,
       number: map['number'] as int,
@@ -41,8 +41,8 @@ class Round {
     };
   }
 
-  factory Round.fromJson(Map<String, dynamic> json) {
-    return Round(
+  factory RoundModel.fromJson(Map<String, dynamic> json) {
+    return RoundModel(
       id: json['id'] as int?,
       gameId: json['gameId'] as int?,
       number: json['number'] as int,
@@ -63,5 +63,25 @@ class Round {
       'team3Points': team3Points,
       'team4Points': team4Points,
     };
+  }
+
+  RoundModel copyWith({
+    int? id,
+    int? gameId,
+    int? number,
+    int? team1Points,
+    int? team2Points,
+    int? team3Points,
+    int? team4Points,
+  }) {
+    return RoundModel(
+      id: id ?? this.id,
+      gameId: gameId ?? this.gameId,
+      number: number ?? this.number,
+      team1Points: team1Points ?? this.team1Points,
+      team2Points: team2Points ?? this.team2Points,
+      team3Points: team3Points ?? this.team3Points,
+      team4Points: team4Points ?? this.team4Points,
+    );
   }
 }

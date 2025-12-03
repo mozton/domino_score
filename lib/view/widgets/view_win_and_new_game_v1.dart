@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dominos_score/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/viewmodel/game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -83,7 +83,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/flame.png',
                 titleButton: 'Mismo equipo',
                 onTap: () {
-                  context.read<GameViewModel>().createGameSameTeam();
+                  context.read<GamProvider>().createGameSameTeam();
                   Navigator.pop(context);
                 },
               ),
@@ -93,7 +93,7 @@ class ViewWinAndNewGame extends StatelessWidget {
                 assentImage: 'assets/icon/users-group.png',
                 titleButton: 'Otro equipo',
                 onTap: () {
-                  context.read<GameViewModel>().createGameOtherTeam();
+                  context.read<GamProvider>().createGameOtherTeam();
                   Navigator.pop(context);
                 },
               ),

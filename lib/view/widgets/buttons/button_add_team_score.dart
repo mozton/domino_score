@@ -2,11 +2,11 @@ import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ButtonAddTeamAndScoreV1 extends StatelessWidget {
+class ButtonAddTeamAndScore extends StatelessWidget {
   final Color colorButton;
   final VoidCallback onTap;
 
-  const ButtonAddTeamAndScoreV1({
+  const ButtonAddTeamAndScore({
     super.key,
     required this.colorButton,
     required this.onTap,
@@ -14,7 +14,7 @@ class ButtonAddTeamAndScoreV1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prov = context.read<GameViewModel>();
+    final prov = context.read<GameViewmodel>();
     final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
     return InkWell(

@@ -1,49 +1,64 @@
-import 'package:dominos_score/models/models.dart';
-import 'package:dominos_score/models/game/game_model.dart';
-import 'package:dominos_score/models/game/team_model.dart';
 import 'package:dominos_score/models/game/round_model.dart';
-import 'package:dominos_score/services/local/database_helper.dart';
+import 'package:dominos_score/models/game/team_model.dart';
+import 'package:dominos_score/models/models.dart';
+import 'package:dominos_score/repository/game_repository.dart';
 import 'package:flutter/material.dart';
 
-class GameViewModel extends ChangeNotifier {
-  final DatabaseHelper dbHelper = DatabaseHelper();
-  // late GameModel _game;
-  // String _selectedTeam = '';
+class GameViewmodel extends ChangeNotifier {
+  final GameRepository _repository;
 
-  int pointsToWin = 0;
-  int get seletPointToWin => pointsToWin;
+  bool _isLoading = true;
+  bool get isLoading => _isLoading;
 
-  late GameModel currentGame = GameModel(
+  late GameModel _currentGame = GameModel(
     actualRound: 0,
-    pointsToWin: 200,
+    pointsToWin: pointsToWin,
     createdAt: DateTime.now(),
     teams: [],
     rounds: [],
   );
-  List<GameModel> allGames = [];
+  GameModel get currentGame => _currentGame;
 
-  GameViewModel() {
+  int pointsToWin = 200;
+
+  // ======================== Constructor ======================== //
+
+  GameViewmodel(this._repository) {
     initGameOnStartup();
-
-    // final actualRound = currentGame.rounds.last.number;
   }
-  // ========================  Initialization  ======================== //
+
+  // ======================== Inicialización ======================== //
 
   Future<void> initGameOnStartup() async {
-    // 1. Buscar si hay juegos en la BD
-    final games = await dbHelper.getGames();
+    _isLoading = true;
+    notifyListeners();
 
-    if (games.isNotEmpty) {
-      // Si ya existe un juego, usar el último
-      currentGame = games.last;
-      print("Juego existente cargado: ID ${currentGame.id}");
-      notifyListeners();
-      return;
+    try {
+      final existingGamen = await _repository.fetchAllGames();
+
+      if (existingGamen.isEmpty) {
+        await _createNewGame();
+
+        // print("Juego nuevo creado con ID: ${_currentGame.id}");
+      } else {
+        _currentGame = existingGamen.last;
+        // print("Juego existente cargado: ID ${_currentGame.id}");
+      }
+    } catch (e) {
+      // print('Error al inicializar el juego: $e');
+      _currentGame = GameModel(
+        actualRound: 0,
+        pointsToWin: pointsToWin,
+        createdAt: DateTime.now(),
+        teams: [],
+        rounds: [],
+      );
     }
+    _isLoading = false;
+    notifyListeners();
+  }
 
-    // 2. Si NO existe ningún juego → crear uno
-    print("No hay juegos, creando uno nuevo...");
-
+  Future<void> _createNewGame() async {
     final newGame = GameModel(
       actualRound: 0,
       pointsToWin: pointsToWin,
@@ -52,277 +67,159 @@ class GameViewModel extends ChangeNotifier {
       rounds: [],
     );
 
-    // 3. Insertar juego en la BD
-    final gameId = await dbHelper.createGame(newGame);
-    newGame.id = gameId;
+    final fullGame = await _repository.createGameWithDefaultTeams(newGame);
 
-    // 4. Insertar equipos por defecto
-    final team1 = Team(id: null, gameId: gameId, name: "Team 1");
-    final team2 = Team(id: null, gameId: gameId, name: "Team 2");
+    _currentGame = fullGame;
+  }
+  // ======================== //  GAMES  // ======================= //
 
-    final team1Id = await dbHelper.insertTeam(gameId, team1);
-    final team2Id = await dbHelper.insertTeam(gameId, team2);
+  Future<void> loadGameDetails(int gameId) async {
+    try {
+      // 1. Obtener el GameModel completo (que ya incluye 'rounds')
+      final games = await _repository.fetchAllGames();
 
-    newGame.teams.add(Team(id: team1Id, gameId: gameId, name: "Team 1"));
+      // 2. 🎯 Actualizar el estado interno
+      _currentGame = games.last;
 
-    newGame.teams.add(Team(id: team2Id, gameId: gameId, name: "Team 2"));
-
-    currentGame = newGame;
-
-    print("Juego creado automáticamente con ID $gameId");
-    print(currentGame.actualRound);
-    notifyListeners();
+      // 3. Notificar a la UI
+      notifyListeners();
+    } catch (e) {
+      print('Error al cargar los detalles del juego: $e');
+    }
   }
 
-  // Selected points To Win
+  // ======================== //  TEAMS  // ======================= //
 
-  int? _pointSelect = -2;
-  int? get pointToWinIsSelected => _pointSelect;
+  Future<void> addTeam(TeamModel team) async {
+    final gameId = _currentGame.id!;
+    final teamId = await _repository.insertTeam(gameId, team);
 
-  void selectPointToWin(int isSelected) {
-    _pointSelect = isSelected;
-    notifyListeners();
-  }
-
-  // ======================== // GAMES //  ======================== //
-
-  Future<void> createGame() async {
-    // 1. Crear el objeto del juego sin ID
-    final newGame = GameModel(
-      actualRound: 0,
-      pointsToWin: pointsToWin,
-      createdAt: DateTime.now(),
-      teams: [],
-      rounds: [],
+    final newTeam = TeamModel(
+      id: teamId,
+      gameId: gameId,
+      name: team.name,
+      player1: team.player1,
+      player2: team.player2,
+      totalScore: team.totalScore,
     );
 
-    // 2. Crear el juego en la DB y obtener el ID generado
-    final gameId = await dbHelper.createGame(newGame);
-
-    // 3. Asignar el ID a tu modelo local
-    newGame.id = gameId;
-
-    // Save in provider
-    currentGame = newGame;
-    // print("Nuevo juego creado con ID: $gameId");
+    _currentGame.teams.add(newTeam);
 
     notifyListeners();
   }
-
-  Future<void> createGameOtherTeam() async {
-    // 1. Crear el objeto del juego sin ID
-
-    final newGame = GameModel(
-      actualRound: 0,
-      pointsToWin: pointsToWin,
-      createdAt: DateTime.now(),
-      teams: [],
-      rounds: [],
-    );
-
-    // 2. Crear el juego en la DB y obtener el ID generado
-    final gameId = await dbHelper.createGame(newGame);
-
-    newGame.id = gameId;
-
-    final team1 = Team(id: null, gameId: gameId, name: "Team 1");
-    final team2 = Team(id: null, gameId: gameId, name: "Team 2");
-
-    final team1Id = await dbHelper.insertTeam(gameId, team1);
-    final team2Id = await dbHelper.insertTeam(gameId, team2);
-
-    newGame.teams.add(Team(id: team1Id, gameId: gameId, name: "Team 1"));
-
-    newGame.teams.add(Team(id: team2Id, gameId: gameId, name: "Team 2"));
-
-    currentGame = newGame;
-
-    print("Nuevo juego creado con ID: $gameId");
-
-    notifyListeners();
-  }
-
-  Future<void> createGameSameTeam() async {
-    // 1. Crear el objeto del juego sin ID
-
-    final newGame = GameModel(
-      actualRound: 0,
-      pointsToWin: pointsToWin,
-      createdAt: DateTime.now(),
-      teams: [],
-      rounds: [],
-    );
-
-    // 2. Crear el juego en la DB y obtener el ID generado
-    final gameId = await dbHelper.createGame(newGame);
-
-    // 3. Asignar el ID a tu modelo local
-    newGame.id = gameId;
-
-    final team1Name = currentGame.teams[0].name;
-    final team2Name = currentGame.teams[1].name;
-    final team1 = Team(id: null, gameId: gameId, name: team1Name);
-    final team2 = Team(id: null, gameId: gameId, name: team2Name);
-
-    final team1Id = await dbHelper.insertTeam(gameId, team1);
-    final team2Id = await dbHelper.insertTeam(gameId, team2);
-
-    newGame.teams.add(Team(id: team1Id, gameId: gameId, name: team1Name));
-
-    newGame.teams.add(Team(id: team2Id, gameId: gameId, name: team2Name));
-
-    currentGame = newGame;
-
-    print("Nuevo juego creado con ID: $gameId");
-
-    notifyListeners();
-  }
-
-  Future<void> updateScoreToWin() async {
-    await dbHelper.updatePointToWin(currentGame.id!, pointsToWin);
-    currentGame.pointsToWin = pointsToWin;
-
-    notifyListeners();
-  }
-  // ============================== // TEAMS // ============================== //
-
-  // Add Teams
-
-  Future<void> addTeam(Team team, int teamId) async {
-    final gameId = currentGame.id;
-
-    // 1. Insertar en DB y obtener el ID real
-    final teamId = await dbHelper.insertTeam(gameId!, team);
-
-    // 2. Crear un nuevo objeto Team con ese ID
-    final newTeam = Team(id: teamId, gameId: gameId, name: team.name);
-
-    currentGame.teams.add(newTeam);
-    // print("Equipo agregado con ID $teamId al juego $gameId");
-
-    notifyListeners();
-  }
-
-  // UpdateTeamsName
 
   Future<void> updateTeamName(int teamId, String newName) async {
-    // 1. Update en la BD
-    final result = await dbHelper.updateTeamName(teamId, newName);
+    final result = await _repository.updateTeamName(teamId, newName);
 
-    // print(result);
     if (result > 0) {
-      // 2. Update en memoria
-      final index = currentGame.teams.indexWhere((team) => team.id == teamId);
-
-      if (index != -1) {
-        final oldTeam = currentGame.teams[index];
-
-        currentGame.teams[index] = Team(
-          id: oldTeam.id,
-          gameId: oldTeam.gameId,
-          name: newName,
-        );
-
-        // print("Team actualizado localmente.");
-        // print("Nuevo nombre: ${currentGame.teams[index].name}");
-      }
+      final updateTeamList = _currentGame.teams.map((team) {
+        if (team.id == teamId) {
+          return TeamModel(
+            id: team.id,
+            gameId: team.gameId,
+            name: newName,
+            player1: team.player1,
+            player2: team.player2,
+            totalScore: team.totalScore,
+          );
+        }
+        return team;
+      }).toList();
+      currentGame.teams = updateTeamList;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  // ======================== // Goblal Controllers // ======================== //
+  // ======================== ROUNDS ======================== //
 
-  final TextEditingController _pointController = TextEditingController();
-  TextEditingController get pointController => _pointController;
+  int get totalTeam1Points => currentGame.teams[0].totalScore;
+  int get totalTeam2Points => currentGame.teams[1].totalScore;
 
-  final TextEditingController _team1NameController = TextEditingController();
-  TextEditingController get team1NameController => _team1NameController;
+  Future<void> addRound(RoundModel newRound) async {
+    final gameId = _currentGame.id!;
 
-  final TextEditingController _team2NameController = TextEditingController();
-  TextEditingController get team2NameController => _team2NameController;
+    final nextRoundNumber = _currentGame.actualRound + 1;
 
-  // Puntos totales
-  final List<int> _pointsToWinList = [100, 200, 300];
-  List<int> get pointsToWins => _pointsToWinList;
+    final team1 = _currentGame.teams[0];
+    final team2 = _currentGame.teams[1];
 
-  // ======================== // ROUNDS // ======================== //
+    final newTeam1Score = team1.totalScore + newRound.team1Points;
+    final newTeam2Score = team2.totalScore + newRound.team2Points;
 
-  //Add Round
-
-  Future<void> addRound(int pointsTeam1, int pointsTeam2) async {
-    final actualRound = currentGame.actualRound += 1;
-
-    Round newRound = Round(
-      number: actualRound,
-      team1Points: pointsTeam1,
-      team2Points: pointsTeam2,
+    final roundToSave = RoundModel(
+      number: nextRoundNumber,
+      gameId: gameId,
+      team1Points: newRound.team1Points,
+      team2Points: newRound.team2Points,
     );
+    try {
+      // ======================= PERISTENCIA (3 Llamadas a DB) ======================= //
 
-    currentGame.rounds.add(newRound);
-    final int newId = await dbHelper.insertRound(currentGame.id!, newRound);
+      // A. Insertar la nueva ronda (obteniendo el ID)
+      final roundId = await _repository.saveRound(gameId, roundToSave);
 
-    newRound.id = newId;
-    await dbHelper.updateActualRound(currentGame.id!, actualRound);
+      // B. Actualizar el totalScore de los equipos
+      await _repository.updateTeamScore(team1.id!, newTeam1Score);
+      await _repository.updateTeamScore(team2.id!, newTeam2Score);
 
-    notifyListeners();
+      // C. Actualizar el número de ronda actual del juego
+      await _repository.updateGameActualRound(gameId, nextRoundNumber);
+
+      // ======================= ACTUALIZACIÓN DE ESTADO (Memoria) ======================= //
+
+      // 3. Crear el objeto RoundModel completo y agregarlo
+      final finalRound = RoundModel(
+        id: roundId,
+        number: nextRoundNumber,
+        team1Points: newRound.team1Points,
+        team2Points: newRound.team2Points,
+        gameId: gameId,
+      ); // Reconstruir con ID
+      _currentGame.rounds.add(finalRound);
+
+      // 4. Actualizar el actualRound del juego
+      _currentGame.actualRound = nextRoundNumber;
+
+      // 5. Actualizar el totalScore de los objetos TeamModel en _currentGame
+      _currentGame.teams[0] = team1.copyWith(totalScore: newTeam1Score);
+      _currentGame.teams[1] = team2.copyWith(totalScore: newTeam2Score);
+
+      // 6. Notificar a la UI
+      notifyListeners();
+    } catch (e) {
+      print('Error al añadir ronda y actualizar scores: $e');
+      // Manejar el error, tal vez mostrar un Toast o un diálogo.
+    }
   }
 
-  int get totalTeam1Points {
-    return currentGame.rounds.fold(0, (sum, round) => sum + round.team1Points);
-  }
-
-  int get totalTeam2Points {
-    return currentGame.rounds.fold(0, (sum, round) => sum + round.team2Points);
-  }
-
-  // Delete points in round
-
-  Future<void> deleteRound(int roundId) async {
-    currentGame.rounds.removeWhere((r) {
-      // print(r.id);
-      return r.id == roundId;
-    });
-
-    await dbHelper.deleteRound(roundId);
-  }
-
-  // Select Round
-
+  // Selected Round
   int? _roundSelected;
   int? get roundSelected => _roundSelected;
 
-  void selectRoundByIndex(int? index) {
+  Future<void> selectedRoundByIndex(int? index) async {
     _roundSelected = index;
     notifyListeners();
   }
 
-  // TODO: Mover estos Setting al shared preferences
+  // Delete Round
 
-  // ======================== // SETTINGS // ======================== //
+  Future<void> deleteSelectedRound() async {
+    if (_roundSelected == null) {
+      return;
+    }
 
-  bool _isDarkMode = false;
-  bool get isDarkMode => _isDarkMode;
+    if (_currentGame.rounds.isEmpty ||
+        _roundSelected! >= _currentGame.rounds.length) {
+      _roundSelected = null;
+      notifyListeners();
+      return;
+    }
+    final roundId = _currentGame.rounds[_roundSelected!].id;
 
-  bool _isSystemTheme = false;
-  bool get isSystemTheme => _isSystemTheme;
+    await _repository.deleteRound(roundId!);
 
-  void toggleTheme(bool isOn) {
-    _isDarkMode = isOn;
+    await loadGameDetails(_currentGame.id!);
+    _roundSelected = null;
     notifyListeners();
-  }
-
-  void toggleSystemTheme(bool isOn) {
-    _isSystemTheme = isOn;
-    notifyListeners();
-  }
-
-  // FOCUS NODE
-
-  final FocusNode focusNode = FocusNode();
-  @override
-  void dispose() {
-    pointController.dispose();
-    focusNode.dispose();
-    super.dispose();
   }
 }

@@ -1,8 +1,7 @@
-import 'package:dominos_score/dialogs/new_game_diaglo_v1.dart';
 import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
-import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 
 import 'package:dominos_score/view/widgets/widgets.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +11,7 @@ class ButtonStartGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final prov = context.read<GameViewModel>();
+    final prov = context.read<GameViewmodel>();
 
     final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
@@ -22,7 +21,8 @@ class ButtonStartGame extends StatelessWidget {
           : () {
               if (prov.totalTeam1Points >= prov.currentGame.pointsToWin ||
                   prov.totalTeam2Points >= prov.currentGame.pointsToWin) {
-                newGameOrResetGame(context, '');
+                print('NewGame');
+                // newGameOrResetGame(context, '');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

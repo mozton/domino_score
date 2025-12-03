@@ -1,11 +1,9 @@
 import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
 import 'package:dominos_score/services/local/database_helper.dart';
 import 'package:dominos_score/utils/ui_helpers.dart';
-
-import 'package:dominos_score/viewmodel/game_viewmodel.dart';
-
 import 'package:dominos_score/view/widgets/buttons/button_start_game.dart';
 import 'package:dominos_score/view/widgets/widgets.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,10 +12,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameViewModel>(
+    return Consumer<GameViewmodel>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
-
         // final isScoreSelect = prov.currentGame.pointsToWin <= 0;
 
         //TODO: corregir parpadeo
@@ -47,7 +44,8 @@ class HomeScreen extends StatelessWidget {
                             // Cards Teams & Buttons Change Name & Add Score
                             CardTeam(
                               teamName: teams[0].name,
-                              points: prov.totalTeam1Points,
+                              points: 0,
+                              // prov.totalTeam1Points,
                               colorCard: const Color(0xFFF7E7AF),
                               colorButton: Color(0xFFD4AF37),
                               onTap: () =>
@@ -56,7 +54,8 @@ class HomeScreen extends StatelessWidget {
                             ),
                             CardTeam(
                               teamName: teams[1].name,
-                              points: prov.totalTeam2Points,
+                              points: 0,
+                              // prov.totalTeam2Points,
                               colorCard: const Color(0xFFFFFFFF),
                               colorButton: const Color(0xFF1E2B43),
                               onTap: () =>
@@ -73,7 +72,6 @@ class HomeScreen extends StatelessWidget {
                           nameTeam1: teams[0].name,
                           nameTeam2: teams[1].name,
                         ),
-
                         SizedBox(height: 17),
 
                         // Button Start Game & New Game

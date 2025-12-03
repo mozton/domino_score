@@ -1,10 +1,11 @@
 import 'package:dominos_score/models/models.dart';
 import 'package:dominos_score/models/game/team_model.dart';
 import 'package:dominos_score/models/game/round_model.dart';
+import 'package:dominos_score/services/local/local_game_data_source.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
+class DatabaseHelper implements LocalGameDataSource {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
 
@@ -110,7 +111,7 @@ class DatabaseHelper {
 
   //  Add Teams
 
-  Future<int> insertTeam(int gameId, Team team) async {
+  Future<int> insertTeam(int gameId, TeamModel team) async {
     final db = await database;
 
     return await db.insert('teams', {
@@ -151,7 +152,7 @@ class DatabaseHelper {
 
   // Get team by Id
 
-  Future<Team?> getTeamById(int teamId) async {
+  Future<TeamModel?> getTeamById(int teamId) async {
     final db = await database;
 
     final result = await db.query(
@@ -164,10 +165,11 @@ class DatabaseHelper {
     if (result.isNotEmpty) {
       final t = result.first;
 
-      return Team(
+      return TeamModel(
         id: t['id'] as int,
         gameId: t['gameId'] as int?,
         name: t['name'] as String,
+        totalScore: t['totalScore'] as int,
       );
     }
 
@@ -178,7 +180,7 @@ class DatabaseHelper {
 
   // Add rounds
 
-  Future<int> insertRound(int gameId, Round round) async {
+  Future<int> insertRound(int gameId, RoundModel round) async {
     final db = await database;
 
     return await db.insert('rounds', {
@@ -189,6 +191,16 @@ class DatabaseHelper {
       'team3Points': round.team3Points,
       'team4Points': round.team4Points,
     });
+  }
+
+  Future<int> updateTotalScore(int teamId, int newTotalScore) async {
+    final db = await database;
+    return await db.update(
+      'teams',
+      {'totalScore': newTotalScore},
+      where: 'id = ?',
+      whereArgs: [teamId],
+    );
   }
 
   // Update actualRound
@@ -232,11 +244,12 @@ class DatabaseHelper {
         whereArgs: [gameId],
       );
 
-      List<Team> teams = teamMaps.map((t) {
-        return Team(
+      List<TeamModel> teams = teamMaps.map((t) {
+        return TeamModel(
           id: t['id'] as int,
           gameId: t['gameId'] as int,
           name: t['name'] as String,
+          totalScore: t['totalScore'] as int,
         );
       }).toList();
 
@@ -247,8 +260,8 @@ class DatabaseHelper {
         whereArgs: [gameId],
       );
 
-      List<Round> rounds = roundMaps.map((r) {
-        return Round(
+      List<RoundModel> rounds = roundMaps.map((r) {
+        return RoundModel(
           id: r['id'] as int,
           number: r['number'] as int,
           team1Points: r['team1Points'] as int,

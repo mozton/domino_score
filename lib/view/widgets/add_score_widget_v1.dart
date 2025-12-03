@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 
-class AddScore extends StatelessWidget {
+class AddScore extends StatefulWidget {
   final Color colorButton;
-  final TextEditingController controller;
   final VoidCallback onGetDominoesPointbyImage;
   final Function(String points) onAddPoints; // Llamar al VM para sumar
   final VoidCallback onTapPass;
 
   const AddScore({
     super.key,
-
     required this.colorButton,
-    required this.controller,
     required this.onAddPoints,
     required this.onTapPass,
     required this.onGetDominoesPointbyImage,
   });
+
+  @override
+  State<AddScore> createState() => _AddScoreState();
+}
+
+class _AddScoreState extends State<AddScore> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +52,7 @@ class AddScore extends StatelessWidget {
               SizedBox(
                 width: size.width * (281 / 393),
                 child: TextField(
-                  controller: controller,
+                  controller: _controller,
 
                   maxLines: 1,
 
@@ -84,7 +100,7 @@ class AddScore extends StatelessWidget {
                 top: 35,
                 right: 0,
                 child: IconButton(
-                  onPressed: onGetDominoesPointbyImage,
+                  onPressed: widget.onGetDominoesPointbyImage,
 
                   icon: Icon(Icons.camera_alt_outlined),
                 ),
@@ -97,12 +113,14 @@ class AddScore extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _ButtonSaveScore(
-                colorButton: colorButton,
-                onTap: () => onAddPoints(controller.text),
+                colorButton: widget.colorButton,
+                onTap: () {
+                  widget.onAddPoints(_controller.text);
+                },
               ),
               SizedBox(width: size.width * 0.07),
               GestureDetector(
-                onTap: onTapPass,
+                onTap: widget.onTapPass,
                 child: Container(
                   height: size.height * (43 / 852),
                   width: size.width * (70 / 393),

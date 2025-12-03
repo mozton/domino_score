@@ -1,4 +1,4 @@
-import 'package:dominos_score/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,7 @@ class SwitchThemeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameViewModel>(
+    return Consumer<SettingViewModel>(
       builder: (context, prov, child) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

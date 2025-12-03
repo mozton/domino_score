@@ -1,4 +1,5 @@
-import 'package:dominos_score/services/cloud/auth_service.dart';
+import 'package:dominos_score/services/local/database_helper.dart';
+import 'package:dominos_score/services/remote/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +58,15 @@ class SettingScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          _settingsTile(icon: Icons.info, title: "About App", onTap: () {}),
+          _settingsTile(
+            icon: Icons.info,
+            title: "Delete Database",
+            onTap: () async {
+              DatabaseHelper dbHelper = DatabaseHelper();
+              await dbHelper.deleteDB();
+            },
+          ),
+
           _settingsTile(
             icon: Icons.logout,
             title: "Logout",

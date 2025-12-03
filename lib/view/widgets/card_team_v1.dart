@@ -78,12 +78,12 @@ class CardTeam extends StatelessWidget {
                               fontFamily: 'Poppins',
                             ),
                           ),
-                          // SizedBox(width: 5),
-                          // Image(
-                          //   height: 20,
-                          //   color: Colors.black26,
-                          //   image: AssetImage('assets/icon/pencil-plus.png'),
-                          // ),
+                          SizedBox(width: 5),
+                          Image(
+                            height: 20,
+                            color: Colors.black26,
+                            image: AssetImage('assets/icon/pencil-plus.png'),
+                          ),
                         ],
                       ),
                     ],
@@ -103,7 +103,7 @@ class CardTeam extends StatelessWidget {
           ),
         ),
         SizedBox(height: 13),
-        ButtonAddTeamAndScoreV1(colorButton: colorButton, onTap: onTap),
+        ButtonAddTeamAndScore(colorButton: colorButton, onTap: onTap),
       ],
     );
   }

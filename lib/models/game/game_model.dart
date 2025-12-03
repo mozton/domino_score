@@ -7,8 +7,8 @@ class GameModel {
   int pointsToWin;
   DateTime createdAt;
   String? winnerTeamName;
-  List<Team> teams;
-  List<Round> rounds;
+  List<TeamModel> teams;
+  List<RoundModel> rounds;
 
   GameModel({
     this.id,
@@ -32,8 +32,8 @@ class GameModel {
 
   factory GameModel.fromMap(
     Map<String, dynamic> map, {
-    required List<Team> teams,
-    required List<Round> rounds,
+    required List<TeamModel> teams,
+    required List<RoundModel> rounds,
   }) {
     return GameModel(
       id: map['id'] as int?,
@@ -59,8 +59,8 @@ class GameModel {
 
   factory GameModel.fromJson(
     Map<String, dynamic> json, {
-    required List<Team> teams,
-    required List<Round> rounds,
+    required List<TeamModel> teams,
+    required List<RoundModel> rounds,
   }) {
     return GameModel(
       id: json['id'] as int?,

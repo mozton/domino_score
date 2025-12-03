@@ -1,4 +1,4 @@
-import 'package:dominos_score/services/cloud/auth_service.dart';
+import 'package:dominos_score/services/remote/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -86,23 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           onPressed: () => setState(() => obscure1 = !obscure1),
                         ),
                       ),
-                      const SizedBox(height: 18),
 
-                      // _inputField(
-                      //   controller: confirmCtrl,
-                      //   label: "Confirmar contraseña",
-                      //   icon: Icons.lock_outline,
-                      //   obscure: obscure2,
-                      //   suffix: IconButton(
-                      //     icon: Icon(
-                      //       obscure2
-                      //           ? Icons.visibility_off_outlined
-                      //           : Icons.visibility_outlined,
-                      //       color: Colors.grey.shade600,
-                      //     ),
-                      //     onPressed: () => setState(() => obscure2 = !obscure2),
-                      //   ),
-                      // ),
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: () async {

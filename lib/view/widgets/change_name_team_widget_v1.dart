@@ -1,15 +1,35 @@
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ChangeNameTeam extends StatelessWidget {
+class ChangeNameTeam extends StatefulWidget {
   final Color colorButton;
-  final VoidCallback onTap;
-  final TextEditingController controller;
+  final int teamId;
+
   const ChangeNameTeam({
     super.key,
-    required this.onTap,
     required this.colorButton,
-    required this.controller,
+    required this.teamId,
   });
+
+  @override
+  State<ChangeNameTeam> createState() => _ChangeNameTeamState();
+}
+
+class _ChangeNameTeamState extends State<ChangeNameTeam> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +50,12 @@ class ChangeNameTeam extends StatelessWidget {
               SizedBox(
                 // width: size.width * (281 / 393),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      // print('value is need');
-                    }
-                  },
-                  controller: controller,
-
-                  maxLines: 1,
                   keyboardType: TextInputType.name,
+                  controller: _controller,
+                  maxLines: 1,
                   textCapitalization: TextCapitalization.words,
                   maxLength: 15,
                   cursorColor: Color(0xFFD9D9D9),
-
                   decoration: InputDecoration(
                     counterText: '',
                     hintText: 'Nombre de team',
@@ -86,7 +99,20 @@ class ChangeNameTeam extends StatelessWidget {
           Row(
             children: [
               SizedBox(width: 5),
-              _ButtonSaveName(colorButton: colorButton, onTap: onTap),
+              _ButtonSaveName(
+                colorButton: widget.colorButton,
+                onTap: () {
+                  final newName = _controller.text.trim();
+                  if (newName.isNotEmpty) {
+                    context.read<GameViewmodel>().updateTeamName(
+                      widget.teamId,
+                      newName,
+                    );
+
+                    Navigator.pop(context);
+                  }
+                },
+              ),
             ],
           ),
         ],

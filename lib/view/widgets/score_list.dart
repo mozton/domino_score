@@ -1,5 +1,3 @@
-import 'package:dominos_score/dialogs/delete_round_dialog_v1.dart';
-
 import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,11 +6,14 @@ class ScoreList extends StatelessWidget {
   final String nameTeam1;
   final String nameTeam2;
 
-  ScoreList({super.key, required this.nameTeam1, required this.nameTeam2});
+  const ScoreList({
+    super.key,
+    required this.nameTeam1,
+    required this.nameTeam2,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<GameViewModel>(context);
     final size = MediaQuery.of(context).size;
 
     final poppnins = TextStyle(
@@ -24,7 +25,7 @@ class ScoreList extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        prov.selectRoundByIndex(null);
+        context.read<GameViewmodel>().selectedRoundByIndex(-1);
       },
 
       child: Container(
@@ -72,7 +73,7 @@ class RoundView extends StatelessWidget {
       color: Color(0xFF1E2B43),
     );
 
-    return Consumer<GameViewModel>(
+    return Consumer<GameViewmodel>(
       builder: (BuildContext context, prov, _) {
         final rounds = prov.currentGame.rounds;
 
@@ -107,9 +108,11 @@ class RoundView extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
                     if (isSelected) {
-                      deleteRoundDialogV1(context, index, round);
+                      prov.deleteSelectedRound();
                     } else {
-                      prov.selectRoundByIndex(index);
+                      prov.selectedRoundByIndex(index);
+
+                      // print(index);
                     }
                   },
                   child: Padding(
