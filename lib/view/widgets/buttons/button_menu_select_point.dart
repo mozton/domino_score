@@ -1,15 +1,21 @@
-import 'package:dominos_score/viewmodel/game_provider.dart';
 import 'package:dominos_score/view/widgets/icon_domino_5-1.dart';
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MenuSelectPoint extends StatelessWidget {
+class MenuSelectPoint extends StatefulWidget {
+  const MenuSelectPoint({super.key});
+
+  @override
+  State<MenuSelectPoint> createState() => _MenuSelectPointState();
+}
+
+class _MenuSelectPointState extends State<MenuSelectPoint> {
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<GamProvider>(context);
+    final prov = Provider.of<GameViewmodel>(context);
     final size = MediaQuery.of(context).size;
 
-    // final valueListenable = ValueNotifier<String?>(null);
     return Column(
       children: [
         SizedBox(
@@ -17,20 +23,20 @@ class MenuSelectPoint extends StatelessWidget {
           width: double.infinity,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
-            itemCount: prov.pointsToWins.length,
+            itemCount: prov.selectPointsToWin.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 4,
               childAspectRatio: 2,
             ),
             itemBuilder: (context, index) {
-              final bool isSelect = prov.pointToWinIsSelected == index;
-              final point = prov.pointsToWins[index];
+              final point = prov.selectPointsToWin[index];
+              final bool isSelect = prov.pointToWinSelected == point;
 
               return GestureDetector(
                 onTap: () async {
                   prov.pointsToWin = point;
-                  prov.selectPointToWin(index);
+                  prov.selectedPointsToWin(point);
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),
@@ -39,13 +45,13 @@ class MenuSelectPoint extends StatelessWidget {
                     color: Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(22),
                     border: BoxBorder.all(
-                      width: 1.3,
+                      width: 1.5,
                       color: isSelect ? Color(0xFFD4AF37) : Color(0xFFC8C8C8),
                     ),
                   ),
                   child: Center(
                     child: Text(
-                      prov.pointsToWins[index].toString(),
+                      prov.selectPointsToWin[index].toString(),
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 20,
@@ -62,8 +68,8 @@ class MenuSelectPoint extends StatelessWidget {
         SizedBox(height: 15),
         GestureDetector(
           onTap: () {
-            final prov = context.read<GamProvider>();
-            prov.updateScoreToWin();
+            final prov = context.read<GameViewmodel>();
+            prov.changePointToWin();
 
             Navigator.pop(context);
             //TODO: Aqui va la logica para comenzar a colocar los puntos

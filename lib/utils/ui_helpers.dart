@@ -1,6 +1,10 @@
 import 'package:dominos_score/models/game/round_model.dart';
 import 'package:dominos_score/view/widgets/camera_sheet.dart';
 import 'package:dominos_score/view/widgets/add_score_widget_v1.dart';
+import 'package:dominos_score/view/widgets/change_name_team_widget_v1.dart';
+import 'package:dominos_score/view/widgets/delete_round.dart';
+import 'package:dominos_score/view/widgets/selected_point_to_wind.dart';
+import 'package:dominos_score/view/widgets/view_win_and_new_game_v1.dart';
 import 'package:dominos_score/viewmodel/camera_viewmodel.dart';
 
 import 'package:dominos_score/viewmodel/game_viewmodel.dart';
@@ -57,48 +61,92 @@ class UiHelpers {
             },
             onAddPoints: (pointsText) async {
               final points = int.tryParse(pointsText) ?? 0;
-
-              // 1. Crear el objeto RoundModel según qué equipo anota
               final RoundModel newRound;
 
               if (teamIndex == 0) {
-                // El equipo 1 anota
                 newRound = RoundModel(
-                  // El 'number' debe ser la ronda que *sigue*, pero el
-                  // método addRound se encarga de calcular nextRoundNumber.
-                  // Aquí solo necesitamos los puntos.
                   team1Points: points,
                   team2Points: 0,
-                  // El ViewModel ignorará estos valores por defecto, pero los requiere el constructor
                   number: 0,
                 );
               } else {
-                // El equipo 2 anota
                 newRound = RoundModel(
                   team1Points: 0,
                   team2Points: points,
                   number: 0,
                 );
               }
-
-              // 2. LLAMAR AL MÉTODO DEL VIEWMODEL PARA GUARDAR LA RONDA
               if (points > 0) {
-                await gameProvider.addRound(newRound); // ⬅️ AGREGAR ESTO
+                await gameProvider.addRound(newRound);
               }
-
-              // 3. Cerrar el diálogo
               Navigator.pop(ctx);
             },
             onGetDominoesPointbyImage: () {
               Navigator.pop(ctx);
               UiHelpers.openCameraSheet(context, teamIndex);
             },
-            // controller: gameProvider.pointController,
           ),
         );
       },
     );
   }
 
-  // DELETE SCORE
+  //Detele Score
+  static Future<void> deleteRound(
+    BuildContext context,
+    int index,
+    RoundModel round,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteRound(index: index, round: round);
+      },
+    );
+  }
+  // Change Name Team
+
+  static Future<void> changeNameTeam(BuildContext context, int teamId) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFFFFFFFF),
+          insetPadding: EdgeInsets.zero,
+
+          actions: [
+            ChangeNameTeam(
+              colorButton: teamId == 1 ? Color(0xFFD4AF37) : Color(0xFF1E2B43),
+              teamId: teamId,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static Future<void> selectPointToWin(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SelectPointToWind();
+      },
+    );
+  }
+
+  // New Game
+
+  static Future<void> newGame(BuildContext context, String teamWiner) async {
+    showModalBottomSheet(
+      sheetAnimationStyle: AnimationStyle(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOutBack,
+      ),
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        return ViewWinAndNewGame(teamWiner: teamWiner);
+      },
+    );
+  }
 }

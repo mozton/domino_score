@@ -1,4 +1,4 @@
-import 'package:dominos_score/dialogs/select_point_to_wind_dialog_v1.dart';
+import 'package:dominos_score/utils/ui_helpers.dart';
 
 import 'package:dominos_score/view/widgets/widgets.dart';
 import 'package:dominos_score/viewmodel/game_viewmodel.dart';
@@ -17,7 +17,7 @@ class ButtonStartGame extends StatelessWidget {
 
     return InkWell(
       onTap: isScoreSelect
-          ? () => selectScoreToWin(context)
+          ? () => UiHelpers.selectPointToWin(context)
           : () {
               if (prov.totalTeam1Points >= prov.currentGame.pointsToWin ||
                   prov.totalTeam2Points >= prov.currentGame.pointsToWin) {

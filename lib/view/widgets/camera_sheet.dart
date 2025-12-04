@@ -1,9 +1,9 @@
+import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:dominos_score/viewmodel/camera_viewmodel.dart';
-import 'package:dominos_score/viewmodel/game_provider.dart';
 
 class CameraSheet extends StatelessWidget {
   final int teamIndex;
@@ -88,11 +88,11 @@ class CameraSheet extends StatelessWidget {
                 final points = await viewModel.processImage(image);
 
                 // 4. Actualizar estado del juego (Lógica de negocio)
-                final provider = sheetContext.read<GamProvider>();
+                final provider = sheetContext.read<GameViewmodel>();
                 if (teamIndex == 0) {
-                  provider.addRound(points, 0);
+                  // provider.addRound(points, 0);
                 } else {
-                  provider.addRound(0, points);
+                  // provider.addRound(0, points);
                 }
 
                 // 5. Cerrar todas las vistas

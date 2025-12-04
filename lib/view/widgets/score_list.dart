@@ -1,3 +1,4 @@
+import 'package:dominos_score/utils/ui_helpers.dart';
 import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -108,7 +109,7 @@ class RoundView extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
                     if (isSelected) {
-                      prov.deleteSelectedRound();
+                      UiHelpers.deleteRound(context, index, round);
                     } else {
                       prov.selectedRoundByIndex(index);
 

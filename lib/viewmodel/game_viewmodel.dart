@@ -12,14 +12,37 @@ class GameViewmodel extends ChangeNotifier {
 
   late GameModel _currentGame = GameModel(
     actualRound: 0,
-    pointsToWin: pointsToWin,
+    pointsToWin: 0,
     createdAt: DateTime.now(),
     teams: [],
     rounds: [],
   );
   GameModel get currentGame => _currentGame;
 
+  // ======================== Points ======================== //
+
   int pointsToWin = 200;
+
+  final List<int> _selectPointToWin = [100, 200, 300];
+  List<int> get selectPointsToWin => _selectPointToWin;
+
+  int? _pointToWinSelected = -1;
+  int? get pointToWinSelected => _pointToWinSelected;
+
+  void selectedPointsToWin(int isSelected) {
+    _pointToWinSelected = isSelected;
+    print(pointsToWin);
+    notifyListeners();
+  }
+
+  Future<void> changePointToWin() async {
+    await _repository.localDataSource.updatePointToWin(
+      currentGame.id!,
+      pointsToWin,
+    );
+    _currentGame.pointsToWin = pointsToWin;
+    notifyListeners();
+  }
 
   // ======================== Constructor ======================== //
 
@@ -73,6 +96,73 @@ class GameViewmodel extends ChangeNotifier {
   }
   // ======================== //  GAMES  // ======================= //
 
+  Future<void> startNewGame() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _createNewGame();
+      resetWinnerState();
+      _roundSelected = null;
+    } catch (e) {
+      print('Error al iniciar un nuevo juego: $e');
+      // Manejar el error si la creación falla
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  // En GameViewmodel (dentro de la clase GameViewmodel)
+
+  Future<void> startNewGameWithCurrentTeams() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // 1. 💾 Capturar los detalles de los equipos actuales (nombre, jugadores)
+      print('🔍 Capturando equipos para nuevo juego:');
+      for (var team in _currentGame.teams) {
+        print('  - Equipo: ${team.name} (ID: ${team.id})');
+      }
+
+      final currentTeamsDetails = _currentGame.teams.map((team) {
+        // Creamos nuevos TeamModel con puntaje 0, sin ID (se asignará en la DB)
+        return TeamModel(
+          gameId: -1, // Temporal
+          name: team.name,
+          player1: team.player1,
+          player2: team.player2,
+          totalScore: 0, // Reiniciar score
+        );
+      }).toList();
+
+      // 2. 🎮 Crear el nuevo GameModel
+      final newGame = GameModel(
+        actualRound: 0,
+        pointsToWin:
+            _currentGame.pointsToWin, // Mantiene la meta de puntos actual
+        createdAt: DateTime.now(),
+        teams: currentTeamsDetails, // Usamos los equipos reseteados
+        rounds: [],
+      );
+
+      // 3. 📦 Persistir el nuevo juego y sus equipos en la DB
+      final fullGame = await _repository.createGameWithDefaultTeams(newGame);
+
+      // 4. 🔄 Actualizar el estado interno
+      _currentGame = fullGame;
+
+      // 5. 🧹 Limpiar estados anteriores del juego
+      resetWinnerState();
+      _roundSelected = null;
+    } catch (e) {
+      print('Error al iniciar un nuevo juego con equipos actuales: $e');
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> loadGameDetails(int gameId) async {
     try {
       // 1. Obtener el GameModel completo (que ya incluye 'rounds')
@@ -88,7 +178,26 @@ class GameViewmodel extends ChangeNotifier {
     }
   }
 
+  void resetWinnerState() {
+    _winnerTeam = null;
+    // No necesitas notifyListeners() aquí a menos que quieras que la UI
+    // cambie de nuevo después de cerrar el modal, pero generalmente no es necesario
+    // inmediatamente después de un showModalBottomSheet.
+  }
+
   // ======================== //  TEAMS  // ======================= //
+
+  TeamModel? _winnerTeam;
+  TeamModel? get winnerTeam => _winnerTeam;
+  void _handleGameEnd({required TeamModel winningTeam}) {
+    // 1. Guarda el estado del ganador
+    _winnerTeam = winningTeam;
+
+    // 2. Opcional: Marcar el juego como terminado en la DB
+
+    // 3. Notificar a los listeners para que la UI reaccione
+    notifyListeners();
+  }
 
   Future<void> addTeam(TeamModel team) async {
     final gameId = _currentGame.id!;
@@ -125,7 +234,7 @@ class GameViewmodel extends ChangeNotifier {
         }
         return team;
       }).toList();
-      currentGame.teams = updateTeamList;
+      _currentGame.teams = updateTeamList;
       notifyListeners();
     }
   }
@@ -184,10 +293,20 @@ class GameViewmodel extends ChangeNotifier {
       _currentGame.teams[0] = team1.copyWith(totalScore: newTeam1Score);
       _currentGame.teams[1] = team2.copyWith(totalScore: newTeam2Score);
 
+      final pointsGoal = _currentGame.pointsToWin;
+
+      if (newTeam1Score >= pointsGoal && pointsGoal > 0) {
+        _handleGameEnd(winningTeam: _currentGame.teams[0]);
+        return;
+      } else if (newTeam2Score >= pointsGoal && pointsGoal > 0) {
+        _handleGameEnd(winningTeam: _currentGame.teams[1]);
+        return;
+      }
+
       // 6. Notificar a la UI
       notifyListeners();
     } catch (e) {
-      print('Error al añadir ronda y actualizar scores: $e');
+      // print('Error al añadir ronda y actualizar scores: $e');
       // Manejar el error, tal vez mostrar un Toast o un diálogo.
     }
   }
@@ -222,4 +341,6 @@ class GameViewmodel extends ChangeNotifier {
     _roundSelected = null;
     notifyListeners();
   }
+
+  //
 }

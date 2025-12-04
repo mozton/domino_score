@@ -39,42 +39,82 @@ class GameRepository {
   Future<GameModel> createGameWithDefaultTeams(GameModel game) async {
     // 1. Insertar el juego y obtener el ID de la DB
     final gameId = await localDataSource.createGame(game);
+
     game.id = gameId;
 
-    // 2. Definir equipos por defecto (puedes crear esta lógica aquí o en un servicio)
-    final team1Template = TeamModel(
-      gameId: gameId,
-      name: "Team 1",
-      totalScore: 0,
-    );
-    final team2Template = TeamModel(
-      gameId: gameId,
-      name: "Team 2",
-      totalScore: 0,
-    );
+    // 2. Si el juego ya tiene equipos definidos, usarlos. Si no, crear equipos por defecto
+    if (game.teams.isNotEmpty) {
+      print('📦 Creando juego con ${game.teams.length} equipos existentes:');
+      for (var team in game.teams) {
+        print('  - Equipo: ${team.name}');
+      }
 
-    // 3. Insertar equipos y obtener sus IDs de la DB
-    final team1Id = await localDataSource.insertTeam(gameId, team1Template);
-    final team2Id = await localDataSource.insertTeam(gameId, team2Template);
+      // Usar los equipos que vienen en el game
+      final List<TeamModel> teamsWithIds = [];
 
-    // 4. Crear los modelos de equipo finales con los IDs de la DB
-    final team1 = TeamModel(
-      id: team1Id,
-      gameId: gameId,
-      name: "Team 1",
-      totalScore: 0,
-    );
-    final team2 = TeamModel(
-      id: team2Id,
-      gameId: gameId,
-      name: "Team 2",
-      totalScore: 0,
-    );
+      for (var team in game.teams) {
+        // Actualizar el gameId del equipo
+        final teamWithGameId = TeamModel(
+          gameId: gameId,
+          name: team.name,
+          player1: team.player1,
+          player2: team.player2,
+          totalScore: team.totalScore,
+        );
 
-    // 5. Asignar los equipos finales al GameModel
-    game.teams = [team1, team2];
+        // Insertar el equipo y obtener su ID
+        final teamId = await localDataSource.insertTeam(gameId, teamWithGameId);
 
-    // 6. Devolver el GameModel completo
+        // Crear el modelo final con el ID
+        final finalTeam = TeamModel(
+          id: teamId,
+          gameId: gameId,
+          name: team.name,
+          player1: team.player1,
+          player2: team.player2,
+          totalScore: team.totalScore,
+        );
+
+        teamsWithIds.add(finalTeam);
+      }
+
+      game.teams = teamsWithIds;
+    } else {
+      // Crear equipos por defecto si no hay equipos definidos
+      final team1Template = TeamModel(
+        gameId: gameId,
+        name: "Team 1",
+        totalScore: 0,
+      );
+      final team2Template = TeamModel(
+        gameId: gameId,
+        name: "Team 2",
+        totalScore: 0,
+      );
+
+      // Insertar equipos y obtener sus IDs de la DB
+      final team1Id = await localDataSource.insertTeam(gameId, team1Template);
+      final team2Id = await localDataSource.insertTeam(gameId, team2Template);
+
+      // Crear los modelos de equipo finales con los IDs de la DB
+      final team1 = TeamModel(
+        id: team1Id,
+        gameId: gameId,
+        name: "Team 1",
+        totalScore: 0,
+      );
+      final team2 = TeamModel(
+        id: team2Id,
+        gameId: gameId,
+        name: "Team 2",
+        totalScore: 0,
+      );
+
+      // Asignar los equipos finales al GameModel
+      game.teams = [team1, team2];
+    }
+
+    // 3. Devolver el GameModel completo
     return game;
   }
 

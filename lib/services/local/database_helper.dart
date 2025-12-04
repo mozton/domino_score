@@ -84,6 +84,7 @@ class DatabaseHelper implements LocalGameDataSource {
 ''');
   }
 
+  @override
   Future<int> createGame(GameModel game) async {
     final db = await database;
 
@@ -114,14 +115,24 @@ class DatabaseHelper implements LocalGameDataSource {
   Future<int> insertTeam(int gameId, TeamModel team) async {
     final db = await database;
 
-    return await db.insert('teams', {
-      'id': team.id,
+    final Map<String, dynamic> teamData = {
       'gameId': gameId,
       'name': team.name,
       'player1': team.player1,
       'player2': team.player2,
       'totalScore': team.totalScore,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    };
+
+    // Solo incluir el id si no es null (para actualizaciones)
+    if (team.id != null) {
+      teamData['id'] = team.id;
+    }
+
+    return await db.insert(
+      'teams',
+      teamData,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   // Update teamName

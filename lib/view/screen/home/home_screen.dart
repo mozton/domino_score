@@ -1,7 +1,8 @@
-import 'package:dominos_score/dialogs/change_name_team_dialog_v1.dart';
 import 'package:dominos_score/services/local/database_helper.dart';
 import 'package:dominos_score/utils/ui_helpers.dart';
 import 'package:dominos_score/view/widgets/buttons/button_start_game.dart';
+
+import 'package:dominos_score/view/widgets/view_win_and_new_game_v1.dart';
 import 'package:dominos_score/view/widgets/widgets.dart';
 import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,18 @@ class HomeScreen extends StatelessWidget {
     return Consumer<GameViewmodel>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
-        // final isScoreSelect = prov.currentGame.pointsToWin <= 0;
+        final winnerTeam = prov.winnerTeam;
+
+        if (winnerTeam != null) {
+          // Usamos addPostFrameCallback para asegurar que se llama después del build.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (ModalRoute.of(context)?.isCurrent == true) {
+              Future.delayed(Duration.zero);
+              _showWinnerModal(context, winnerTeam.name);
+              prov.resetWinnerState();
+            }
+          });
+        }
 
         //TODO: corregir parpadeo
 
@@ -44,23 +56,28 @@ class HomeScreen extends StatelessWidget {
                             // Cards Teams & Buttons Change Name & Add Score
                             CardTeam(
                               teamName: teams[0].name,
-                              points: 0,
-                              // prov.totalTeam1Points,
+                              points: teams[0].totalScore,
+
                               colorCard: const Color(0xFFF7E7AF),
                               colorButton: Color(0xFFD4AF37),
                               onTap: () =>
                                   UiHelpers.showAddScoreDialog(context, 0),
-                              onTapname: () => addNameTeam1Dialog(context),
+                              onTapname: () => UiHelpers.changeNameTeam(
+                                context,
+                                teams[0].id!,
+                              ),
                             ),
                             CardTeam(
                               teamName: teams[1].name,
-                              points: 0,
-                              // prov.totalTeam2Points,
+                              points: teams[1].totalScore,
                               colorCard: const Color(0xFFFFFFFF),
                               colorButton: const Color(0xFF1E2B43),
                               onTap: () =>
                                   UiHelpers.showAddScoreDialog(context, 1),
-                              onTapname: () => addNameTeam2Dialog(context),
+                              onTapname: () => UiHelpers.changeNameTeam(
+                                context,
+                                teams[1].id!,
+                              ),
                             ),
                           ],
                         ),
@@ -131,6 +148,23 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // Tu función de modal
+  static void _showWinnerModal(BuildContext context, String teamWiner) {
+    showModalBottomSheet(
+      sheetAnimationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOutBack,
+      ),
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        // Asegúrate de importar ViewWinAndNewGame
+        // import 'package:dominos_score/view/widgets/view_win_and_new_game.dart';
+        return ViewWinAndNewGame(teamWiner: teamWiner);
+      },
     );
   }
 }
