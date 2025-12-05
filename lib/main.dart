@@ -1,14 +1,16 @@
-import 'package:dominos_score/repository/game_repository.dart';
-import 'package:dominos_score/services/local/database_helper.dart';
-import 'package:dominos_score/services/local/local_game_data_source.dart';
-import 'package:dominos_score/services/remote/auth_service.dart';
-import 'package:dominos_score/services/local/notifications_service.dart';
-import 'package:dominos_score/services/local/shared_preferences.dart';
-import 'package:dominos_score/viewmodel/camera_viewmodel.dart';
-import 'package:dominos_score/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/viewmodel/setting_viewmodel.dart';
+import 'package:dominos_score/data/local/shared_preferences.dart';
+import 'package:dominos_score/data/repositories/game_repository_impl.dart';
+import 'package:dominos_score/data/local/database_helper.dart';
+import 'package:dominos_score/domain/datasourse/local_game_data_source.dart';
+import 'package:dominos_score/presentation/router/app_router.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
+import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
+import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
+import 'package:dominos_score/services/notifications_service.dart';
+
 import 'package:flutter/material.dart';
-import 'package:dominos_score/router/router.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -27,14 +29,13 @@ void main() async {
         Provider<LocalGameDataSource>(create: (_) => DatabaseHelper()),
 
         // Placeholder para el Cloud/Auth Service si es Provider/Singleton
-        ChangeNotifierProvider<AuthService>(create: (_) => AuthService()),
 
         // --- 2. CAPA DE REPOSITORIOS ---
-        Provider<GameRepository>(
-          create: (context) => GameRepository(
+        Provider<GameRepositoryImpl>(
+          create: (context) => GameRepositoryImpl(
             // INYECCIÓN: Le pasamos la dependencia LocalGameDataSource
             localDataSource: context.read<LocalGameDataSource>(),
-            cloudDataSource: null,
+
             // cloudDataSource: context.read<GameCloudDataSource>(), // Asumiendo que también existe
           ),
         ),
@@ -52,7 +53,7 @@ void main() async {
         ChangeNotifierProvider<GameViewmodel>(
           create: (context) => GameViewmodel(
             // INYECCIÓN: Le pasamos la dependencia GameRepository
-            context.read<GameRepository>(),
+            context.read<GameRepositoryImpl>(),
           ),
         ),
       ],
@@ -70,8 +71,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       scaffoldMessengerKey: NotificationsService.messangerKey,
-      routes: Routes.routes(),
-      initialRoute: '/checking',
+      routes: AppRouter.routes,
+      initialRoute: RouteNames.home,
       themeMode: ThemeMode.system,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),

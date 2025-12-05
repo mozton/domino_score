@@ -1,13 +1,13 @@
-import 'package:dominos_score/models/game/round_model.dart';
-import 'package:dominos_score/view/widgets/camera_sheet.dart';
-import 'package:dominos_score/view/widgets/add_score_widget_v1.dart';
-import 'package:dominos_score/view/widgets/change_name_team_widget_v1.dart';
-import 'package:dominos_score/view/widgets/delete_round.dart';
-import 'package:dominos_score/view/widgets/selected_point_to_wind.dart';
-import 'package:dominos_score/view/widgets/view_win_and_new_game_v1.dart';
-import 'package:dominos_score/viewmodel/camera_viewmodel.dart';
+import 'package:dominos_score/domain/models/game/round_model.dart';
+import 'package:dominos_score/presentation/view/widgets/camera_sheet.dart';
+import 'package:dominos_score/presentation/view/widgets/add_score.dart';
+import 'package:dominos_score/presentation/view/widgets/change_name_team_widget_v1.dart';
+import 'package:dominos_score/presentation/view/widgets/delete_round.dart';
+import 'package:dominos_score/presentation/view/widgets/selected_point_to_wind.dart';
+import 'package:dominos_score/presentation/view/widgets/view_win_and_new_game_v1.dart';
+import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
+import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 
-import 'package:dominos_score/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
