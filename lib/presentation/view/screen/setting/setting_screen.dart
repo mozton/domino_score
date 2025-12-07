@@ -73,7 +73,7 @@ class SettingScreen extends StatelessWidget {
             titleColor: Colors.red,
             iconColor: Colors.red,
             onTap: () {
-              final authServices = Provider.of<AuthService>(
+              final authServices = Provider.of<RemoteAuthDataSourceImpl>(
                 context,
                 listen: false,
               );

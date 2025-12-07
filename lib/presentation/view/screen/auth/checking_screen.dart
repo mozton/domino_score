@@ -12,7 +12,7 @@ class CheckAuthScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
-          future: context.read<AuthService>().readToken(),
+          future: context.read<RemoteAuthDataSourceImpl>().readToken(),
 
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             if (!snapshot.hasData) return Text('Espere');

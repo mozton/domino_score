@@ -1,4 +1,4 @@
-import 'package:dominos_score/presentation/view/widgets/buttons/button_menu_select_point.dart';
+import 'package:dominos_score/presentation/view/widgets/features/game/button/button_menu_select_point.dart';
 import 'package:flutter/material.dart';
 
 class SelectPointToWind extends StatelessWidget {

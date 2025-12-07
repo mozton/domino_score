@@ -1,11 +1,9 @@
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/utils/ui_helpers.dart';
-import 'package:dominos_score/presentation/view/widgets/buttons/button_start_game.dart';
-
-import 'package:dominos_score/presentation/view/widgets/view_win_and_new_game_v1.dart';
+import 'package:dominos_score/presentation/view/widgets/features/game/button/button_start_game.dart';
+import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +18,6 @@ class HomeScreen extends StatelessWidget {
         final winnerTeam = prov.winnerTeam;
 
         if (winnerTeam != null) {
-          // Usamos addPostFrameCallback para asegurar que se llama después del build.
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (ModalRoute.of(context)?.isCurrent == true) {
               Future.delayed(Duration.zero);
@@ -162,9 +159,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) {
-        // Asegúrate de importar ViewWinAndNewGame
-        // import 'package:dominos_score/view/widgets/view_win_and_new_game.dart';
-        return ViewWinAndNewGame(teamWiner: teamWiner);
+        return WinAndNewGame(teamWiner: teamWiner);
       },
     );
   }

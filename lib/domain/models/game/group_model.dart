@@ -1,36 +1,68 @@
+import 'package:dominos_score/domain/models/auth/user_role.dart';
+
 class GroupModel {
   final String id;
   final String name;
-  final String ownerId;
-  final List<String> members; // user IDs
-  final String? activeGameId; // game actual (puede ser null)
+  final String? description;
+  final String? groupPhotoUrl;
+  final String ownerId; // El creador del grupo (Super Admin)
 
-  final DateTime createdAt;
+  // RELACIÓN: Miembros y sus roles.
+  // Map<UserId, Role> -> Ej: {'user123': UserRole.admin, 'user456': UserRole.viewer}
+  final Map<String, UserRole> members; 
+  
+  // RELACIÓN: IDs de las partidas que pertenecen a este grupo
+  final List<String> gameIds;
 
   GroupModel({
     required this.id,
     required this.name,
+    this.description,
+    this.groupPhotoUrl,
     required this.ownerId,
-    required this.members,
-    this.activeGameId,
-    required this.createdAt,
+    this.members = const {},
+    this.gameIds = const [],
   });
 
-  factory GroupModel.fromJson(Map<String, dynamic> json) => GroupModel(
-    id: json['id'],
-    name: json['name'],
-    ownerId: json['ownerId'],
-    members: List<String>.from(json['members'] ?? []),
-    activeGameId: json['activeGameId'],
-    createdAt: DateTime.parse(json['createdAt']),
-  );
+  // Helper para saber si un usuario es miembro
+  bool isMember(String userId) => members.containsKey(userId);
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "ownerId": ownerId,
-    "members": members,
-    "activeGameId": activeGameId,
-    "createdAt": createdAt.toIso8601String(),
-  };
+  // Helper para obtener el rol de un usuario
+  UserRole getRole(String userId) => members[userId] ?? UserRole.viewer;
+
+  // Factory y toMap...
+  factory GroupModel.fromMap(Map<String, dynamic> map) {
+    // Lógica para convertir el mapa de miembros
+    final membersMap = Map<String, dynamic>.from(map['members'] ?? {});
+    final parsedMembers = membersMap.map(
+      (key, value) => MapEntry(key, UserRole.fromString(value)),
+    );
+
+    return GroupModel(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'],
+      groupPhotoUrl: map['groupPhotoUrl'],
+      ownerId: map['ownerId'] ?? '',
+      members: parsedMembers,
+      gameIds: List<String>.from(map['gameIds'] ?? []),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    // Convertir el enum a String para guardar
+    final membersMap = members.map(
+      (key, value) => MapEntry(key, value.toShortString()),
+    );
+
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'groupPhotoUrl': groupPhotoUrl,
+      'ownerId': ownerId,
+      'members': membersMap,
+      'gameIds': gameIds,
+    };
+  }
 }

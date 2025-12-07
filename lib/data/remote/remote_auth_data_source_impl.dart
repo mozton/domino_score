@@ -1,67 +1,123 @@
-import 'dart:convert';
-
+import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
-class AuthService {
-  final String _baseUrl = 'identitytoolkit.googleapis.com';
+class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
+  final Dio _dio;
+  final FlutterSecureStorage _storage;
   final String _firebaseToken = dotenv.env['FIREBASE_TOKEN'] ?? '';
+  final String _authBaseUrl = 'https://identitytoolkit.googleapis.com';
 
-  final storage = FlutterSecureStorage();
+  RemoteAuthDataSourceImpl(this._storage, {Dio? dio}) : _dio = dio ?? Dio() {
+    _dio.options.baseUrl = _authBaseUrl;
+  }
 
-  Future<String?> createUser(String email, String password) async {
+  @override
+  Future<Map<String, dynamic>> createUser(String email, String password) async {
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
+      'returnSecureToken': true,
     };
 
-    final url = Uri.https(_baseUrl, '/v1/accounts:signUp', {
-      'key': _firebaseToken,
-    });
+    try {
+      final resp = await _dio.post(
+        '/v1/accounts:signUp',
+        queryParameters: {'key': _firebaseToken},
+        data: authData,
+      );
 
-    final resp = await http.post(url, body: json.encode(authData));
-    final Map<String, dynamic> decodeResp = json.decode(resp.body);
+      final decodeResp = resp.data as Map<String, dynamic>;
 
-    if (decodeResp.containsKey('idToken')) {
-      await storage.write(key: 'token', value: decodeResp['idToken']);
-
-      return null;
-    } else {
-      return decodeResp['error']['message'];
+      if (decodeResp.containsKey('idToken')) {
+        await _storage.write(key: 'token', value: decodeResp['idToken']);
+        return decodeResp;
+      }
+      throw Exception('Error desconocido al registrar usuario');
+    } on DioException catch (e) {
+      final errorData = e.response?.data['error'] as Map<String, dynamic>?;
+      throw Exception(errorData?['message'] ?? 'Error de conexión o servidor');
+    } catch (e) {
+      throw Exception('Ocurrió un error inesperado: $e');
     }
   }
 
-  Future<String?> login(String email, String password) async {
+  Future<void> verifyEmail(String idToken) async {
+    try {
+      await _dio.post(
+        '/v1/accounts:sendVerificationCode',
+        queryParameters: {'key': _firebaseToken},
+        data: {'idToken': idToken},
+      );
+    } on DioException catch (e) {
+      final errorData = e.response?.data['error'] as Map<String, dynamic>?;
+      throw Exception(errorData?['message'] ?? 'Error de conexión o servidor');
+    } catch (e) {
+      throw Exception('Ocurrió un error inesperado: $e');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> login(String email, String password) async {
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
+      'returnSecureToken': true,
     };
 
-    final url = Uri.https(_baseUrl, '/v1/accounts:signInWithPassword', {
-      'key': _firebaseToken,
-    });
+    try {
+      final resp = await _dio.post(
+        '/v1/accounts:signInWithPassword',
+        queryParameters: {'key': _firebaseToken},
+        data: authData,
+      );
 
-    final resp = await http.post(url, body: json.encode(authData));
-    final Map<String, dynamic> decodeResp = json.decode(resp.body);
+      final decodeResp = resp.data as Map<String, dynamic>;
 
-    print(decodeResp);
-
-    if (decodeResp.containsKey('idToken')) {
-      await storage.write(key: 'token', value: decodeResp['idToken']);
-
-      return null;
-    } else {
-      return decodeResp['error']['message'];
+      if (decodeResp.containsKey('idToken')) {
+        await _storage.write(key: 'token', value: decodeResp['idToken']);
+        return decodeResp;
+      }
+      throw Exception('Error desconocido al iniciar sesión');
+    } on DioException catch (e) {
+      final errorData = e.response?.data['error'] as Map<String, dynamic>?;
+      throw Exception(errorData?['message'] ?? 'Error de conexión o servidor');
+    } catch (e) {
+      throw Exception('Ocurrió un error inesperado: $e');
     }
   }
 
+  @override
+  Future<Map<String, dynamic>> getUserData(String token) async {
+    try {
+      final resp = await _dio.post(
+        '/v1/accounts:lookup',
+        queryParameters: {'key': _firebaseToken},
+        data: {'idToken': token},
+      );
+
+      final decodeResp = resp.data as Map<String, dynamic>;
+      if (decodeResp.containsKey('users')) {
+        return (decodeResp['users'] as List).first as Map<String, dynamic>;
+      }
+      throw Exception('No se encontraron datos del usuario');
+    } on DioException catch (e) {
+      final errorData = e.response?.data['error'] as Map<String, dynamic>?;
+      throw Exception(errorData?['message'] ?? 'Error al obtener datos');
+    } catch (e) {
+      throw Exception('Error inesperado: $e');
+    }
+  }
+
+  @override
   Future logout() async {
-    await storage.delete(key: 'token');
+    await _storage.delete(key: 'token');
     return;
   }
 
+  @override
   Future<String> readToken() async {
-    return await storage.read(key: 'token') ?? '';
+    return await _storage.read(key: 'token') ?? '';
   }
 }

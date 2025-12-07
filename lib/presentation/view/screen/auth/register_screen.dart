@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       //   label: "Nombre",
                       //   icon: Icons.person_outline,
                       // ),
-                      // const SizedBox(height: 18),
+                      const SizedBox(height: 18),
                       _inputField(
                         controller: emailCtrl,
                         label: "Correo electrónico",
@@ -90,18 +90,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: () async {
-                          final auth = Provider.of<AuthService>(
+                          final auth = Provider.of<RemoteAuthDataSourceImpl>(
                             context,
                             listen: false,
                           );
 
-                          final String? errorMessage = await auth.createUser(
-                            emailCtrl.text.trim(),
-                            passCtrl.text.trim(),
-                          );
+                          try {
+                            await auth.createUser(
+                              emailCtrl.text.trim(),
+                              passCtrl.text.trim(),
+                            );
 
-                          if (errorMessage == null) {
-                            Navigator.pushReplacementNamed(context, '/login');
+                            if (context.mounted) {
+                              Navigator.pushReplacementNamed(context, '/login');
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  e.toString().replaceAll('Exception: ', ''),
+                                ),
+                              ),
+                            );
                           }
                         },
                         child: Container(

@@ -1,3 +1,5 @@
+import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
+import 'package:flutter/services.dart';
 import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
 import 'package:dominos_score/services/notifications_service.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
+  final _formKey =
+      GlobalKey<FormState>(); // [FIX] Key global para el formulario
+  final _shakeController = ShakeController(); // Controlador de animación
+
   bool loading = false;
   bool obscure = true;
 
@@ -54,84 +60,106 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      // Email
-                      _inputField(
-                        controller: emailCtrl,
-                        label: "Correo electrónico",
-                        icon: Icons.email_outlined,
-                      ),
-                      const SizedBox(height: 18),
-
-                      // Password
-                      _inputField(
-                        controller: passCtrl,
-                        label: "Contraseña",
-                        icon: Icons.lock_outline,
-                        obscure: obscure,
-                        suffix: IconButton(
-                          icon: Icon(
-                            obscure
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: Colors.grey.shade600,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Email con ShakeWidget
+                        ShakeWidget(
+                          controller: _shakeController,
+                          child: _inputField(
+                            controller: emailCtrl,
+                            label: "Correo electrónico",
+                            icon: Icons.email_outlined,
+                            isEmail: true, // Flag para validar email
                           ),
-                          onPressed: () => setState(() {
-                            obscure = !obscure;
-                          }),
                         ),
-                      ),
+                        const SizedBox(height: 18),
+                        const SizedBox(height: 18),
 
-                      const SizedBox(height: 30),
-
-                      // Login button
-                      GestureDetector(
-                        onTap: loading
-                            ? null
-                            : () async {
-                                final prov = Provider.of<AuthService>(
-                                  context,
-                                  listen: false,
-                                );
-                                final String? errorMessage = await prov.login(
-                                  emailCtrl.text.trim(),
-                                  passCtrl.text.trim(),
-                                );
-                                // FocusScope.of(context).unfocus();
-
-                                if (errorMessage == null) {
-                                  Navigator.pushReplacementNamed(context, '/');
-                                } else {
-                                  NotificationsService.showSnackbar(
-                                    errorMessage,
-                                  );
-                                }
-                              },
-                        child: Container(
-                          height: 52,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD4A62F),
-                            borderRadius: BorderRadius.circular(30),
+                        // Password
+                        _inputField(
+                          controller: passCtrl,
+                          label: "Contraseña",
+                          icon: Icons.lock_outline,
+                          obscure: obscure,
+                          suffix: IconButton(
+                            icon: Icon(
+                              obscure
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: Colors.grey.shade600,
+                            ),
+                            onPressed: () => setState(() {
+                              obscure = !obscure;
+                            }),
                           ),
-                          child: Center(
-                            child: loading
-                                ? const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  )
-                                : const Text(
-                                    "Iniciar sesión",
-                                    style: TextStyle(
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        // Login button
+                        GestureDetector(
+                          onTap: loading
+                              ? null
+                              : () async {
+                                  if (!_formKey.currentState!.validate()) {
+                                    // Si falla la validación, vibrar y salir
+                                    _shakeController.shake();
+                                    HapticFeedback.mediumImpact(); // Vibración física
+                                    return;
+                                  }
+
+                                  final prov =
+                                      Provider.of<RemoteAuthDataSourceImpl>(
+                                        context,
+                                        listen: false,
+                                      );
+                                  try {
+                                    await prov.login(
+                                      emailCtrl.text.trim(),
+                                      passCtrl.text.trim(),
+                                    );
+
+                                    if (context.mounted) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        '/',
+                                      );
+                                    }
+                                  } catch (e) {
+                                    final message = e.toString().replaceAll(
+                                      'Exception: ',
+                                      '',
+                                    );
+                                    NotificationsService.showSnackbar(message);
+                                  }
+                                },
+                          child: Container(
+                            height: 52,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFD4A62F),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Center(
+                              child: loading
+                                  ? const CircularProgressIndicator(
+                                      strokeWidth: 2,
                                       color: Colors.white,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
+                                    )
+                                  : const Text(
+                                      "Iniciar sesión",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
@@ -160,11 +188,20 @@ class _LoginScreenState extends State<LoginScreen> {
     required String label,
     required IconData icon,
     bool obscure = false,
+    bool isEmail = false,
     Widget? suffix,
   }) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       obscureText: obscure,
+      validator: (value) {
+        if (!isEmail) return null; // Solo validamos si es email
+        String pattern =
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+        RegExp regExp = RegExp(pattern);
+
+        return regExp.hasMatch(value ?? '') ? null : 'Correo inválido';
+      },
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFFF5F7FA),

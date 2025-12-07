@@ -8,11 +8,13 @@ import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:dominos_score/services/notifications_service.dart';
-
+import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
+import 'package:dominos_score/data/repositories/auth_repository_impl.dart';
+import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -24,23 +26,29 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        // --- 1. CAPA DE DATOS (Servicios/Data Sources) ---
-        // Instancia única (Singleton) de tu DatabaseHelper.
         Provider<LocalGameDataSource>(create: (_) => DatabaseHelper()),
 
-        // Placeholder para el Cloud/Auth Service si es Provider/Singleton
+        Provider<FlutterSecureStorage>(
+          create: (_) => const FlutterSecureStorage(),
+        ),
+        Provider<RemoteAuthDataSourceImpl>(
+          create: (context) =>
+              RemoteAuthDataSourceImpl(context.read<FlutterSecureStorage>()),
+        ),
 
-        // --- 2. CAPA DE REPOSITORIOS ---
-        Provider<GameRepositoryImpl>(
-          create: (context) => GameRepositoryImpl(
-            // INYECCIÓN: Le pasamos la dependencia LocalGameDataSource
-            localDataSource: context.read<LocalGameDataSource>(),
-
-            // cloudDataSource: context.read<GameCloudDataSource>(), // Asumiendo que también existe
+        Provider<AuthRepository>(
+          create: (context) => AuthRepositoryImpl(
+            context.read<RemoteAuthDataSourceImpl>(),
+            context.read<FlutterSecureStorage>(),
           ),
         ),
 
-        // --- 3. CAPA DE VIEWMODELS ---
+        Provider<GameRepositoryImpl>(
+          create: (context) => GameRepositoryImpl(
+            localDataSource: context.read<LocalGameDataSource>(),
+          ),
+        ),
+
         ChangeNotifierProvider<SettingViewModel>(
           create: (_) => SettingViewModel(),
         ),
@@ -49,12 +57,9 @@ void main() async {
           create: (_) => CameraViewModel(),
         ),
 
-        // ViewModel de Juego (Debe ir después del Repositorio)
         ChangeNotifierProvider<GameViewmodel>(
-          create: (context) => GameViewmodel(
-            // INYECCIÓN: Le pasamos la dependencia GameRepository
-            context.read<GameRepositoryImpl>(),
-          ),
+          create: (context) =>
+              GameViewmodel(context.read<GameRepositoryImpl>()),
         ),
       ],
       child: const MyApp(),
@@ -72,7 +77,7 @@ class MyApp extends StatelessWidget {
 
       scaffoldMessengerKey: NotificationsService.messangerKey,
       routes: AppRouter.routes,
-      initialRoute: RouteNames.home,
+      initialRoute: RouteNames.checking,
       themeMode: ThemeMode.system,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),

@@ -5,9 +5,9 @@ import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ViewWinAndNewGame extends StatelessWidget {
+class WinAndNewGame extends StatelessWidget {
   final String teamWiner;
-  const ViewWinAndNewGame({super.key, required this.teamWiner});
+  const WinAndNewGame({super.key, required this.teamWiner});
 
   @override
   Widget build(BuildContext context) {

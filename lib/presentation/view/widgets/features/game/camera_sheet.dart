@@ -1,5 +1,4 @@
 import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
-import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -88,17 +87,10 @@ class CameraSheet extends StatelessWidget {
                 // 3. Procesar foto (Lógica de negocio en el VM)
                 final points = await viewModel.processImage(image);
 
-                // 4. Actualizar estado del juego (Lógica de negocio)
-                final provider = sheetContext.read<GameViewmodel>();
-                if (teamIndex == 0) {
-                  // provider.addRound(points, 0);
-                } else {
-                  // provider.addRound(0, points);
+                Navigator.pop(dialogContext);
+                if (sheetContext.mounted) {
+                  Navigator.pop(sheetContext, points);
                 }
-
-                // 5. Cerrar todas las vistas
-                Navigator.pop(dialogContext); // Cierra el preview
-                Navigator.pop(sheetContext); // Cierra el ModalBottomSheet
               },
               child: const Text('Usar foto'),
             ),
