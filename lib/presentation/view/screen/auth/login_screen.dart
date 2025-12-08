@@ -1,6 +1,6 @@
+import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
 import 'package:flutter/services.dart';
-import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
 import 'package:dominos_score/services/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -110,13 +110,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     return;
                                   }
 
-                                  final prov =
-                                      Provider.of<RemoteAuthDataSourceImpl>(
-                                        context,
-                                        listen: false,
-                                      );
+                                  final prov = Provider.of<AuthRepository>(
+                                    context,
+                                    listen: false,
+                                  );
                                   try {
-                                    await prov.login(
+                                    await prov.signIn(
                                       emailCtrl.text.trim(),
                                       passCtrl.text.trim(),
                                     );
