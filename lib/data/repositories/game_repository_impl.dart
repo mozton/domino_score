@@ -39,23 +39,19 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<GameModel> createGameWithDefaultTeams(GameModel game) async {
-    // 1. Insertar el juego y obtener el ID de la DB
     final gameId = await localDataSource.createGame(game);
 
     game.id = gameId;
 
-    // 2. Si el juego ya tiene equipos definidos, usarlos. Si no, crear equipos por defecto
     if (game.teams.isNotEmpty) {
       print('Creando juego con ${game.teams.length} equipos existentes:');
       for (var team in game.teams) {
         print('  - Equipo: ${team.name}');
       }
 
-      // Usar los equipos que vienen en el game
       final List<TeamModel> teamsWithIds = [];
 
       for (var team in game.teams) {
-        // Actualizar el gameId del equipo
         final teamWithGameId = TeamModel(
           gameId: gameId,
           name: team.name,
@@ -64,10 +60,8 @@ class GameRepositoryImpl implements GameRepository {
           totalScore: team.totalScore,
         );
 
-        // Insertar el equipo y obtener su ID
         final teamId = await localDataSource.insertTeam(gameId, teamWithGameId);
 
-        // Crear el modelo final con el ID
         final finalTeam = TeamModel(
           id: teamId,
           gameId: gameId,
@@ -82,7 +76,6 @@ class GameRepositoryImpl implements GameRepository {
 
       game.teams = teamsWithIds;
     } else {
-      // Crear equipos por defecto si no hay equipos definidos
       final team1Template = TeamModel(
         gameId: gameId,
         name: "Team 1",
@@ -94,11 +87,9 @@ class GameRepositoryImpl implements GameRepository {
         totalScore: 0,
       );
 
-      // Insertar equipos y obtener sus IDs de la DB
       final team1Id = await localDataSource.insertTeam(gameId, team1Template);
       final team2Id = await localDataSource.insertTeam(gameId, team2Template);
 
-      // Crear los modelos de equipo finales con los IDs de la DB
       final team1 = TeamModel(
         id: team1Id,
         gameId: gameId,
@@ -112,11 +103,9 @@ class GameRepositoryImpl implements GameRepository {
         totalScore: 0,
       );
 
-      // Asignar los equipos finales al GameModel
       game.teams = [team1, team2];
     }
 
-    // 3. Devolver el GameModel completo
     return game;
   }
 
@@ -148,7 +137,6 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<void> updateGamePointsToWin(int gameId, int pointsToWin) async {
-    // ESTO ES LO QUE ESTABA FALTANDO
     await localDataSource.updatePointToWin(gameId, pointsToWin);
   }
 

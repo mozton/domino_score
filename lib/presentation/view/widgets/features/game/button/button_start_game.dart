@@ -23,7 +23,7 @@ class ButtonStartGame extends StatelessWidget {
               if (prov.totalTeam1Points >= prov.currentGame.pointsToWin ||
                   prov.totalTeam2Points >= prov.currentGame.pointsToWin) {
                 print('NewGame');
-                // newGameOrResetGame(context, '');
+                UiHelpers.newGame(context, '');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

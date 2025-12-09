@@ -38,8 +38,8 @@ class _AddScoreState extends State<AddScore> {
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * (164 / 750),
-      width: size.width * (327 / 393),
+      height: size.height * (214 / 853),
+      width: size.width * (340 / 393),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Color(0xFFFFFFFF),
@@ -50,8 +50,8 @@ class _AddScoreState extends State<AddScore> {
           Stack(
             children: [
               SizedBox(
-                width: size.width * (281 / 393),
-                child: TextField(
+                width: size.width * (295 / 393),
+                child: TextFormField(
                   controller: _controller,
 
                   maxLines: 1,
@@ -64,13 +64,22 @@ class _AddScoreState extends State<AddScore> {
                     counterText: '',
                     hintText: 'Agrega puntos',
                     hintStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: size.height * (18 / 852),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF1E2B43).withOpacity(0.5),
+                      color: Color(0xFF1E2B43).withOpacity(0.3),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color: Color(0xFFD9D9D9).withOpacity(0.9),
+                      ),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFD9D9D9)),
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color: Color(0xFFD9D9D9).withOpacity(0.9),
+                      ),
                     ),
                   ),
                   style: TextStyle(
@@ -89,28 +98,18 @@ class _AddScoreState extends State<AddScore> {
                     Navigator.pop(context);
                   },
                   child: Image(
-                    height: 25,
-                    width: 25,
+                    height: size.height * (25 / 852),
                     color: Color(0XFF1C1400),
                     image: AssetImage('assets/icon/square-rounded-x.png'),
                   ),
                 ),
               ),
-              Positioned(
-                top: 35,
-                right: 0,
-                child: IconButton(
-                  onPressed: widget.onGetDominoesPointbyImage,
-
-                  icon: Icon(Icons.camera_alt_outlined),
-                ),
-              ),
             ],
           ),
 
-          SizedBox(height: 15),
+          SizedBox(height: 25),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _ButtonSaveScore(
                 colorButton: widget.colorButton,
@@ -118,27 +117,47 @@ class _AddScoreState extends State<AddScore> {
                   widget.onAddPoints(_controller.text);
                 },
               ),
-              SizedBox(width: size.width * 0.07),
-              GestureDetector(
-                onTap: widget.onTapPass,
-                child: Container(
-                  height: size.height * (43 / 852),
-                  width: size.width * (70 / 393),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(22),
-                    border: BoxBorder.all(width: 1.4, color: Color(0xFFDADDE2)),
-                  ),
-                  child: Image(
-                    height: 28,
-                    color: Color(0xFF1E2B43),
-                    image: AssetImage('assets/icon/rewind-forward-30.png'),
-                  ),
-                ),
+
+              buttonCamAnd30(
+                size,
+                widget.onTapPass,
+                'assets/icon/rewind-forward-30.png',
+              ),
+              buttonCamAnd30(
+                size,
+                widget.onGetDominoesPointbyImage,
+                'assets/icon/camera.png',
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  GestureDetector buttonCamAnd30(
+    Size size,
+    VoidCallback onTap,
+    String iconAsset,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: size.height * (44 / 852),
+        width: size.width * (70 / 393),
+        decoration: BoxDecoration(
+          color: Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(22),
+          border: BoxBorder.all(width: 1.9, color: Color(0xFFDADDE2)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(7.0),
+          child: Image(
+            fit: BoxFit.contain,
+            color: Color(0xFF1E2B43),
+            image: AssetImage(iconAsset),
+          ),
+        ),
       ),
     );
   }
@@ -156,7 +175,7 @@ class _ButtonSaveScore extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: size.height * (43 / 852),
-        width: size.width * (175 / 393),
+        width: size.width * (129 / 393),
         decoration: BoxDecoration(
           color: colorButton,
           borderRadius: BorderRadius.circular(22),
@@ -183,7 +202,7 @@ class _ButtonSaveScore extends StatelessWidget {
                       : Color(0xFFFFFFFF),
                   image: AssetImage('assets/icon/plus.png'),
                 ),
-                SizedBox(width: 10),
+
                 Text(
                   'Añadir puntos',
                   style: TextStyle(

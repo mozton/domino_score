@@ -49,11 +49,11 @@ class UiHelpers {
     return showDialog(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
+        return Dialog(
           backgroundColor: Color(0xFFFFFFFF),
-          contentPadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.zero,
 
-          content: AddScore(
+          child: AddScore(
             colorButton: teamIndex == 0 ? Color(0xFFD4AF37) : Color(0xFF1E2B43),
             onTapPass: () async {
               final points = int.tryParse("30") ?? 0;
