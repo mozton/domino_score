@@ -67,18 +67,18 @@ class _AddScoreState extends State<AddScore> {
                       fontSize: size.height * (18 / 852),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF1E2B43).withOpacity(0.3),
+                      color: Color(0xFF1E2B43).withValues(alpha: 0.3),
                     ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         width: 1.5,
-                        color: Color(0xFFD9D9D9).withOpacity(0.9),
+                        color: Color(0xFFD9D9D9).withValues(alpha: 0.9),
                       ),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         width: 1.5,
-                        color: Color(0xFFD9D9D9).withOpacity(0.9),
+                        color: Color(0xFFD9D9D9).withValues(alpha: 0.9),
                       ),
                     ),
                   ),
@@ -181,7 +181,7 @@ class _ButtonSaveScore extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: Color(0xFFD4AF37).withOpacity(0.149),
+              color: Color(0xFFD4AF37).withValues(alpha: 0.149),
               offset: Offset(0, 2),
               blurRadius: 8,
               spreadRadius: 0,

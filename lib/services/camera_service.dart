@@ -12,7 +12,7 @@ class CameraService {
     }
     _controller = CameraController(
       camera.first,
-      ResolutionPreset.high,
+      ResolutionPreset.veryHigh,
       enableAudio: false,
       imageFormatGroup: ImageFormatGroup.jpeg,
     );

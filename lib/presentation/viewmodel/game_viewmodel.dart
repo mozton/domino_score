@@ -163,13 +163,8 @@ class GameViewmodel extends ChangeNotifier {
 
   Future<void> loadGameDetails(int gameId) async {
     try {
-      // 1. Obtener el GameModel completo (que ya incluye 'rounds')
       final games = await _repository.fetchAllGames();
-
-      // 2. 🎯 Actualizar el estado interno
       _currentGame = games.last;
-
-      // 3. Notificar a la UI
       notifyListeners();
     } catch (e) {
       print('Error al cargar los detalles del juego: $e');
@@ -178,9 +173,6 @@ class GameViewmodel extends ChangeNotifier {
 
   void resetWinnerState() {
     _winnerTeam = null;
-    // No necesitas notifyListeners() aquí a menos que quieras que la UI
-    // cambie de nuevo después de cerrar el modal, pero generalmente no es necesario
-    // inmediatamente después de un showModalBottomSheet.
   }
 
   // ======================== //  TEAMS  // ======================= //
@@ -314,6 +306,7 @@ class GameViewmodel extends ChangeNotifier {
   int? get roundSelected => _roundSelected;
 
   Future<void> selectedRoundByIndex(int? index) async {
+    // print('Selected round index: $index');
     _roundSelected = index;
     notifyListeners();
   }
@@ -331,13 +324,43 @@ class GameViewmodel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    final roundId = _currentGame.rounds[_roundSelected!].id;
 
-    await _repository.deleteRound(roundId!);
+    final roundToDelete = _currentGame.rounds[_roundSelected!];
+    final roundId = roundToDelete.id!;
 
-    await loadGameDetails(_currentGame.id!);
-    _roundSelected = null;
-    notifyListeners();
+    // 1. Obtener equipos y calcular nuevos puntajes
+    final team1 = _currentGame.teams[0];
+    final team2 = _currentGame.teams[1];
+
+    final newTeam1Score = team1.totalScore - roundToDelete.team1Points;
+    final newTeam2Score = team2.totalScore - roundToDelete.team2Points;
+
+    // 2. Decrementar el número de ronda actual
+    final newActualRound = _currentGame.actualRound - 1;
+
+    try {
+      // 3. Actulizar DB
+      // A. Actualizar scores en DB
+      await _repository.updateTeamScore(team1.id!, newTeam1Score);
+      await _repository.updateTeamScore(team2.id!, newTeam2Score);
+
+      // B. Actualizar actualRound en DB
+      await _repository.updateGameActualRound(
+        _currentGame.id!,
+        newActualRound < 0 ? 0 : newActualRound,
+      );
+
+      // C. Eliminar la ronda
+      await _repository.deleteRound(roundId);
+
+      // 4. Recargar estado completo del juego
+      await loadGameDetails(_currentGame.id!);
+
+      _roundSelected = null;
+      notifyListeners();
+    } catch (e) {
+      print('Error al eliminar ronda: $e');
+    }
   }
 
   //

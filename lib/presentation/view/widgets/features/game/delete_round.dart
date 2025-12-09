@@ -27,7 +27,6 @@ class DeleteRound extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Navigator.pop(context);
-                    // context.read<GameViewmodel>().selectRoundByIndex(null);
                   },
                   child: Image(
                     height: 23,
