@@ -5,6 +5,7 @@ abstract class RemoteAuthDataSource {
 
   Future<void> logout();
   Future<String> readToken();
-
-  Future<void> verifyEmail(String token) async {}
+  Future<void> sendEmailVerification();
+  Future<bool> isEmailVerified();
+  Future<void> resendVerificationEmail();
 }

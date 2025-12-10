@@ -1,4 +1,4 @@
-import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
+import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -90,19 +90,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: () async {
-                          final auth = Provider.of<RemoteAuthDataSourceImpl>(
+                          final auth = Provider.of<AuthRepository>(
                             context,
                             listen: false,
                           );
 
                           try {
-                            await auth.createUser(
+                            await auth.signUp(
                               emailCtrl.text.trim(),
                               passCtrl.text.trim(),
                             );
 
                             if (context.mounted) {
-                              Navigator.pushReplacementNamed(context, '/login');
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Verificación de correo'),
+                                  content: const Text(
+                                    'Hemos enviado un correo de verificación para completar su registro.',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            '/login',
+                                          ),
+                                      child: const Text('Aceptar'),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
