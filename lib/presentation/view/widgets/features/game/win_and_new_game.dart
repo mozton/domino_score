@@ -41,9 +41,8 @@ class WinAndNewGame extends StatelessWidget {
           ),
           SizedBox(height: 65),
           Image(
-            height: 70,
-            color: Color(0xFF1E2B43),
-            image: AssetImage('assets/icon/confetti.png'),
+            height: size.height * (70 / 852),
+            image: AssetImage('assets/icon/fiesta.png'),
           ),
           SizedBox(height: 25),
           Text(
@@ -55,16 +54,18 @@ class WinAndNewGame extends StatelessWidget {
               color: Color(0xFF1E2B43),
             ),
           ),
-          Text(
-            textAlign: TextAlign.center,
-            teamWiner,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFFC6A15B),
-            ),
-          ),
+          teamWiner.isEmpty
+              ? SizedBox.shrink()
+              : Text(
+                  textAlign: TextAlign.center,
+                  teamWiner,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFC6A15B),
+                  ),
+                ),
           Text(
             '¿Listos para la revancha?',
             style: TextStyle(

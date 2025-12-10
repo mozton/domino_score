@@ -27,4 +27,9 @@ class SettingViewModel extends ChangeNotifier {
     focusNode.dispose();
     super.dispose();
   }
+
+  Offset getButtonPosition(GlobalKey key) {
+    final RenderBox box = key.currentContext!.findRenderObject() as RenderBox;
+    return box.localToGlobal(Offset.zero);
+  }
 }

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
 
       scaffoldMessengerKey: NotificationsService.messangerKey,
       routes: AppRouter.routes,
-      initialRoute: RouteNames.checking,
+      initialRoute: RouteNames.login,
       themeMode: ThemeMode.system,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),

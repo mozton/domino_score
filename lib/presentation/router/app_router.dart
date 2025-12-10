@@ -4,6 +4,7 @@ import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/auth/register_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
 import 'package:dominos_score/presentation/view/screen/setting/setting_screen.dart';
+import 'package:dominos_score/presentation/view/widgets/features/setting/popup_setting.dart';
 
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class AppRouter {
       RouteNames.checking: (context) => CheckAuthScreen(),
       RouteNames.login: (context) => LoginScreen(),
       RouteNames.register: (context) => RegisterScreen(),
+      RouteNames.settingsPopup: (context) => SettingsPopupDemo(),
     };
   }
 }

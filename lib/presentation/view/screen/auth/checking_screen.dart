@@ -1,4 +1,5 @@
-import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
+import 'package:dominos_score/domain/models/auth/user_model.dart';
+import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +13,12 @@ class CheckAuthScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
-          future: context.read<RemoteAuthDataSourceImpl>().readToken(),
+          future: context.read<AuthRepository>().checkAuthStatus(),
 
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<UserModel?> snapshot) {
             if (!snapshot.hasData) return Text('Espere');
 
-            if (snapshot.data == '') {
+            if (snapshot.data == null) {
               Future.microtask(() {
                 Navigator.pushReplacement(
                   context,

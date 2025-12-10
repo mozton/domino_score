@@ -171,52 +171,44 @@ class _ButtonSaveScore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: size.height * (43 / 852),
-        width: size.width * (129 / 393),
-        decoration: BoxDecoration(
-          color: colorButton,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFFD4AF37).withValues(alpha: 0.149),
-              offset: Offset(0, 2),
-              blurRadius: 8,
-              spreadRadius: 0,
+    return SizedBox(
+      height: size.height * (43 / 852),
+      width: size.width * (129 / 393),
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorButton,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          elevation: 4,
+          shadowColor: const Color(0xFFD4AF37).withValues(alpha: 0.15),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/icon/plus.png',
+              height: size.height * (23 / 852),
+              width: size.width * (23 / 393),
+              color: colorButton == const Color(0xFFD4AF37)
+                  ? const Color(0xFF000000)
+                  : const Color(0xFFFFFFFF),
+            ),
+
+            Text(
+              'Añadir puntos',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+                fontSize: size.height * (13 / 852),
+                color: colorButton == const Color(0xFFD4AF37)
+                    ? const Color(0xFF000000)
+                    : const Color(0xFFFFFFFF),
+              ),
             ),
           ],
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image(
-                  height: 23,
-                  width: 23,
-                  color: colorButton == Color(0xFFD4AF37)
-                      ? Color(0xFF000000)
-                      : Color(0xFFFFFFFF),
-                  image: AssetImage('assets/icon/plus.png'),
-                ),
-
-                Text(
-                  'Añadir puntos',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 13,
-                    color: colorButton == Color(0xFFD4AF37)
-                        ? Color(0xFF000000)
-                        : Color(0xFFFFFFFF),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

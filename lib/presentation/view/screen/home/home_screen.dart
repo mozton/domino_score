@@ -1,5 +1,8 @@
 import 'package:dominos_score/data/local/database_helper.dart';
+import 'package:dominos_score/presentation/view/widgets/global/settings_popup.dart';
+import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:dominos_score/utils/ui_helpers.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/button/button_start_game.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
@@ -12,6 +15,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey settingsKey = GlobalKey();
     return Consumer<GameViewmodel>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
@@ -43,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
 
-                  appBar: _appBarHome(context),
+                  appBar: _appBarHome(context, settingsKey),
                   body: SingleChildScrollView(
                     physics: NeverScrollableScrollPhysics(),
                     child: Column(
@@ -117,7 +121,7 @@ class HomeScreen extends StatelessWidget {
 
   // AppBarHome
 
-  AppBar _appBarHome(BuildContext context) {
+  AppBar _appBarHome(BuildContext context, GlobalKey settingsKey) {
     return AppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: MediaQuery.of(context).size.height * 0.099,
@@ -135,8 +139,9 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 20),
           child: InkWell(
+            key: settingsKey,
             onTap: () {
-              Navigator.pushNamed(context, '/setting');
+              SettingsPopup.show(context, settingsKey);
             },
             child: Image(
               height: 28,

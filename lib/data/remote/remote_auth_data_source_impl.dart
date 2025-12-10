@@ -111,7 +111,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   }
 
   @override
-  Future logout() async {
+  Future<void> logout() async {
     await _storage.delete(key: 'token');
     return;
   }

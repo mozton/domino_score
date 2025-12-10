@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
+import 'package:dominos_score/config/service_locator.dart';
 import 'package:dominos_score/data/remote/dominos_counter_service.dart';
-
 import 'package:dominos_score/services/camera_service.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +27,11 @@ class CameraViewModel extends ChangeNotifier {
   }
 
   Future<int> processImage(XFile image) async {
-    final bytes = await File(image.path).readAsBytes();
-    final base64Image = base64Encode(bytes);
+    // final bytes = await File(image.path).readAsBytes();
+    // final base64Image = base64Encode(bytes);
+    final filteredImage = await applyBlackAndWhiteFilter(File(image.path));
+    final imageBytes = await filteredImage.readAsBytes();
+    final base64Image = base64Encode(imageBytes);
     final points = await _dominosCounter.getDominosPointFromImg(base64Image);
     return points;
   }
