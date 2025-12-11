@@ -2,4 +2,3 @@ export 'package:dominos_score/presentation/view/widgets/features/game/icon_domin
 export 'package:dominos_score/presentation/view/widgets/features/game/button/button_add_score.dart';
 export 'package:dominos_score/presentation/view/widgets/features/game/score_list.dart';
 export 'package:dominos_score/presentation/view/widgets/features/game/card_team.dart';
-export 'package:dominos_score/presentation/view/widgets/features/setting/switch_theme.dart';

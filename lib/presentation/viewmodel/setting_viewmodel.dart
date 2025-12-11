@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 class SettingViewModel extends ChangeNotifier {
   // ======================== // SETTINGS // ======================== //
 
-  bool _isDarkMode = false;
-  bool get isDarkMode => _isDarkMode;
+  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode get themeMode => _themeMode;
 
-  bool _isSystemTheme = false;
-  bool get isSystemTheme => _isSystemTheme;
-
-  void toggleTheme(bool isOn) {
-    _isDarkMode = isOn;
-    notifyListeners();
-  }
-
-  void toggleSystemTheme(bool isOn) {
-    _isSystemTheme = isOn;
+  void cycleTheme() {
+    switch (_themeMode) {
+      case ThemeMode.system:
+        _themeMode = ThemeMode.light;
+        break;
+      case ThemeMode.light:
+        _themeMode = ThemeMode.dark;
+        break;
+      case ThemeMode.dark:
+        _themeMode = ThemeMode.system;
+        break;
+    }
     notifyListeners();
   }
 

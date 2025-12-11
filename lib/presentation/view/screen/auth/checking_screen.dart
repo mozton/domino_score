@@ -16,7 +16,9 @@ class CheckAuthScreen extends StatelessWidget {
           future: context.read<AuthRepository>().checkAuthStatus(),
 
           builder: (BuildContext context, AsyncSnapshot<UserModel?> snapshot) {
-            if (!snapshot.hasData) return Text('Espere');
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(child: Text('Cargando...'));
+            }
 
             if (snapshot.data == null) {
               Future.microtask(() {

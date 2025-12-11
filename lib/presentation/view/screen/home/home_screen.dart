@@ -1,8 +1,8 @@
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/presentation/view/widgets/global/settings_popup.dart';
-import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
+
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
+
 import 'package:dominos_score/utils/ui_helpers.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/button/button_start_game.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey settingsKey = GlobalKey();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Consumer<GameViewmodel>(
       builder: (context, prov, child) {
         final teams = prov.currentGame.teams;
@@ -41,7 +42,9 @@ class HomeScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [const Color(0xFFE4E9F2), const Color(0xFFFAFAFA)],
+                    colors: isDark
+                        ? [const Color(0x00000000), const Color(0x00000000)]
+                        : [const Color(0xFFE4E9F2), const Color(0xFFFAFAFA)],
                   ),
                 ),
                 child: Scaffold(
@@ -122,10 +125,13 @@ class HomeScreen extends StatelessWidget {
   // AppBarHome
 
   AppBar _appBarHome(BuildContext context, GlobalKey settingsKey) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: MediaQuery.of(context).size.height * 0.099,
-      backgroundColor: const Color(0xFFE4E9F2),
+      backgroundColor: isDark
+          ? const Color(0x00000000)
+          : const Color(0xFFE4E9F2),
 
       title: Text(
         'Dominos App',
@@ -133,6 +139,7 @@ class HomeScreen extends StatelessWidget {
           fontSize: 16,
           fontWeight: FontWeight.w500,
           fontFamily: 'Poppins',
+          color: isDark ? Colors.white : Colors.black,
         ),
       ),
       actions: [
@@ -147,6 +154,7 @@ class HomeScreen extends StatelessWidget {
               height: 28,
               width: 28,
               image: AssetImage('assets/icon/settings.png'),
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
         ),

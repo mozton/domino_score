@@ -43,7 +43,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
     // Borrar el archivo completo de la base de datos
     await deleteDatabase(path);
-    print('Base de Datos Borrada');
+    // print('Base de Datos Borrada');
   }
 
   Future<void> _createTables(Database db, int version) async {
@@ -94,10 +94,11 @@ class DatabaseHelper implements LocalGameDataSource {
       'createdAt': game.createdAt.toIso8601String(),
       'winnerTeamName': game.winnerTeamName,
     });
-    print('Se creo juego #$gameId');
+    // print('Se creo juego #$gameId');
     return gameId;
   }
 
+  @override
   Future<int> updatePointToWin(int gameId, int newScore) async {
     final db = await database;
 
@@ -112,6 +113,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
   //  Add Teams
 
+  @override
   Future<int> insertTeam(int gameId, TeamModel team) async {
     final db = await database;
 
@@ -137,6 +139,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
   // Update teamName
 
+  @override
   Future<int> updateTeamName(int teamId, String newName) async {
     final db = await database;
 
@@ -191,6 +194,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
   // Add rounds
 
+  @override
   Future<int> insertRound(int gameId, RoundModel round) async {
     final db = await database;
 
@@ -204,6 +208,7 @@ class DatabaseHelper implements LocalGameDataSource {
     });
   }
 
+  @override
   Future<int> updateTotalScore(int teamId, int newTotalScore) async {
     final db = await database;
     return await db.update(
@@ -216,6 +221,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
   // Update actualRound
 
+  @override
   Future<int> updateActualRound(int gameId, int actualRound) async {
     final db = await database;
 
@@ -229,6 +235,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
   // Delete round by id
 
+  @override
   Future<int> deleteRound(int id) async {
     final db = await database;
 
@@ -237,6 +244,7 @@ class DatabaseHelper implements LocalGameDataSource {
 
   // --------------------------------------------------\--
 
+  @override
   Future<List<GameModel>> getGames() async {
     final db = await database;
 

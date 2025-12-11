@@ -1,6 +1,6 @@
-import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
-import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
+import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
@@ -15,20 +15,18 @@ class SettingsPopup extends StatelessWidget {
     return _buildPopup(context);
   }
 
-  /// --------------------------------------------------------------------------
-  /// 🔥 SHOW POPUP (CON ANIMACIÓN SCALE + FADE)
-  /// --------------------------------------------------------------------------
   static void show(BuildContext context, GlobalKey settingsKey) {
     final Offset btnPos = context.read<SettingViewModel>().getButtonPosition(
       settingsKey,
     );
 
     final Size screenSize = MediaQuery.of(context).size;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.35),
+      barrierColor: Colors.black.withValues(alpha: 0.35),
       barrierLabel: '',
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (_, __, ___) {
@@ -38,7 +36,7 @@ class SettingsPopup extends StatelessWidget {
               top: btnPos.dy + 35,
               right: screenSize.width - btnPos.dx - 28,
               child: Material(
-                color: Colors.transparent,
+                color: isDark ? Colors.black : Colors.transparent,
                 child: SettingsPopup(settingsKey: settingsKey),
               ),
             ),
@@ -68,39 +66,75 @@ class SettingsPopup extends StatelessWidget {
     );
   }
 
-  /// --------------------------------------------------------------------------
-  /// 📌 POPUP UI
-  /// --------------------------------------------------------------------------
+  // COMPONENTS
+
   Widget _buildPopup(BuildContext context) {
     final width = MediaQuery.of(context).size.width * (234 / 393);
     final height = MediaQuery.of(context).size.height * (217 / 851);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
           const SizedBox(height: 8),
 
-          _component(
-            context,
-            'Modo Sistema',
-            'assets/icon/sun-moon.png',
-            () {},
-            const Color(0xFF6B7280),
-            true,
+          Consumer<SettingViewModel>(
+            builder: (context, vm, _) {
+              String themeTitle;
+              String iconAsset;
+              Color color;
+              Color colorIcon;
+              switch (vm.themeMode) {
+                case ThemeMode.system:
+                  themeTitle = 'Modo Sistema';
+                  iconAsset = 'assets/icon/sun-moon.png';
+                  color = Color(0xFF6B7280);
+                  colorIcon = Color(0xFF6B7280);
+                  break;
+                case ThemeMode.light:
+                  themeTitle = 'Modo Claro';
+                  iconAsset = 'assets/icon/sun-high.png';
+                  color = Color(0xFF6B7280);
+                  colorIcon = Color(0xFF6B7280);
+                  break;
+                case ThemeMode.dark:
+                  themeTitle = 'Modo Oscuro';
+                  iconAsset = 'assets/icon/moon.png';
+                  color = Color(0xFF6B7280);
+                  colorIcon = Color(0xFFD4AF37);
+                  break;
+              }
+              return _component(
+                context,
+                themeTitle,
+                iconAsset,
+                () => vm.cycleTheme(),
+                color,
+                colorIcon,
+                true,
+              );
+            },
           ),
 
           _component(
             context,
             'Historial de partidas',
             'assets/icon/list.png',
-            () {},
+            () {
+              Provider.of<GameViewmodel>(context, listen: false).loadGames();
+
+              Navigator.pop(context);
+              Future.delayed(Duration.zero);
+              Navigator.pushNamed(context, RouteNames.history);
+            },
             const Color(0xFF6B7280),
+            Color(0xFF6B7280),
             true,
           ),
 
@@ -110,14 +144,13 @@ class SettingsPopup extends StatelessWidget {
             'assets/icon/language.png',
             () {},
             const Color(0xFF6B7280),
+            Color(0xFF6B7280),
             true,
           ),
 
-          const SizedBox(height: 10),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Divider(height: 1.5, color: Color(0xFFE5E7EB)),
+            child: Divider(height: 20, color: Color(0xFFE5E7EB)),
           ),
 
           _component(
@@ -125,7 +158,8 @@ class SettingsPopup extends StatelessWidget {
             'Configuración de cuenta',
             'assets/icon/user-cog.png',
             () {},
-            Colors.black,
+            isDark ? Colors.white : Colors.black,
+            Color(0xFF6B7280),
             false,
           ),
 
@@ -133,16 +167,23 @@ class SettingsPopup extends StatelessWidget {
             context,
             'Sign Out',
             'assets/icon/logout-2.png',
-            () {
+            () async {
               final authRepository = Provider.of<AuthRepository>(
                 context,
                 listen: false,
               );
-              print('sign out');
 
-              authRepository.signOut();
+              await authRepository.signOut();
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteNames.checking,
+                  (route) => false,
+                );
+              }
             },
-            Colors.red,
+            Color(0xFFEF4444),
+            Color(0xFFEF4444),
             false,
           ),
         ],
@@ -150,52 +191,69 @@ class SettingsPopup extends StatelessWidget {
     );
   }
 
-  /// --------------------------------------------------------------------------
-  /// COMPONENTE INDIVIDUAL
-  /// --------------------------------------------------------------------------
+  // COMPONENTE INDIVIDUAL
+
   Widget _component(
     BuildContext context,
     String title,
     String iconAsset,
     VoidCallback onTap,
     Color colorFont,
+    Color colorIcon,
     bool havePoint,
   ) {
-    return Container(
-      height: MediaQuery.of(context).size.height * (36 / 851),
-      width: MediaQuery.of(context).size.width * (220 / 393),
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         onTap: onTap,
-        leading: Image(
-          image: AssetImage(iconAsset),
-          height: 20,
-          width: 20,
-          color: colorFont,
-        ),
-        title: Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'Poppins',
-            color: colorFont,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          height: MediaQuery.of(context).size.height * (36 / 851),
+          width: MediaQuery.of(context).size.width * (220 / 393),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            children: [
+              // Ícono
+              Image(
+                image: AssetImage(iconAsset),
+                height: 20,
+                width: 20,
+                color: colorIcon,
+              ),
+
+              const SizedBox(width: 10),
+
+              // Texto expandible con "..."
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Poppins',
+                    color: colorFont,
+                  ),
+                ),
+              ),
+
+              // Punto opcional
+              if (havePoint)
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: colorFont,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+
+              const SizedBox(width: 5),
+            ],
           ),
         ),
-        trailing: havePoint
-            ? Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: colorFont,
-                  shape: BoxShape.circle,
-                ),
-              )
-            : const SizedBox.shrink(),
       ),
     );
   }

@@ -20,6 +20,9 @@ class GameViewmodel extends ChangeNotifier {
   );
   GameModel get currentGame => _currentGame;
 
+  List<GameModel> _games = [];
+  List<GameModel> get games => _games;
+
   // ======================== Points ======================== //
 
   int pointsToWin = 200;
@@ -93,6 +96,12 @@ class GameViewmodel extends ChangeNotifier {
     _currentGame = fullGame;
   }
   // ======================== //  GAMES  // ======================= //
+
+  Future<void> loadGames() async {
+    final games = await _repository.fetchAllGames();
+    _games = games;
+    notifyListeners();
+  }
 
   Future<void> startNewGame() async {
     _isLoading = true;

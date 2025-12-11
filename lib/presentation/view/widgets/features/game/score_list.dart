@@ -34,7 +34,7 @@ class ScoreList extends StatelessWidget {
         height: size.height * 0.465,
         width: size.width * 0.9,
         decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF).withOpacity(0.8),
+          color: Color(0xFFFFFFFF).withValues(alpha: 0.8),
           border: Border.all(width: 1, color: const Color(0xFFDADDE2)),
           borderRadius: BorderRadius.circular(14),
         ),
@@ -66,13 +66,13 @@ class RoundView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // escuchar para que el ListView se rebuild cuando cambie selectedIndex
-
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
     final poppins = TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w500,
       fontFamily: 'Poppins',
-      color: Color(0xFF1E2B43),
+      color: isDark ? Colors.white : Colors.black38,
     );
 
     return Consumer<GameViewmodel>(
@@ -107,6 +107,8 @@ class RoundView extends StatelessWidget {
                 final round = rounds[index];
                 final isSelected = prov.roundSelected == (index);
 
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+
                 return GestureDetector(
                   onTap: () {
                     if (isSelected) {
@@ -132,7 +134,9 @@ class RoundView extends StatelessWidget {
                             ? Color(0xFFB00020).withOpacity(
                                 0.9,
                               ) // selected (rojo)
-                            : Color(0xFFF7F8FA), // not selected (normal)
+                            : isDark
+                            ? Color(0xFF0F1822)
+                            : Color(0xFFF7F8FA),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(width: 1, color: Color(0xFFDADDE2)),
                       ),

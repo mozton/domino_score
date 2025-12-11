@@ -65,6 +65,7 @@ class CardTeam extends StatelessWidget {
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Poppins',
+                          color: Colors.black,
                         ),
                       ),
                       Row(
@@ -76,6 +77,7 @@ class CardTeam extends StatelessWidget {
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Poppins',
+                              color: Colors.black,
                             ),
                           ),
                         ],

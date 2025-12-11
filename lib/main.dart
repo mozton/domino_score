@@ -2,6 +2,7 @@ import 'package:dominos_score/config/service_locator.dart';
 import 'package:dominos_score/data/local/shared_preferences.dart';
 import 'package:dominos_score/presentation/router/app_router.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
+import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:dominos_score/services/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,8 +30,8 @@ class MyApp extends StatelessWidget {
 
       scaffoldMessengerKey: NotificationsService.messangerKey,
       routes: AppRouter.routes,
-      initialRoute: RouteNames.login,
-      themeMode: ThemeMode.system,
+      initialRoute: RouteNames.checking,
+      themeMode: context.watch<SettingViewModel>().themeMode,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
     );

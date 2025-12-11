@@ -32,7 +32,7 @@ class ServiceLocator {
 
     Provider<AuthRepository>(
       create: (context) => AuthRepositoryImpl(
-        context.read<RemoteAuthDataSourceImpl>(),
+        context.read<RemoteAuthDataSource>(),
         context.read<FlutterSecureStorage>(),
       ),
     ),

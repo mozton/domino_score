@@ -1,16 +1,14 @@
-import 'package:dominos_score/domain/models/auth/user_role.dart';
-
 class UserModel {
-  final String id;          // UID de Firebase o ID de base de datos
+  final String id; // UID de Firebase o ID de base de datos
   final String email;
-  final String name;        // Nombre real (Ej: "Juan Pérez")
-  final String username;    // Alias único (Ej: "@juanp")
-  final String? photoUrl;   // URL de la imagen o path local
-  
+  final String name; // Nombre real (Ej: "Juan Pérez")
+  final String username; // Alias único (Ej: "@juanp")
+  final String? photoUrl; // URL de la imagen o path local
+
   // RELACIÓN: Un usuario puede pertenecer a varios grupos.
   // Guardamos los IDs de los grupos.
-  final List<String> groupIds; 
-  
+  final List<String> groupIds;
+
   final DateTime createdAt;
 
   UserModel({
@@ -66,7 +64,7 @@ class UserModel {
       username: username ?? this.username,
       photoUrl: photoUrl ?? this.photoUrl,
       groupIds: groupIds ?? this.groupIds,
-      createdAt: this.createdAt, // La fecha de creación no suele cambiar
+      createdAt: createdAt,
     );
   }
 }
