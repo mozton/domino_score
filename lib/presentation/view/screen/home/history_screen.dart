@@ -2,8 +2,8 @@ import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
+class HistoryDemoScreen extends StatelessWidget {
+  const HistoryDemoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

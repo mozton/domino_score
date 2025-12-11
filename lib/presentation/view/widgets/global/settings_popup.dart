@@ -131,7 +131,7 @@ class SettingsPopup extends StatelessWidget {
 
               Navigator.pop(context);
               Future.delayed(Duration.zero);
-              Navigator.pushNamed(context, RouteNames.history);
+              Navigator.pushNamed(context, RouteNames.historyDemo);
             },
             const Color(0xFF6B7280),
             Color(0xFF6B7280),

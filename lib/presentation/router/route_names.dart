@@ -6,5 +6,5 @@ class RouteNames {
   static const String register = '/register';
   static const String checking = '/checking';
   static const String settingsPopup = '/settingsPopup';
-  static const String history = '/history';
+  static const String historyDemo = '/historyDemo';
 }

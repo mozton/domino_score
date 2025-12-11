@@ -15,7 +15,7 @@ class AppRouter {
       RouteNames.checking: (context) => CheckAuthScreen(),
       RouteNames.login: (context) => LoginScreen(),
       RouteNames.register: (context) => RegisterScreen(),
-      RouteNames.history: (context) => HistoryScreen(),
+      RouteNames.historyDemo: (context) => HistoryDemoScreen(),
     };
   }
 }
