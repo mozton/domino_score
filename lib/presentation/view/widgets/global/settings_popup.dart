@@ -22,7 +22,7 @@ class SettingsPopup extends StatelessWidget {
 
     final Size screenSize = MediaQuery.of(context).size;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    //TODO: review border radius of dialog
     showGeneralDialog(
       context: context,
       barrierDismissible: true,

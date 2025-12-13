@@ -8,11 +8,11 @@ class DominosCounter {
     final apiKey = dotenv.env['ROBOFLOW_API_KEY'] ?? "";
 
     final response = await dio.post(
-      "https://serverless.roboflow.com/dominoe-pips/9",
+      "https://serverless.roboflow.com/dominoe-pips-tachy/1",
       queryParameters: {
         "api_key": apiKey,
-        "confidence": 50.0,
-        "threshold": 50.0,
+        "confidence": 70.0,
+        "threshold": 70.0,
       },
       data: base64Image,
       options: Options(

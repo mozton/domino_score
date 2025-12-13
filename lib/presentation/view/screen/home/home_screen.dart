@@ -134,9 +134,9 @@ class HomeScreen extends StatelessWidget {
           : const Color(0xFFE4E9F2),
 
       title: Text(
-        'Dominos App',
+        'Corillo',
         style: TextStyle(
-          fontSize: 16,
+          fontSize: MediaQuery.of(context).size.height * (16 / 852),
           fontWeight: FontWeight.w500,
           fontFamily: 'Poppins',
           color: isDark ? Colors.white : Colors.black,
@@ -145,14 +145,19 @@ class HomeScreen extends StatelessWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 20),
-          child: InkWell(
+          child: ElevatedButton(
             key: settingsKey,
-            onTap: () {
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              elevation: 1,
+            ),
+            onPressed: () {
               SettingsPopup.show(context, settingsKey);
             },
             child: Image(
-              height: 28,
-              width: 28,
+              height: MediaQuery.of(context).size.height * (28 / 852),
+              width: MediaQuery.of(context).size.width * (28 / 393),
               image: AssetImage('assets/icon/settings.png'),
               color: isDark ? Colors.white : Colors.black,
             ),

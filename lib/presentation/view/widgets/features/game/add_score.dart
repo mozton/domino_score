@@ -64,7 +64,7 @@ class _AddScoreState extends State<AddScore> {
                     counterText: '',
                     hintText: 'Agrega puntos',
                     hintStyle: TextStyle(
-                      fontSize: size.height * (18 / 852),
+                      fontSize: size.height * (17 / 852),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
                       color: Color(0xFF1E2B43).withValues(alpha: 0.3),
@@ -190,8 +190,8 @@ class _ButtonSaveScore extends StatelessWidget {
           children: [
             Image.asset(
               'assets/icon/plus.png',
-              height: size.height * (23 / 852),
-              width: size.width * (23 / 393),
+              height: size.height * (20 / 852),
+              width: size.width * (20 / 393),
               color: colorButton == const Color(0xFFD4AF37)
                   ? const Color(0xFF000000)
                   : const Color(0xFFFFFFFF),

@@ -105,7 +105,7 @@ class UiHelpers {
                 context,
                 teamIndex,
               );
-
+              print(points);
               // Si recibimos puntos válidos, guardamos la ronda
               if (points != null && points > 0 && context.mounted) {
                 final newRound = teamIndex == 0
