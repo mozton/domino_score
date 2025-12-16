@@ -1,3 +1,4 @@
+import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
 import 'package:flutter/services.dart';
@@ -115,10 +116,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     listen: false,
                                   );
                                   try {
-                                    await prov.signIn(
+                                    final user = await prov.signIn(
                                       emailCtrl.text.trim(),
                                       passCtrl.text.trim(),
                                     );
+                                    if (user != null) {
+                                      await DatabaseHelper().init(user.id);
+                                    }
 
                                     if (context.mounted) {
                                       Navigator.pushReplacementNamed(

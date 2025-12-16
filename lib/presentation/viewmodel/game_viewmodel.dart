@@ -47,9 +47,7 @@ class GameViewmodel extends ChangeNotifier {
   }
   // ======================== Constructor ======================== //
 
-  GameViewmodel(this._repository) {
-    initGameOnStartup();
-  }
+  GameViewmodel(this._repository);
 
   // ======================== Inicialización ======================== //
 
@@ -61,8 +59,15 @@ class GameViewmodel extends ChangeNotifier {
       final existingGamen = await _repository.fetchAllGames();
 
       if (existingGamen.isEmpty) {
+        // Asegurar que el estado anterior no interfiera
+        _currentGame = GameModel(
+          actualRound: 0,
+          pointsToWin: pointsToWin,
+          createdAt: DateTime.now(),
+          teams: [],
+          rounds: [],
+        );
         await _createNewGame();
-
         // print("Juego nuevo creado con ID: ${_currentGame.id}");
       } else {
         _currentGame = existingGamen.last;
@@ -79,6 +84,7 @@ class GameViewmodel extends ChangeNotifier {
       );
     }
     _isLoading = false;
+    print(_currentGame.id);
     notifyListeners();
   }
 

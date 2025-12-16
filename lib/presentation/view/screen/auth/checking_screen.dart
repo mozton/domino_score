@@ -1,3 +1,4 @@
+import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
@@ -31,14 +32,17 @@ class CheckAuthScreen extends StatelessWidget {
                 );
               });
             } else {
-              Future.microtask(() {
-                Navigator.pushReplacement(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => HomeScreen(),
-                    transitionDuration: Duration(seconds: 0),
-                  ),
-                );
+              Future.microtask(() async {
+                await DatabaseHelper().init(snapshot.data!.id);
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => HomeScreen(),
+                      transitionDuration: Duration(seconds: 0),
+                    ),
+                  );
+                }
               });
             }
             return Container();

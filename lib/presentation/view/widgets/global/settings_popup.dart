@@ -1,9 +1,12 @@
+import 'package:dominos_score/data/local/database_helper.dart';
+
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SettingsPopup extends StatelessWidget {
   final GlobalKey settingsKey;
@@ -142,12 +145,14 @@ class SettingsPopup extends StatelessWidget {
             context,
             'Lenguage',
             'assets/icon/language.png',
-            () {},
+            () {
+              // DatabaseHelper().deleteDB();
+              Navigator.pop(context);
+            },
             const Color(0xFF6B7280),
             Color(0xFF6B7280),
             true,
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Divider(height: 20, color: Color(0xFFE5E7EB)),
@@ -173,6 +178,7 @@ class SettingsPopup extends StatelessWidget {
                 listen: false,
               );
 
+              await DatabaseHelper().close();
               await authRepository.signOut();
               if (context.mounted) {
                 Navigator.pushNamedAndRemoveUntil(

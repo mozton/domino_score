@@ -12,38 +12,60 @@ class DatabaseHelper implements LocalGameDataSource {
   DatabaseHelper._internal();
 
   static Database? _database;
+  String? _userId;
+
+  Future<void> init(String userId) async {
+    if (_userId == userId) return;
+
+    await close();
+    _userId = userId;
+  }
+
+  Future<void> close() async {
+    if (_database != null) {
+      if (_database!.isOpen) {
+        await _database!.close();
+      }
+      _database = null;
+    }
+    _userId = null;
+  }
 
   Future<Database> get database async {
+    if (_userId == null) {
+      throw Exception(
+        'DatabaseHelper not initialized. Call init(userId) first.',
+      );
+    }
+
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'DominoScoreDB.db');
-
+    final dbName = _userId != null
+        ? 'DominoScoreDB_$_userId.db'
+        : 'DominoScoreDB.db';
+    String path = join(await getDatabasesPath(), dbName);
     return await openDatabase(
       path,
       version: 1,
       onCreate: _createTables,
       onConfigure: (db) async {
-        // Activar claves foráneas
         await db.execute('PRAGMA foreign_keys = ON');
       },
     );
   }
 
   Future<void> deleteDB() async {
-    // Obtener la ruta donde SQLite guarda las bases de datos
     final dbPath = await getDatabasesPath();
     final path = join(
       dbPath,
-      'DominoScoreDB.db',
-    ); // <-- Cambia 'games.db' al nombre real
+      'DominoScoreDB${_userId != null ? "_$_userId" : ""}.db',
+    );
 
-    // Borrar el archivo completo de la base de datos
     await deleteDatabase(path);
-    // print('Base de Datos Borrada');
   }
 
   Future<void> _createTables(Database db, int version) async {
@@ -94,7 +116,6 @@ class DatabaseHelper implements LocalGameDataSource {
       'createdAt': game.createdAt.toIso8601String(),
       'winnerTeamName': game.winnerTeamName,
     });
-    // print('Se creo juego #$gameId');
     return gameId;
   }
 
@@ -133,7 +154,7 @@ class DatabaseHelper implements LocalGameDataSource {
     return await db.insert(
       'teams',
       teamData,
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.abort,
     );
   }
 

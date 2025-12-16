@@ -1,8 +1,6 @@
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/presentation/view/widgets/global/settings_popup.dart';
-
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-
 import 'package:dominos_score/utils/ui_helpers.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/button/button_start_game.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
@@ -10,8 +8,25 @@ import 'package:dominos_score/presentation/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Inicializar el juego después de que el framework monte el widget
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final gameViewModel = context.read<GameViewmodel>();
+      // Siempre intentar inicializar al entrar al Home, el VM decidirá si es necesario.
+      // Pero para asegurar que cargue los datos del usuario nuevo:
+      gameViewModel.initGameOnStartup();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +165,6 @@ class HomeScreen extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
-              elevation: 1,
             ),
             onPressed: () {
               SettingsPopup.show(context, settingsKey);

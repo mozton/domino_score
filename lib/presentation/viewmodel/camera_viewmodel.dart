@@ -27,8 +27,6 @@ class CameraViewModel extends ChangeNotifier {
   }
 
   Future<int> processImage(XFile image) async {
-    // final bytes = await File(image.path).readAsBytes();
-    // final base64Image = base64Encode(bytes);
     final filteredImage = await applyBlackAndWhiteFilter(File(image.path));
     final imageBytes = await filteredImage.readAsBytes();
     final base64Image = base64Encode(imageBytes);
