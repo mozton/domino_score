@@ -1,4 +1,7 @@
 import 'dart:io';
+
+import 'package:dominos_score/data/repositories/setting_repository_impl.dart';
+import 'package:dominos_score/domain/repositories/setting_resopitory.dart';
 import 'package:image/image.dart' as img;
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
@@ -42,7 +45,11 @@ class ServiceLocator {
       ),
     ),
 
-    ChangeNotifierProvider<SettingViewModel>(create: (_) => SettingViewModel()),
+    Provider<SettingRepository>(create: (context) => SettingRepositoryImpl()),
+
+    ChangeNotifierProvider<SettingViewModel>(
+      create: (context) => SettingViewModel(context.read<SettingRepository>()),
+    ),
 
     ChangeNotifierProvider<CameraViewModel>(create: (_) => CameraViewModel()),
 

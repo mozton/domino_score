@@ -1,7 +1,10 @@
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
+import 'package:dominos_score/domain/utils/input_validator.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
+import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/services.dart';
+import 'package:dominos_score/data/services/biometric_service.dart';
 import 'package:dominos_score/services/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,42 +19,62 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
-  final _formKey =
-      GlobalKey<FormState>(); // [FIX] Key global para el formulario
-  final _shakeController = ShakeController(); // Controlador de animación
+  final _formKey = GlobalKey<FormState>();
+  final _shakeController = ShakeController();
+  final _biometricService = BiometricService();
 
   bool loading = false;
   bool obscure = true;
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<SettingViewModel>().themeMode;
+    final isDarkMode =
+        theme == ThemeMode.dark ||
+        (theme == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF3F7),
+      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-
-                // Title
-                Text(
-                  "Domino’s App",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
-                  ),
+                Stack(
+                  children: [
+                    Image(
+                      image: const AssetImage('assets/logo-black.png'),
+                      width: 150,
+                      height: 150,
+                    ),
+                    Positioned(
+                      top: 100,
+                      right: 20,
+                      child: Text(
+                        "Corillo App",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade800,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
+                // Title
                 const SizedBox(height: 40),
 
                 // Card container
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDarkMode ? const Color(0xFF0F1822) : Colors.white,
                     borderRadius: BorderRadius.circular(22),
                     boxShadow: [
                       BoxShadow(
@@ -64,15 +87,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Form(
                     key: _formKey,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         // Email con ShakeWidget
                         ShakeWidget(
                           controller: _shakeController,
                           child: _inputField(
                             controller: emailCtrl,
-                            label: "Correo electrónico",
+                            label: 'Correo electrónico',
                             icon: Icons.email_outlined,
                             isEmail: true, // Flag para validar email
+                            isDarkMode: isDarkMode, // Pass theme state
                           ),
                         ),
                         const SizedBox(height: 18),
@@ -84,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: "Contraseña",
                           icon: Icons.lock_outline,
                           obscure: obscure,
+                          isDarkMode: isDarkMode, // Pass theme state
                           suffix: IconButton(
                             icon: Icon(
                               obscure
@@ -100,66 +126,141 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 30),
 
                         // Login button
-                        GestureDetector(
-                          onTap: loading
-                              ? null
-                              : () async {
-                                  if (!_formKey.currentState!.validate()) {
-                                    // Si falla la validación, vibrar y salir
-                                    _shakeController.shake();
-                                    HapticFeedback.mediumImpact(); // Vibración física
-                                    return;
-                                  }
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 49,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 3,
+                                    backgroundColor: const Color(0xFFD4A62F),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  onPressed: loading
+                                      ? null
+                                      : () async {
+                                          if (!_formKey.currentState!
+                                              .validate()) {
+                                            _shakeController.shake();
+                                            HapticFeedback.mediumImpact();
+                                            return;
+                                          }
 
-                                  final prov = Provider.of<AuthRepository>(
-                                    context,
-                                    listen: false,
-                                  );
-                                  try {
-                                    final user = await prov.signIn(
-                                      emailCtrl.text.trim(),
-                                      passCtrl.text.trim(),
-                                    );
-                                    if (user != null) {
-                                      await DatabaseHelper().init(user.id);
-                                    }
+                                          final prov =
+                                              Provider.of<AuthRepository>(
+                                                context,
+                                                listen: false,
+                                              );
+                                          try {
+                                            final user = await prov.signIn(
+                                              emailCtrl.text.trim(),
+                                              passCtrl.text.trim(),
+                                            );
+                                            if (user != null) {
+                                              await DatabaseHelper().init(
+                                                user.id,
+                                              );
+                                              // Save credentials for next biometric login
+                                              await _biometricService
+                                                  .saveCredentials(
+                                                    emailCtrl.text.trim(),
+                                                    passCtrl.text.trim(),
+                                                  );
+                                            }
 
-                                    if (context.mounted) {
-                                      Navigator.pushReplacementNamed(
+                                            if (context.mounted) {
+                                              Navigator.pushReplacementNamed(
+                                                context,
+                                                '/',
+                                              );
+                                            }
+                                          } catch (e) {
+                                            final message =
+                                                InputValidator.parseException(
+                                                  e,
+                                                );
+                                            NotificationsService.showSnackbar(
+                                              message,
+                                            );
+                                          }
+                                        },
+                                  child: Center(
+                                    child: loading
+                                        ? const CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          )
+                                        : const Text(
+                                            "Iniciar sesión",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              icon: const Image(
+                                image: AssetImage('assets/icon/user-scan.png'),
+                                width: 45,
+                                height: 45,
+                                color: Color(0xFFD4A62F),
+                              ),
+                              onPressed: () async {
+                                final authenticated = await _biometricService
+                                    .authenticateWithFace();
+                                if (authenticated) {
+                                  final creds = await _biometricService
+                                      .getCredentials();
+                                  if (creds != null && context.mounted) {
+                                    emailCtrl.text = creds['email']!;
+                                    passCtrl.text = creds['password']!;
+                                    // Trigger login programmatically
+                                    setState(() => loading = true);
+                                    try {
+                                      final prov = Provider.of<AuthRepository>(
                                         context,
-                                        '/',
+                                        listen: false,
+                                      );
+                                      final user = await prov.signIn(
+                                        emailCtrl.text,
+                                        passCtrl.text,
+                                      );
+                                      if (user != null) {
+                                        await DatabaseHelper().init(user.id);
+                                      }
+                                      if (context.mounted) {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          '/',
+                                        );
+                                      }
+                                    } catch (e) {
+                                      setState(() => loading = false);
+                                      final message =
+                                          InputValidator.parseException(e);
+                                      NotificationsService.showSnackbar(
+                                        message,
                                       );
                                     }
-                                  } catch (e) {
-                                    final message = e.toString().replaceAll(
-                                      'Exception: ',
-                                      '',
+                                  } else {
+                                    NotificationsService.showSnackbar(
+                                      'No hay credenciales guardadas. Inicie sesión manualmente primero.',
                                     );
-                                    NotificationsService.showSnackbar(message);
                                   }
-                                },
-                          child: Container(
-                            height: 52,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFD4A62F),
-                              borderRadius: BorderRadius.circular(30),
+                                }
+                              },
                             ),
-                            child: Center(
-                              child: loading
-                                  ? const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    )
-                                  : const Text(
-                                      "Iniciar sesión",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                            ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -175,7 +276,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text(
                     "Crear una cuenta",
-                    style: TextStyle(color: Colors.grey.shade800, fontSize: 15),
+                    style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 15,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
                 ),
               ],
@@ -190,25 +295,32 @@ class _LoginScreenState extends State<LoginScreen> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
+
     bool obscure = false,
     bool isEmail = false,
     Widget? suffix,
+    required bool isDarkMode,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
       validator: (value) {
-        if (!isEmail) return null; // Solo validamos si es email
-        String pattern =
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-        RegExp regExp = RegExp(pattern);
-
-        return regExp.hasMatch(value ?? '') ? null : 'Correo inválido';
+        if (isEmail) {
+          return InputValidator.validateEmail(value);
+        } else {
+          return InputValidator.validatePassword(value);
+        }
       },
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color(0xFFF5F7FA),
+        fillColor: isDarkMode
+            ? const Color(0xFF1A222D)
+            : const Color(0xFFF5F7FA),
         labelText: label,
+        labelStyle: TextStyle(
+          color: isDarkMode ? Colors.white70 : Colors.black87,
+          fontFamily: 'Poppins',
+        ),
         prefixIcon: Icon(icon, color: Colors.grey.shade700),
         suffixIcon: suffix,
         border: OutlineInputBorder(

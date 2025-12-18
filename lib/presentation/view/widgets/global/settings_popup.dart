@@ -6,7 +6,6 @@ import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
-import 'package:sqflite/sqflite.dart';
 
 class SettingsPopup extends StatelessWidget {
   final GlobalKey settingsKey;
@@ -39,7 +38,7 @@ class SettingsPopup extends StatelessWidget {
               top: btnPos.dy + 35,
               right: screenSize.width - btnPos.dx - 28,
               child: Material(
-                color: isDark ? Colors.black : Colors.transparent,
+                color: isDark ? Colors.transparent : Colors.transparent,
                 child: SettingsPopup(settingsKey: settingsKey),
               ),
             ),

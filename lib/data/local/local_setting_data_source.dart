@@ -1,14 +1,15 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Prefs {
-  static final Prefs _instance = Prefs._internal();
+class LocalSettingDataSource {
+  static final LocalSettingDataSource _instance =
+      LocalSettingDataSource._internal();
   static SharedPreferences? _prefs;
 
-  factory Prefs() {
+  factory LocalSettingDataSource() {
     return _instance;
   }
 
-  Prefs._internal();
+  LocalSettingDataSource._internal();
 
   /// Inicializar en main()
   static Future<void> init() async {
@@ -25,9 +26,27 @@ class Prefs {
     return _prefs!;
   }
 
-  // -----------------------------
-  // Métodos de ejemplo
-  // -----------------------------
+  // ===================== Theme Mode ===================== //
+
+  Future<void> saveTheme(String value) async {
+    await instance.setString('theme_mode', value);
+  }
+
+  String? getTheme() {
+    return instance.getString('theme_mode');
+  }
+
+  //==================== User Data ===================== //
+
+  Future<void> saveUserEmail(String value) async {
+    await instance.setString('user_email', value);
+  }
+
+  String? getUserEmail() {
+    return instance.getString('user_email');
+  }
+
+  // ===================== Example ===================== //
 
   Future<void> setString(String key, String value) async {
     await instance.setString(key, value);

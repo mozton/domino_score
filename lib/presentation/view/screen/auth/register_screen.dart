@@ -1,4 +1,6 @@
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
+import 'package:dominos_score/domain/utils/input_validator.dart';
+import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +21,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool obscure1 = true;
   bool obscure2 = true;
 
+  String? _emailError;
+  String? _passError;
+
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<SettingViewModel>(context).themeMode;
+    final isDarkMode =
+        theme == ThemeMode.dark ||
+        (theme == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF3F7),
+      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -46,7 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDarkMode ? const Color(0xFF0F1822) : Colors.white,
                     borderRadius: BorderRadius.circular(22),
                     boxShadow: [
                       BoxShadow(
@@ -58,16 +68,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   child: Column(
                     children: [
-                      // _inputField(
-                      //   controller: nameCtrl,
-                      //   label: "Nombre",
-                      //   icon: Icons.person_outline,
-                      // ),
                       const SizedBox(height: 18),
                       _inputField(
                         controller: emailCtrl,
                         label: "Correo electrónico",
                         icon: Icons.email_outlined,
+                        errorText: _emailError,
+                        isDarkMode: isDarkMode,
                       ),
                       const SizedBox(height: 18),
 
@@ -85,60 +92,108 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           onPressed: () => setState(() => obscure1 = !obscure1),
                         ),
+                        errorText: _passError,
+                        isDarkMode: isDarkMode,
+                      ),
+                      const SizedBox(height: 18),
+                      _inputField(
+                        controller: confirmCtrl,
+                        label: "Confirmar contraseña",
+                        icon: Icons.lock_outline,
+                        obscure: obscure2,
+                        suffix: IconButton(
+                          icon: Icon(
+                            obscure2
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.grey.shade600,
+                          ),
+                          onPressed: () => setState(() => obscure2 = !obscure2),
+                        ),
+                        isDarkMode: isDarkMode,
                       ),
 
                       const SizedBox(height: 30),
-                      InkWell(
-                        onTap: () async {
-                          final auth = Provider.of<AuthRepository>(
-                            context,
-                            listen: false,
-                          );
-
-                          try {
-                            await auth.signUp(
-                              emailCtrl.text.trim(),
-                              passCtrl.text.trim(),
-                            );
-
-                            if (context.mounted) {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Verificación de correo'),
-                                  content: const Text(
-                                    'Hemos enviado un correo de verificación para completar su registro.',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pushReplacementNamed(
-                                            context,
-                                            '/login',
-                                          ),
-                                      child: const Text('Aceptar'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  e.toString().replaceAll('Exception: ', ''),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          height: 52,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD4A62F),
-                            borderRadius: BorderRadius.circular(30),
+                      SizedBox(
+                        height: 49,
+                        width: 180,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 3,
+                            backgroundColor: const Color(0xFFD4A62F),
+                            minimumSize: const Size(double.infinity, 56),
                           ),
-                          child: Center(child: Text('Registrarme')),
+                          onPressed: () async {
+                            final auth = Provider.of<AuthRepository>(
+                              context,
+                              listen: false,
+                            );
+
+                            try {
+                              if (passCtrl.text.trim() !=
+                                  confirmCtrl.text.trim()) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Las contraseñas no coinciden',
+                                    ),
+                                  ),
+                                );
+                              }
+                              await auth.signUp(
+                                emailCtrl.text.trim(),
+                                passCtrl.text.trim(),
+                              );
+
+                              if (context.mounted) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Verificación de correo'),
+                                    content: const Text(
+                                      'Hemos enviado un correo de verificación para completar su registro.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/login',
+                                            ),
+                                        child: const Text('Aceptar'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              final message = InputValidator.parseException(e);
+                              setState(() {
+                                if (message.toLowerCase().contains('correo') ||
+                                    message.toLowerCase().contains('email')) {
+                                  _emailError = message;
+                                } else if (message.toLowerCase().contains(
+                                      'contraseña',
+                                    ) ||
+                                    message.toLowerCase().contains(
+                                      'password',
+                                    )) {
+                                  _passError = message;
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(message)),
+                                  );
+                                }
+                              });
+                            }
+                          },
+                          child: const Text(
+                            'Registrarme',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -152,7 +207,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onPressed: () => Navigator.pushNamed(context, '/login'),
                   child: Text(
                     "Ya tengo una cuenta",
-                    style: TextStyle(color: Colors.grey.shade800, fontSize: 15),
+                    style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 15,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
                 ),
               ],
@@ -169,16 +228,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required IconData icon,
     bool obscure = false,
     Widget? suffix,
+    String? errorText,
+    required bool isDarkMode,
   }) {
     return TextField(
       controller: controller,
       obscureText: obscure,
+      onChanged: (_) {
+        if (errorText != null) {
+          setState(() {
+            // Clear error when user types
+            if (controller == emailCtrl) _emailError = null;
+            if (controller == passCtrl) _passError = null;
+          });
+        }
+      },
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color(0xFFF5F7FA),
+        fillColor: isDarkMode
+            ? const Color(0xFF1A222D)
+            : const Color(0xFFF5F7FA),
         labelText: label,
+        labelStyle: TextStyle(
+          color: isDarkMode ? Colors.white70 : Colors.black87,
+          fontFamily: 'Poppins',
+        ),
         prefixIcon: Icon(icon, color: Colors.grey.shade700),
         suffixIcon: suffix,
+        errorText: errorText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,

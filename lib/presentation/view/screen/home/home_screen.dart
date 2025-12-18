@@ -1,4 +1,3 @@
-import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/presentation/view/widgets/global/settings_popup.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/utils/ui_helpers.dart';
@@ -19,11 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicializar el juego después de que el framework monte el widget
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final gameViewModel = context.read<GameViewmodel>();
-      // Siempre intentar inicializar al entrar al Home, el VM decidirá si es necesario.
-      // Pero para asegurar que cargue los datos del usuario nuevo:
+
       gameViewModel.initGameOnStartup();
     });
   }
@@ -46,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           });
         }
-
-        //TODO: corregir parpadeo
 
         return prov.currentGame.teams.isNotEmpty
             ? Container(
@@ -119,17 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
             : Container(
-                color: Colors.white,
+                color: isDark ? Colors.black : Colors.white,
                 child: Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      DatabaseHelper dbHelper = DatabaseHelper();
-                      await dbHelper.deleteDB();
-                    },
-                    child: Icon(
-                      Icons.delete_outline_rounded,
-                      color: Colors.red,
-                    ),
+                  child: CircularProgressIndicator(
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
               );

@@ -49,6 +49,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> signOut() async {
     await _dataSource.logout();
+    await _storage.delete(key: 'token');
   }
 
   @override
