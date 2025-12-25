@@ -35,6 +35,7 @@ class _AddScoreState extends State<AddScore> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
     return Container(
@@ -42,7 +43,7 @@ class _AddScoreState extends State<AddScore> {
       width: size.width * (340 / 393),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Color(0xFFFFFFFF),
+        color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
       ),
       child: Column(
         children: [
@@ -50,7 +51,7 @@ class _AddScoreState extends State<AddScore> {
           Stack(
             children: [
               SizedBox(
-                width: size.width * (295 / 393),
+                width: size.width * (285 / 393),
                 child: TextFormField(
                   controller: _controller,
 
@@ -67,7 +68,9 @@ class _AddScoreState extends State<AddScore> {
                       fontSize: size.height * (17 / 852),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF1E2B43).withValues(alpha: 0.3),
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.3)
+                          : Color(0xFF1E2B43).withValues(alpha: 0.3),
                     ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -99,7 +102,7 @@ class _AddScoreState extends State<AddScore> {
                   },
                   child: Image(
                     height: size.height * (25 / 852),
-                    color: Color(0XFF1C1400),
+                    color: isDark ? Colors.white : Color(0XFF1C1400),
                     image: AssetImage('assets/icon/square-rounded-x.png'),
                   ),
                 ),
@@ -135,28 +138,17 @@ class _AddScoreState extends State<AddScore> {
     );
   }
 
-  GestureDetector buttonCamAnd30(
-    Size size,
-    VoidCallback onTap,
-    String iconAsset,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: size.height * (44 / 852),
-        width: size.width * (70 / 393),
-        decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(22),
-          border: BoxBorder.all(width: 1.9, color: Color(0xFFDADDE2)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(7.0),
-          child: Image(
-            fit: BoxFit.contain,
-            color: Color(0xFF1E2B43),
-            image: AssetImage(iconAsset),
-          ),
+  SizedBox buttonCamAnd30(Size size, VoidCallback onTap, String iconAsset) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return SizedBox(
+      height: size.height * (44 / 852),
+      width: size.width * (70 / 393),
+      child: ElevatedButton(
+        onPressed: onTap,
+        child: Image(
+          fit: BoxFit.cover,
+          color: isDark ? Colors.white : Color(0xFF1E2B43),
+          image: AssetImage(iconAsset),
         ),
       ),
     );
@@ -170,10 +162,11 @@ class _ButtonSaveScore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
     return SizedBox(
       height: size.height * (43 / 852),
-      width: size.width * (129 / 393),
+      width: size.width * (139 / 393),
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
@@ -192,7 +185,9 @@ class _ButtonSaveScore extends StatelessWidget {
               'assets/icon/plus.png',
               height: size.height * (20 / 852),
               width: size.width * (20 / 393),
-              color: colorButton == const Color(0xFFD4AF37)
+              color: isDark
+                  ? Colors.white
+                  : colorButton == const Color(0xFFD4AF37)
                   ? const Color(0xFF000000)
                   : const Color(0xFFFFFFFF),
             ),
@@ -203,7 +198,9 @@ class _ButtonSaveScore extends StatelessWidget {
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w500,
                 fontSize: size.height * (13 / 852),
-                color: colorButton == const Color(0xFFD4AF37)
+                color: isDark
+                    ? Colors.white
+                    : colorButton == const Color(0xFFD4AF37)
                     ? const Color(0xFF000000)
                     : const Color(0xFFFFFFFF),
               ),

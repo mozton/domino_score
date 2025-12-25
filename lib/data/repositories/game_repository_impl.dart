@@ -44,8 +44,10 @@ class GameRepositoryImpl implements GameRepository {
     game.id = gameId;
 
     if (game.teams.isNotEmpty) {
+      // ignore: avoid_print
       print('Creando juego con ${game.teams.length} equipos existentes:');
       for (var team in game.teams) {
+        // ignore: avoid_print
         print('  - Equipo: ${team.name}');
       }
 

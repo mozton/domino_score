@@ -1,5 +1,5 @@
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/utils/ui_helpers.dart';
+import 'package:dominos_score/ui_helpers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -138,7 +138,10 @@ class RoundView extends StatelessWidget {
                             ? Color(0xFF0F1822)
                             : Color(0xFFF7F8FA),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(width: 1, color: Color(0xFFDADDE2)),
+                        border: Border.all(
+                          width: 1,
+                          color: isDark ? Color(0xFF0F1822) : Color(0xFFDADDE2),
+                        ),
                       ),
 
                       child: AnimatedSwitcher(

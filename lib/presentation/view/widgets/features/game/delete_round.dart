@@ -10,15 +10,20 @@ class DeleteRound extends StatelessWidget {
   const DeleteRound({super.key, required this.index, required this.round});
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
-    return AlertDialog(
+    return Dialog(
       insetPadding: EdgeInsets.symmetric(horizontal: 15),
-      backgroundColor: Color(0xFFFFFFFF),
-      content: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        height: size.height * (200 / 852),
-        width: size.width * 0.95,
-        decoration: BoxDecoration(color: Color(0xFFFFFFFF)),
+      backgroundColor: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
+
+      child: Container(
+        padding: EdgeInsets.all(20),
+        height: size.height * (257 / 852),
+        width: size.width * (350 / 393),
+        decoration: BoxDecoration(
+          color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Column(
           children: [
             Row(
@@ -31,7 +36,7 @@ class DeleteRound extends StatelessWidget {
                   child: Image(
                     height: 23,
                     width: 23,
-                    color: Color(0xFF555555),
+                    color: isDark ? Colors.white : Color(0xFF555555),
                     image: AssetImage('assets/icon/square-rounded-x.png'),
                   ),
                 ),
@@ -63,6 +68,7 @@ class DeleteRound extends StatelessWidget {
                 buttonCancelAndDelete(
                   context,
                   'Eliminar',
+
                   Color(0xFFC8C8C8),
                   () {
                     context.read<GameViewmodel>().deleteSelectedRound();
@@ -131,26 +137,34 @@ Widget buttonCancelAndDelete(
   VoidCallback onTap,
 ) {
   final size = MediaQuery.of(context).size;
-  return InkWell(
-    onTap: onTap,
-    child: Container(
-      height: size.height * (34 / 852),
-      width: size.width * (104.4 / 393),
-
-      decoration: BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(20),
-        border: BoxBorder.all(width: 1.2, color: color),
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return Container(
+    height: size.height * (34 / 852),
+    width: size.width * (110 / 393),
+    decoration: BoxDecoration(
+      // color: Color(0xFFFFFFFF),
+      borderRadius: BorderRadius.circular(20),
+      border: BoxBorder.all(width: 1.2, color: color),
+    ),
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
+        foregroundColor: color,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
-
+      onPressed: onTap,
       child: Center(
         child: Text(
           title,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: size.height * (12 / 852),
             fontWeight: FontWeight.w500,
             fontFamily: 'Poppins',
-            color: title == 'Cancelar' ? color : Color(0xFF202020),
+            color: title == 'Cancelar'
+                ? color
+                : isDark
+                ? Colors.white
+                : Color(0xFF202020),
           ),
         ),
       ),

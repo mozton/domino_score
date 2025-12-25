@@ -105,7 +105,7 @@ class UiHelpers {
                 context,
                 teamIndex,
               );
-              print(points);
+
               // Si recibimos puntos válidos, guardamos la ronda
               if (points != null && points > 0 && context.mounted) {
                 final newRound = teamIndex == 0
@@ -140,20 +140,22 @@ class UiHelpers {
   }
   // Change Name Team
 
-  static Future<void> changeNameTeam(BuildContext context, int teamId) async {
+  static Future<void> changeNameTeam(
+    BuildContext context,
+    int teamId,
+    int index,
+  ) async {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFFFFFFFF),
+        return Dialog(
+          backgroundColor: Colors.transparent,
           insetPadding: EdgeInsets.zero,
 
-          actions: [
-            ChangeNameTeam(
-              colorButton: teamId == 1 ? Color(0xFFD4AF37) : Color(0xFF1E2B43),
-              teamId: teamId,
-            ),
-          ],
+          child: ChangeNameTeam(
+            colorButton: index == 0 ? Color(0xFFD4AF37) : Color(0xFF1E2B43),
+            teamId: teamId,
+          ),
         );
       },
     );

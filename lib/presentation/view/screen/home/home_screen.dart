@@ -1,6 +1,6 @@
 import 'package:dominos_score/presentation/view/widgets/global/settings_popup.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/utils/ui_helpers.dart';
+import 'package:dominos_score/ui_helpers.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/button/button_start_game.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
@@ -81,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTapname: () => UiHelpers.changeNameTeam(
                                 context,
                                 teams[0].id!,
+                                0,
                               ),
                             ),
                             CardTeam(
@@ -93,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTapname: () => UiHelpers.changeNameTeam(
                                 context,
                                 teams[1].id!,
+                                1,
                               ),
                             ),
                           ],

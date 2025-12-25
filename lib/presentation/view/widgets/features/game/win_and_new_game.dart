@@ -11,6 +11,7 @@ class WinAndNewGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
     return Container(
@@ -19,7 +20,7 @@ class WinAndNewGame extends StatelessWidget {
           : size.height * (436 / 852),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFE4E9F2),
+        color: isDark ? Color(0xFF0F1822) : Color(0xFFE4E9F2),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(18),
           topRight: Radius.circular(18),
@@ -34,7 +35,7 @@ class WinAndNewGame extends StatelessWidget {
               height: 4,
               width: size.width * (120 / 393),
               decoration: BoxDecoration(
-                color: Color(0xFF1E2B43),
+                color: isDark ? Colors.white : Color(0xFF1E2B43),
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
@@ -51,7 +52,7 @@ class WinAndNewGame extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 22,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1E2B43),
+              color: isDark ? Colors.white : Color(0xFF1E2B43),
             ),
           ),
           teamWiner.isEmpty
@@ -72,7 +73,9 @@ class WinAndNewGame extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 22,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF1E2B43).withOpacity(0.5),
+              color: isDark
+                  ? Colors.white.withOpacity(0.5)
+                  : Color(0xFF1E2B43).withOpacity(0.5),
             ),
           ),
           SizedBox(height: 55),
@@ -84,6 +87,7 @@ class WinAndNewGame extends StatelessWidget {
                 buttonColor: Color(0xFFC6A15B),
                 assentImage: 'assets/icon/flame.png',
                 titleButton: 'Mismo equipo',
+                contentColor: Color(0xFF1E2B43),
                 onTap: () {
                   context.read<GameViewmodel>().startNewGameWithCurrentTeams();
                   Navigator.pop(context);
@@ -91,9 +95,10 @@ class WinAndNewGame extends StatelessWidget {
               ),
               _Buttons(
                 buttonColor: Colors.transparent,
-                borderColor: Color(0x1E2B4380),
+                borderColor: isDark ? Colors.white54 : Color(0x1E2B4380),
                 assentImage: 'assets/icon/users-group.png',
                 titleButton: 'Otro equipo',
+                contentColor: isDark ? Colors.white : Color(0xFF1E2B43),
                 onTap: () {
                   context.read<GameViewmodel>().startNewGame();
                   Navigator.pop(context);
@@ -113,6 +118,7 @@ class _Buttons extends StatelessWidget {
   final String assentImage;
   final String titleButton;
   final VoidCallback onTap;
+  final Color contentColor;
 
   const _Buttons({
     required this.buttonColor,
@@ -120,6 +126,7 @@ class _Buttons extends StatelessWidget {
     required this.assentImage,
     required this.titleButton,
     required this.onTap,
+    required this.contentColor,
   });
 
   @override
@@ -151,7 +158,7 @@ class _Buttons extends StatelessWidget {
           children: [
             Image(
               height: 20,
-              color: Color(0xFF1E2B43),
+              color: contentColor,
               image: AssetImage(assentImage),
             ),
             SizedBox(width: 5),
@@ -161,7 +168,7 @@ class _Buttons extends StatelessWidget {
                 fontFamily: 'Poppins',
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF1E2B43),
+                color: contentColor,
               ),
             ),
           ],

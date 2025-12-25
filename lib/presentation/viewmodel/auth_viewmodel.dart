@@ -9,7 +9,7 @@ class AuthViewmodel extends ChangeNotifier {
     return formKey.currentState?.validate() ?? false;
   }
 
-  void signOut() async {
-    print('signOut');
-  }
+  // void signOut() async {
+  //   print('signOut');
+  // }
 }

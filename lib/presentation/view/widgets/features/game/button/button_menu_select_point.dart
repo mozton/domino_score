@@ -43,7 +43,7 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
                   padding: EdgeInsets.all(10),
 
                   decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(22),
                     border: BoxBorder.all(
                       width: 1.5,
@@ -73,7 +73,6 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
             prov.changePointToWin();
 
             Navigator.pop(context);
-            //TODO: Aqui va la logica para comenzar a colocar los puntos
           },
           child: Container(
             height: size.height * (43 / 852),
@@ -83,7 +82,7 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFFD4AF37).withOpacity(0.149),
+                  color: Color(0xFFD4AF37).withValues(alpha: 0.149),
                   offset: Offset(0, 2),
                   blurRadius: 12,
                   spreadRadius: 0,

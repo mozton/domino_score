@@ -67,9 +67,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon/domino1024.png"
+  image_path: "assets/logo-corillo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
-  adaptive_icon_background: "assets/icon/domino1024.png"
+  adaptive_icon_background: "assets/logo-corillo.png"
 
 
 # For information on the generic Dart part of this file, see the

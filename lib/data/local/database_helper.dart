@@ -169,6 +169,7 @@ class DatabaseHelper implements LocalGameDataSource {
       {'name': newName},
       where: 'id = ?',
       whereArgs: [teamId],
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
@@ -24,7 +25,7 @@ class SettingsPopup extends StatelessWidget {
 
     final Size screenSize = MediaQuery.of(context).size;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    //TODO: review border radius of dialog
+
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -72,7 +73,7 @@ class SettingsPopup extends StatelessWidget {
 
   Widget _buildPopup(BuildContext context) {
     final width = MediaQuery.of(context).size.width * (234 / 393);
-    final height = MediaQuery.of(context).size.height * (217 / 851);
+    final height = MediaQuery.of(context).size.height * (183 / 851);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -142,11 +143,12 @@ class SettingsPopup extends StatelessWidget {
 
           _component(
             context,
-            'Lenguage',
-            'assets/icon/language.png',
+            'Puntos por partida',
+            'assets/icon/pencil-plus.png',
             () {
-              // DatabaseHelper().deleteDB();
               Navigator.pop(context);
+              Future.delayed(Duration.zero);
+              UiHelpers.selectPointToWin(context);
             },
             const Color(0xFF6B7280),
             Color(0xFF6B7280),
@@ -157,16 +159,15 @@ class SettingsPopup extends StatelessWidget {
             child: Divider(height: 20, color: Color(0xFFE5E7EB)),
           ),
 
-          _component(
-            context,
-            'Configuración de cuenta',
-            'assets/icon/user-cog.png',
-            () {},
-            isDark ? Colors.white : Colors.black,
-            Color(0xFF6B7280),
-            false,
-          ),
-
+          // _component(
+          //   context,
+          //   'Configuración de cuenta',
+          //   'assets/icon/user-cog.png',
+          //   () {},
+          //   Color(0xFF6B7280),
+          //   Color(0xFF6B7280),
+          //   false,
+          // ),
           _component(
             context,
             'Sign Out',

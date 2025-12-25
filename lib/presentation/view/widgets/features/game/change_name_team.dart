@@ -33,14 +33,15 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * (174 / 852),
-      width: size.width * (280 / 393),
+      height: size.height * (194 / 852),
+      width: size.width * (327 / 393),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Color(0xFFFFFFFF),
+        color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
       ),
       child: Column(
         children: [
@@ -48,7 +49,7 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
           Stack(
             children: [
               SizedBox(
-                // width: size.width * (281 / 393),
+                width: size.width * (281 / 393),
                 child: TextFormField(
                   keyboardType: TextInputType.name,
                   controller: _controller,
@@ -63,7 +64,9 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
                       fontSize: 18,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF1E2B43).withOpacity(0.5),
+                      color: isDark
+                          ? Color(0xFFFFFFFF).withOpacity(0.5)
+                          : Color(0xFF1E2B43).withOpacity(0.5),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFD9D9D9)),
@@ -87,7 +90,7 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
                   child: Image(
                     height: 25,
                     width: 25,
-                    color: Color(0XFF1C1400),
+                    color: isDark ? Colors.white : Color(0XFF1C1400),
                     image: AssetImage('assets/icon/square-rounded-x.png'),
                   ),
                 ),
@@ -98,7 +101,7 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
           SizedBox(height: 15),
           Row(
             children: [
-              SizedBox(width: 5),
+              SizedBox(width: 20),
               _ButtonSaveName(
                 colorButton: widget.colorButton,
                 onTap: () {
@@ -129,23 +132,19 @@ class _ButtonSaveName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: size.height * (43 / 852),
-        width: size.width * (155 / 393),
-        decoration: BoxDecoration(
-          color: colorButton,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFFD4AF37).withOpacity(0.149),
-              offset: Offset(0, 2),
-              blurRadius: 8,
-              spreadRadius: 0,
-            ),
-          ],
+    return SizedBox(
+      height: size.height * (43 / 852),
+      width: size.width * (165 / 393),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorButton,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+
+          elevation: 2,
         ),
+        onPressed: onTap,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),

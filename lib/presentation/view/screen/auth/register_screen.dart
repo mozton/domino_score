@@ -1,5 +1,6 @@
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/utils/input_validator.dart';
+import 'package:dominos_score/presentation/view/widgets/features/auth/singup_message.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Column(
               children: [
-                const SizedBox(height: 30),
+                Image(
+                  image: const AssetImage('assets/logocorillosf.png'),
+                  width: 180,
+                  height: 180,
+                ),
 
                 Text(
                   "Crear cuenta",
@@ -49,9 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: Colors.grey.shade800,
                   ),
                 ),
-
-                const SizedBox(height: 40),
-
+                const SizedBox(height: 10),
                 // Register card
                 Container(
                   padding: const EdgeInsets.all(24),
@@ -139,30 +142,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ),
                                   ),
                                 );
+                                return;
                               }
+
+                              if (emailCtrl.text.trim().isEmpty ||
+                                  passCtrl.text.trim().isEmpty ||
+                                  confirmCtrl.text.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Todos los campos son obligatorios',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
                               await auth.signUp(
                                 emailCtrl.text.trim(),
-                                passCtrl.text.trim(),
+                                confirmCtrl.text.trim(),
                               );
 
                               if (context.mounted) {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text('Verificación de correo'),
-                                    content: const Text(
-                                      'Hemos enviado un correo de verificación para completar su registro.',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pushReplacementNamed(
-                                              context,
-                                              '/login',
-                                            ),
-                                        child: const Text('Aceptar'),
-                                      ),
-                                    ],
+                                  builder: (context) => SingupMessage(
+                                    title: 'Verificación de correo',
+                                    content:
+                                        'Se ha enviado un correo de verificación a tu correo electrónico. Por favor, verifica tu correo para continuar.',
+                                    actionText: 'Aceptar',
+                                    actionRoute: '/login',
+                                    colorText: Colors.black,
                                   ),
                                 );
                               }
@@ -231,7 +241,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String? errorText,
     required bool isDarkMode,
   }) {
-    return TextField(
+    return TextFormField(
+      validator: (value) {
+        if (label == 'Correo') {
+          return InputValidator.validateEmail(value);
+        }
+        if (label == 'Contraseña') {
+          return InputValidator.validatePassword(value);
+        }
+
+        if (emailCtrl.text.trim().isEmpty) {
+          return 'El correo es obligatorio';
+        }
+        if (passCtrl.text.trim().isEmpty) {
+          return 'La contraseña es obligatoria';
+        }
+        if (confirmCtrl.text.trim().isEmpty) {
+          return 'La confirmación de la contraseña es obligatoria';
+        }
+      },
       controller: controller,
       obscureText: obscure,
       onChanged: (_) {

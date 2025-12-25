@@ -6,15 +6,21 @@ class SelectPointToWind extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
-    return AlertDialog(
+    return Dialog(
       insetPadding: EdgeInsets.zero,
-      backgroundColor: Color(0xFFFFFFFF),
-      actions: [
-        Container(
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: SizedBox(
           height: size.height * (218 / 852),
           width: size.width * 320 / 393,
-          decoration: BoxDecoration(color: Color(0xFFFFFFFF)),
           child: Column(
             children: [
               SizedBox(height: 20),
@@ -26,7 +32,7 @@ class SelectPointToWind extends StatelessWidget {
                     child: Image(
                       height: 23,
                       width: 23,
-                      color: Color(0xFF555555),
+                      color: isDark ? Colors.white : Color(0xFF555555),
                       image: AssetImage('assets/icon/square-rounded-x.png'),
                     ),
                   ),
@@ -37,18 +43,18 @@ class SelectPointToWind extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF1E2B43),
+                  color: isDark ? Colors.white : Color(0xFF1E2B43),
                 ),
               ),
               SizedBox(height: 15),
 
               MenuSelectPoint(),
 
-              SizedBox(height: 20),
+              SizedBox(height: 10),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

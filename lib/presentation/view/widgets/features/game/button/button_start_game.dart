@@ -1,5 +1,5 @@
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/utils/ui_helpers.dart';
+import 'package:dominos_score/ui_helpers.dart';
 
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
 

@@ -1,4 +1,5 @@
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
@@ -54,13 +55,17 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<UserModel?> signUp(String email, String password) async {
+    final response = await _dataSource.createUser(email, password);
+
+    // Intentamos enviar el correo, pero no rompemos el flujo si falla
     try {
-      final response = await _dataSource.createUser(email, password);
       await _dataSource.sendEmailVerification();
-      return _mapToUser(response);
     } catch (e) {
-      rethrow;
+      // Log opcional
+      debugPrint('No se pudo enviar el correo de verificación: $e');
     }
+
+    return _mapToUser(response);
   }
 
   UserModel _mapToUser(Map<String, dynamic> data) {

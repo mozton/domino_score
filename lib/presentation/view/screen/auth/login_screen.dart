@@ -47,28 +47,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 Stack(
                   children: [
                     Image(
-                      image: const AssetImage('assets/logo-black.png'),
-                      width: 150,
-                      height: 150,
-                    ),
-                    Positioned(
-                      top: 100,
-                      right: 20,
-                      child: Text(
-                        "Corillo App",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
+                      image: const AssetImage('assets/logocorillosf.png'),
+                      width: 180,
+                      height: 180,
                     ),
                   ],
                 ),
-
-                // Title
-                const SizedBox(height: 40),
 
                 // Card container
                 Container(
@@ -78,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(22),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),

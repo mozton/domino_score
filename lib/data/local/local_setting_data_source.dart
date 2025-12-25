@@ -46,6 +46,16 @@ class LocalSettingDataSource {
     return instance.getString('user_email');
   }
 
+  //==================== Data Game ===================== //
+
+  Future<void> savePointToWin(int value) async {
+    await instance.setInt('point_to_win', value);
+  }
+
+  int? getPointToWin() {
+    return instance.getInt('point_to_win');
+  }
+
   // ===================== Example ===================== //
 
   Future<void> setString(String key, String value) async {

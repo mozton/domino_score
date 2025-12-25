@@ -1,12 +1,13 @@
 import 'package:dominos_score/domain/models/game/round_model.dart';
 import 'package:dominos_score/domain/models/game/team_model.dart';
 import 'package:dominos_score/domain/models/models.dart';
-
+import 'package:dominos_score/data/local/local_setting_data_source.dart';
 import 'package:dominos_score/domain/repositories/game_repository.dart';
 import 'package:flutter/material.dart';
 
 class GameViewmodel extends ChangeNotifier {
   final GameRepository _repository;
+  late LocalSettingDataSource _localSettingDataSource;
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
@@ -25,7 +26,7 @@ class GameViewmodel extends ChangeNotifier {
 
   // ======================== Points ======================== //
 
-  int pointsToWin = 200;
+  int pointsToWin = 0;
 
   final List<int> _selectPointToWin = [100, 200, 300];
   List<int> get selectPointsToWin => _selectPointToWin;
@@ -35,7 +36,9 @@ class GameViewmodel extends ChangeNotifier {
 
   void selectedPointsToWin(int isSelected) {
     _pointToWinSelected = isSelected;
-    print(pointsToWin);
+    _localSettingDataSource.savePointToWin(isSelected);
+
+    // print(pointsToWin);
     notifyListeners();
   }
 
@@ -54,6 +57,8 @@ class GameViewmodel extends ChangeNotifier {
   Future<void> initGameOnStartup() async {
     _isLoading = true;
     notifyListeners();
+    _localSettingDataSource = LocalSettingDataSource();
+    pointsToWin = _localSettingDataSource.getPointToWin() ?? 0;
 
     try {
       final existingGamen = await _repository.fetchAllGames();
@@ -84,7 +89,7 @@ class GameViewmodel extends ChangeNotifier {
       );
     }
     _isLoading = false;
-    print(_currentGame.id);
+
     notifyListeners();
   }
 
@@ -132,40 +137,28 @@ class GameViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // 1. 💾 Capturar los detalles de los equipos actuales (nombre, jugadores)
-      print('🔍 Capturando equipos para nuevo juego:');
-      for (var team in _currentGame.teams) {
-        print('  - Equipo: ${team.name} (ID: ${team.id})');
-      }
-
       final currentTeamsDetails = _currentGame.teams.map((team) {
-        // Creamos nuevos TeamModel con puntaje 0, sin ID (se asignará en la DB)
         return TeamModel(
-          gameId: -1, // Temporal
+          gameId: -1,
           name: team.name,
           player1: team.player1,
           player2: team.player2,
-          totalScore: 0, // Reiniciar score
+          totalScore: 0,
         );
       }).toList();
 
-      // 2. 🎮 Crear el nuevo GameModel
       final newGame = GameModel(
         actualRound: 0,
-        pointsToWin:
-            _currentGame.pointsToWin, // Mantiene la meta de puntos actual
+        pointsToWin: _currentGame.pointsToWin,
         createdAt: DateTime.now(),
-        teams: currentTeamsDetails, // Usamos los equipos reseteados
+        teams: currentTeamsDetails,
         rounds: [],
       );
 
-      // 3. 📦 Persistir el nuevo juego y sus equipos en la DB
       final fullGame = await _repository.createGameWithDefaultTeams(newGame);
 
-      // 4. 🔄 Actualizar el estado interno
       _currentGame = fullGame;
 
-      // 5. 🧹 Limpiar estados anteriores del juego
       resetWinnerState();
       _roundSelected = null;
     } catch (e) {
@@ -195,12 +188,7 @@ class GameViewmodel extends ChangeNotifier {
   TeamModel? _winnerTeam;
   TeamModel? get winnerTeam => _winnerTeam;
   void _handleGameEnd({required TeamModel winningTeam}) {
-    // 1. Guarda el estado del ganador
     _winnerTeam = winningTeam;
-
-    // 2. Opcional: Marcar el juego como terminado en la DB
-
-    // 3. Notificar a los listeners para que la UI reaccione
     notifyListeners();
   }
 
@@ -269,19 +257,14 @@ class GameViewmodel extends ChangeNotifier {
     try {
       // ======================= PERISTENCIA (3 Llamadas a DB) ======================= //
 
-      // A. Insertar la nueva ronda (obteniendo el ID)
       final roundId = await _repository.saveRound(gameId, roundToSave);
 
-      // B. Actualizar el totalScore de los equipos
       await _repository.updateTeamScore(team1.id!, newTeam1Score);
       await _repository.updateTeamScore(team2.id!, newTeam2Score);
 
-      // C. Actualizar el número de ronda actual del juego
       await _repository.updateGameActualRound(gameId, nextRoundNumber);
 
       // ======================= ACTUALIZACIÓN DE ESTADO (Memoria) ======================= //
-
-      // 3. Crear el objeto RoundModel completo y agregarlo
       final finalRound = RoundModel(
         id: roundId,
         number: nextRoundNumber,
@@ -291,10 +274,8 @@ class GameViewmodel extends ChangeNotifier {
       ); // Reconstruir con ID
       _currentGame.rounds.add(finalRound);
 
-      // 4. Actualizar el actualRound del juego
       _currentGame.actualRound = nextRoundNumber;
 
-      // 5. Actualizar el totalScore de los objetos TeamModel en _currentGame
       _currentGame.teams[0] = team1.copyWith(totalScore: newTeam1Score);
       _currentGame.teams[1] = team2.copyWith(totalScore: newTeam2Score);
 
@@ -308,7 +289,6 @@ class GameViewmodel extends ChangeNotifier {
         return;
       }
 
-      // 6. Notificar a la UI
       notifyListeners();
     } catch (e) {
       // print('Error al añadir ronda y actualizar scores: $e');
