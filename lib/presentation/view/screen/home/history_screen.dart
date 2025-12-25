@@ -7,7 +7,6 @@ class HistoryDemoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: corregir overflow
     final games = context.watch<GameViewmodel>().games;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
@@ -71,7 +70,7 @@ class HistoryDemoScreen extends StatelessWidget {
                 boxShadow: [
                   if (!isDark)
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),

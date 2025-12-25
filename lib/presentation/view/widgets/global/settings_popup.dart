@@ -72,7 +72,7 @@ class SettingsPopup extends StatelessWidget {
   // COMPONENTS
 
   Widget _buildPopup(BuildContext context) {
-    final width = MediaQuery.of(context).size.width * (234 / 393);
+    final width = MediaQuery.of(context).size.width * (244 / 393);
     final height = MediaQuery.of(context).size.height * (183 / 851);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -216,7 +216,7 @@ class SettingsPopup extends StatelessWidget {
         child: Container(
           height: MediaQuery.of(context).size.height * (36 / 851),
           width: MediaQuery.of(context).size.width * (220 / 393),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           child: Row(
             children: [
@@ -228,7 +228,7 @@ class SettingsPopup extends StatelessWidget {
                 color: colorIcon,
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
 
               // Texto expandible con "..."
               Expanded(
@@ -244,6 +244,8 @@ class SettingsPopup extends StatelessWidget {
                   ),
                 ),
               ),
+
+              SizedBox(width: 5),
 
               // Punto opcional
               if (havePoint)

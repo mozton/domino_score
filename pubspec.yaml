@@ -49,6 +49,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   image: ^4.5.4
   local_auth: ^3.0.0
+  flutter_native_splash: ^2.4.7
 
 
 
@@ -64,12 +65,20 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 
+flutter_native_splash:
+  android: true
+  ios: true
+  color: "#ffffff"
+  image: "assets/logocorillosf.png"
+
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo-corillo.png"
+
+  image_path: "assets/logocorillo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
-  adaptive_icon_background: "assets/logo-corillo.png"
+  adaptive_icon_background: "assets/logocorillosf.png"
+
 
 
 # For information on the generic Dart part of this file, see the

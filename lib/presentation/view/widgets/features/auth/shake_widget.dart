@@ -9,13 +9,13 @@ class ShakeWidget extends StatefulWidget {
   final ShakeController controller;
 
   const ShakeWidget({
-    Key? key,
+    super.key,
     required this.child,
     required this.controller,
     this.duration = const Duration(milliseconds: 500),
     this.deltaX = 20,
     this.curve = Curves.bounceOut,
-  }) : super(key: key);
+  });
 
   @override
   _ShakeWidgetState createState() => _ShakeWidgetState();

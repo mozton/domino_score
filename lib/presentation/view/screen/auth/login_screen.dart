@@ -157,9 +157,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                             }
 
                                             if (context.mounted) {
-                                              Navigator.pushReplacementNamed(
+                                              Navigator.pushNamedAndRemoveUntil(
                                                 context,
                                                 '/',
+                                                (route) => false,
                                               );
                                             }
                                           } catch (e) {
@@ -200,6 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Color(0xFFD4A62F),
                               ),
                               onPressed: () async {
+                                setState(() => loading = true);
                                 final authenticated = await _biometricService
                                     .authenticateWithFace();
                                 if (authenticated) {
@@ -223,11 +225,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                         await DatabaseHelper().init(user.id);
                                       }
                                       if (context.mounted) {
-                                        Navigator.pushReplacementNamed(
+                                        Navigator.pushNamedAndRemoveUntil(
                                           context,
                                           '/',
+                                          (route) => false,
                                         );
                                       }
+                                      setState(() => loading = false);
                                     } catch (e) {
                                       setState(() => loading = false);
                                       final message =

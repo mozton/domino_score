@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(22),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -214,7 +214,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 // link back to login
                 TextButton(
-                  onPressed: () => Navigator.pushNamed(context, '/login'),
+                  onPressed: () =>
+                      Navigator.pushReplacementNamed(context, '/login'),
                   child: Text(
                     "Ya tengo una cuenta",
                     style: TextStyle(
@@ -259,6 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (confirmCtrl.text.trim().isEmpty) {
           return 'La confirmación de la contraseña es obligatoria';
         }
+        return null;
       },
       controller: controller,
       obscureText: obscure,

@@ -7,7 +7,7 @@
     
 
     <application
-        android:label="Domino Score"
+        android:label="Corillo"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

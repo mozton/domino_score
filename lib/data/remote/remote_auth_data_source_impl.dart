@@ -1,4 +1,5 @@
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
@@ -44,7 +45,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     }
   }
 
-  // Helper para enviar correo de verificación (mantenido de tu lógica anterior)
   Future<void> _sendVerificationRequest(String idToken) async {
     try {
       await _dio.post(
@@ -54,8 +54,11 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       );
     } on DioException catch (e) {
       // Ignoramos errores menores de reenvío, pero podemos loguearlos
-      print(
-        'Error al enviar correo de verificación en background: ${_handleDioError(e)}',
+
+      SnackBar(
+        content: Text(
+          'Error al enviar correo de verificación en background: ${_handleDioError(e)}',
+        ),
       );
     }
   }
@@ -112,7 +115,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       final decodeResp = resp.data as Map<String, dynamic>;
 
       if (decodeResp.containsKey('idToken')) {
-        // 🚨 CORRECCIÓN: Usar _saveTokens para guardar ambos tokens
         await _saveTokens(decodeResp);
         return decodeResp;
       }
@@ -128,7 +130,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<void> logout() async {
-    // 🚨 CORRECCIÓN: Eliminar ambos tokens al cerrar sesión
     await _storage.delete(key: _ID_TOKEN_KEY);
     await _storage.delete(key: _REFRESH_TOKEN_KEY);
     return;
@@ -136,20 +137,16 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<String> readToken() async {
-    // 🚨 CORRECCIÓN: Leer el ID Token usando la clave correcta
     return await _storage.read(key: _ID_TOKEN_KEY) ?? '';
   }
 
-  /// 🚨 NUEVO MÉTODO: Refresca el ID Token usando el Refresh Token (para sesiones largas).
   Future<String?> refreshIdToken() async {
     final refreshToken = await _storage.read(key: _REFRESH_TOKEN_KEY);
 
     if (refreshToken == null) {
-      // Si no hay refresh token, el usuario debe volver a iniciar sesión
       return null;
     }
 
-    // Usamos el endpoint de securetoken para refrescar el token
     final Map<String, dynamic> refreshData = {
       'grant_type': 'refresh_token',
       'refresh_token': refreshToken,
@@ -166,8 +163,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       final data = resp.data as Map<String, dynamic>;
 
       if (data.containsKey('id_token')) {
-        // 🚨 El endpoint de refresh devuelve 'id_token' y 'refresh_token'
-        // Guardar los tokens nuevos
         await _saveTokens(data);
 
         return data['id_token'];
@@ -184,9 +179,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<bool> isEmailVerified() async {
-    final idToken = await _storage.read(
-      key: _ID_TOKEN_KEY,
-    ); // Usar clave correcta
+    final idToken = await _storage.read(key: _ID_TOKEN_KEY);
     if (idToken == null) throw Exception('No se encontró token');
 
     try {
@@ -257,7 +250,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         throw Exception('No se pudo reenviar el correo de verificación.');
       }
 
-      print("Correo de verificación reenviado a: ${data['email']}");
+      // print("Correo de verificación reenviado a: ${data['email']}");
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
     } catch (e) {

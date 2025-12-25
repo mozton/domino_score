@@ -131,16 +131,19 @@ class RoundView extends StatelessWidget {
                       height: size.height * 0.0410,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? Color(0xFFB00020).withOpacity(
-                                0.9,
-                              ) // selected (rojo)
+                            ? Color(0xFFB00020).withValues(alpha: 0.9)
                             : isDark
                             ? Color(0xFF0F1822)
-                            : Color(0xFFF7F8FA),
+                            : Color(0xFFDADDE2),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
                           width: 1,
-                          color: isDark ? Color(0xFF0F1822) : Color(0xFFDADDE2),
+                          color: isSelected
+                              ? Color(0xFFB00020).withValues(alpha: 0.9)
+                              : isDark
+                              ? Color(0xFF0F1822)
+                              : Color(0xFFF7F8FA),
+                          // isDark ? Color(0xFF0F1822) : Color(0xFFDADDE2),
                         ),
                       ),
 
