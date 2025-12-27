@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: library_prefixes
 import 'dart:math' as Math;
 
 class ShakeWidget extends StatefulWidget {
@@ -18,10 +19,10 @@ class ShakeWidget extends StatefulWidget {
   });
 
   @override
-  _ShakeWidgetState createState() => _ShakeWidgetState();
+  ShakeWidgetState createState() => ShakeWidgetState();
 }
 
-class _ShakeWidgetState extends State<ShakeWidget>
+class ShakeWidgetState extends State<ShakeWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> animation;
@@ -74,13 +75,13 @@ class _ShakeWidgetState extends State<ShakeWidget>
 }
 
 class ShakeController {
-  _ShakeWidgetState? _state;
+  ShakeWidgetState? _state;
 
   void shake() {
     _state?.shake();
   }
 
-  void _setState(_ShakeWidgetState state) {
+  void _setState(ShakeWidgetState state) {
     _state = state;
   }
 }

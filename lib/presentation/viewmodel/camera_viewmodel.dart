@@ -21,7 +21,7 @@ class CameraViewModel extends ChangeNotifier {
       _isInitialized = true;
     } catch (e) {
       _isInitialized = false;
-      print('Error al inicializar la camara: $e');
+      // print('Error al inicializar la camara: $e');
     }
     notifyListeners();
   }

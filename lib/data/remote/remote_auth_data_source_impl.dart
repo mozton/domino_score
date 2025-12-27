@@ -5,9 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
 
 // Definición de las claves para SecureStorage
-const String _ID_TOKEN_KEY = 'idToken';
-const String _REFRESH_TOKEN_KEY =
-    'refreshToken'; // 🚨 NUEVA CLAVE PARA REFRESH TOKEN
+String _idTokenKey = 'idToken';
+String _refreshTokenKey = 'refreshToken';
 
 /// Implementación de la fuente de datos remota para la autenticación.
 class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
@@ -34,14 +33,14 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   Future<void> _saveTokens(Map<String, dynamic> data) async {
     // 1. Guardar el ID Token (el de corta duración)
     if (data.containsKey('idToken')) {
-      await _storage.write(key: _ID_TOKEN_KEY, value: data['idToken']);
+      await _storage.write(key: _idTokenKey, value: data['idToken']);
     }
 
     // 2. Guardar el Refresh Token (el de larga duración)
     // El endpoint de login devuelve 'refreshToken'. El endpoint de refresh devuelve 'refresh_token'.
     final refreshToken = data['refreshToken'] ?? data['refresh_token'];
     if (refreshToken != null) {
-      await _storage.write(key: _REFRESH_TOKEN_KEY, value: refreshToken);
+      await _storage.write(key: _refreshTokenKey, value: refreshToken);
     }
   }
 
@@ -130,18 +129,18 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<void> logout() async {
-    await _storage.delete(key: _ID_TOKEN_KEY);
-    await _storage.delete(key: _REFRESH_TOKEN_KEY);
+    await _storage.delete(key: _idTokenKey);
+    await _storage.delete(key: _refreshTokenKey);
     return;
   }
 
   @override
   Future<String> readToken() async {
-    return await _storage.read(key: _ID_TOKEN_KEY) ?? '';
+    return await _storage.read(key: _idTokenKey) ?? '';
   }
 
   Future<String?> refreshIdToken() async {
-    final refreshToken = await _storage.read(key: _REFRESH_TOKEN_KEY);
+    final refreshToken = await _storage.read(key: _refreshTokenKey);
 
     if (refreshToken == null) {
       return null;
@@ -179,7 +178,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<bool> isEmailVerified() async {
-    final idToken = await _storage.read(key: _ID_TOKEN_KEY);
+    final idToken = await _storage.read(key: _idTokenKey);
     if (idToken == null) throw Exception('No se encontró token');
 
     try {
@@ -203,9 +202,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<void> sendEmailVerification() async {
-    final token = await _storage.read(
-      key: _ID_TOKEN_KEY,
-    ); // Usar clave correcta
+    final token = await _storage.read(key: _idTokenKey); // Usar clave correcta
     if (token == null) throw Exception('No se encontró token');
 
     try {
@@ -229,9 +226,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<void> resendVerificationEmail() async {
-    final token = await _storage.read(
-      key: _ID_TOKEN_KEY,
-    ); // Usar clave correcta
+    final token = await _storage.read(key: _idTokenKey); // Usar clave correcta
 
     if (token == null) {
       throw Exception('No se encontró el token del usuario.');

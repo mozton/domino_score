@@ -123,7 +123,7 @@ class GameViewmodel extends ChangeNotifier {
       resetWinnerState();
       _roundSelected = null;
     } catch (e) {
-      print('Error al iniciar un nuevo juego: $e');
+      // print('Error al iniciar un nuevo juego: $e');
       // Manejar el error si la creación falla
     }
     _isLoading = false;
@@ -162,7 +162,7 @@ class GameViewmodel extends ChangeNotifier {
       resetWinnerState();
       _roundSelected = null;
     } catch (e) {
-      print('Error al iniciar un nuevo juego con equipos actuales: $e');
+      // print('Error al iniciar un nuevo juego con equipos actuales: $e');
     }
 
     _isLoading = false;
@@ -175,7 +175,7 @@ class GameViewmodel extends ChangeNotifier {
       _currentGame = games.last;
       notifyListeners();
     } catch (e) {
-      print('Error al cargar los detalles del juego: $e');
+      // print('Error al cargar los detalles del juego: $e');
     }
   }
 
@@ -354,7 +354,7 @@ class GameViewmodel extends ChangeNotifier {
       _roundSelected = null;
       notifyListeners();
     } catch (e) {
-      print('Error al eliminar ronda: $e');
+      // print('Error al eliminar ronda: $e');
     }
   }
 

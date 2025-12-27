@@ -50,7 +50,7 @@ class _CameraSheetState extends State<CameraSheet> {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withValues(alpha: 0.5),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -170,14 +170,14 @@ class _CameraSheetState extends State<CameraSheet> {
       await Future.delayed(const Duration(milliseconds: 500));
       final image = await controller.takePicture();
 
-      if (!mounted) return;
+      if (!context.mounted) return;
 
       // 2. Mostrar preview y esperar acción
       await _showPreviewDialog(context, image, viewModel);
     } catch (e) {
-      print("Error taking picture: $e");
+      // print("Error taking picture: $e");
     } finally {
-      if (mounted) {
+      if (context.mounted) {
         setState(() {
           _isTakingPicture = false;
         });
@@ -261,7 +261,7 @@ class _PreviewDialogState extends State<_PreviewDialog> {
                   fontFamily: 'Poppins',
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: textColor.withOpacity(0.7),
+                  color: textColor.withValues(alpha: 0.7),
                 ),
               ),
             ] else ...[
@@ -309,7 +309,7 @@ class _PreviewDialogState extends State<_PreviewDialog> {
                         }
                       } catch (e) {
                         // Manejo de error simple, podría ser un Toast
-                        print("Error procesando imagen: $e");
+                        // print("Error procesando imagen: $e");
                         if (mounted) {
                           setState(() {
                             _isProcessing = false;

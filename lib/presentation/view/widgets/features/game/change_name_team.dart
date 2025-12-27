@@ -65,8 +65,8 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
                       color: isDark
-                          ? Color(0xFFFFFFFF).withOpacity(0.5)
-                          : Color(0xFF1E2B43).withOpacity(0.5),
+                          ? Color(0xFFFFFFFF).withValues(alpha: 0.5)
+                          : Color(0xFF1E2B43).withValues(alpha: 0.5),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFD9D9D9)),

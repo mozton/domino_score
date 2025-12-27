@@ -75,7 +75,7 @@ class UiHelpers {
               if (points > 0) {
                 await gameProvider.addRound(newRound);
               }
-              Navigator.pop(ctx);
+              if (ctx.mounted) Navigator.pop(ctx);
             },
             onAddPoints: (pointsText) async {
               final points = int.tryParse(pointsText) ?? 0;
@@ -97,7 +97,7 @@ class UiHelpers {
               if (points > 0) {
                 await gameProvider.addRound(newRound);
               }
-              Navigator.pop(ctx);
+              if (ctx.mounted) Navigator.pop(ctx);
             },
             onGetDominoesPointbyImage: () async {
               Navigator.pop(ctx);

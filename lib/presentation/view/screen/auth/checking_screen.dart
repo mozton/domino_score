@@ -23,13 +23,15 @@ class CheckAuthScreen extends StatelessWidget {
 
             if (snapshot.data == null) {
               Future.microtask(() {
-                Navigator.pushReplacement(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => LoginScreen(),
-                    transitionDuration: Duration(seconds: 0),
-                  ),
-                );
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => LoginScreen(),
+                      transitionDuration: Duration(seconds: 0),
+                    ),
+                  );
+                }
               });
             } else {
               Future.microtask(() async {

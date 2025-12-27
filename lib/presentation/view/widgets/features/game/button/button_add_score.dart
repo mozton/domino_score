@@ -20,7 +20,7 @@ class ButtonAddScore extends StatelessWidget {
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
-      splashColor: colorButton.withOpacity(0.1),
+      splashColor: colorButton.withValues(alpha: 0.1),
       onTap: isScoreSelect ? null : onTap,
       child: Card(
         child: isScoreSelect
@@ -34,7 +34,7 @@ class ButtonAddScore extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: colorButton.withOpacity(0.5),
+                      color: colorButton.withValues(alpha: 0.5),
                       offset: const Offset(4, 4),
                       blurRadius: 10,
                       spreadRadius: 0,

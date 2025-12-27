@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: library_prefixes
 import 'dart:math' as Math;
 
 class IconDomino extends StatelessWidget {

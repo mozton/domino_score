@@ -74,8 +74,8 @@ class WinAndNewGame extends StatelessWidget {
               fontSize: 22,
               fontWeight: FontWeight.w500,
               color: isDark
-                  ? Colors.white.withOpacity(0.5)
-                  : Color(0xFF1E2B43).withOpacity(0.5),
+                  ? Colors.white.withValues(alpha: 0.5)
+                  : Color(0xFF1E2B43).withValues(alpha: 0.5),
             ),
           ),
           SizedBox(height: 55),
