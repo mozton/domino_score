@@ -76,7 +76,7 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w700,
                     fontSize: 44,
-                    color: Color(0xFF1E2B43),
+                    color: isDark ? Colors.white : Color(0xFF1E2B43),
                   ),
                 ),
               ),

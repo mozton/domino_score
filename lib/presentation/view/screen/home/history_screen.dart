@@ -87,7 +87,7 @@ class HistoryDemoScreen extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           color: isDark
                               ? Colors.white
                               : const Color(0xFF1E2B43),

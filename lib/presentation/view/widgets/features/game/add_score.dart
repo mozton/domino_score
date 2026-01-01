@@ -89,7 +89,7 @@ class _AddScoreState extends State<AddScore> {
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w700,
                     fontSize: 50,
-                    color: Color(0xFF1E2B43),
+                    color: isDark ? Colors.white : Color(0xFF1E2B43),
                   ),
                 ),
               ),
