@@ -103,7 +103,7 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
                     top: 8,
                     left: 50,
                     child: Text(
-                      'Comenzar',
+                      'Guardar',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w500,

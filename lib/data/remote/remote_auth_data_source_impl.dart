@@ -139,6 +139,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     return await _storage.read(key: _idTokenKey) ?? '';
   }
 
+  @override
   Future<String?> refreshIdToken() async {
     final refreshToken = await _storage.read(key: _refreshTokenKey);
 
@@ -254,12 +255,12 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>> getUserData(String token) async {
+  Future<Map<String, dynamic>> getUserData(String idToken) async {
     try {
       final resp = await _dio.post(
         '/v1/accounts:lookup',
         queryParameters: {'key': _firebaseToken},
-        data: {'idToken': token},
+        data: {'idToken': idToken},
       );
 
       final decodeResp = resp.data as Map<String, dynamic>;

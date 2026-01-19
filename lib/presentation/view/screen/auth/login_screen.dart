@@ -82,6 +82,70 @@ class _LoginScreenState extends State<LoginScreen> {
                             icon: Icons.email_outlined,
                             isEmail: true, // Flag para validar email
                             isDarkMode: isDarkMode, // Pass theme state
+                            suffix: IconButton(
+                              icon: const Image(
+                                image: AssetImage('assets/icon/user-scan.png'),
+                                width: 35,
+                                height: 35,
+                                color: Color(0xFFD4A62F),
+                              ),
+
+                              onPressed: loading
+                                  ? null
+                                  : () async {
+                                      setState(() => loading = true);
+                                      final authenticated =
+                                          await _biometricService
+                                              .authenticateWithFace();
+                                      if (authenticated) {
+                                        final creds = await _biometricService
+                                            .getCredentials();
+                                        if (creds != null && context.mounted) {
+                                          emailCtrl.text = creds['email']!;
+                                          passCtrl.text = creds['password']!;
+                                          // Trigger login programmatically
+                                          setState(() => loading = true);
+                                          try {
+                                            final prov =
+                                                Provider.of<AuthRepository>(
+                                                  context,
+                                                  listen: false,
+                                                );
+                                            final user = await prov.signIn(
+                                              emailCtrl.text,
+                                              passCtrl.text,
+                                            );
+                                            if (user != null) {
+                                              await DatabaseHelper().init(
+                                                user.id,
+                                              );
+                                            }
+                                            if (context.mounted) {
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                '/',
+                                                (route) => false,
+                                              );
+                                            }
+                                            setState(() => loading = false);
+                                          } catch (e) {
+                                            setState(() => loading = false);
+                                            final message =
+                                                InputValidator.parseException(
+                                                  e,
+                                                );
+                                            NotificationsService.showSnackbar(
+                                              message,
+                                            );
+                                          }
+                                        } else {
+                                          NotificationsService.showSnackbar(
+                                            'No hay credenciales guardadas. Inicie sesión manualmente primero.',
+                                          );
+                                        }
+                                      }
+                                    },
+                            ),
                           ),
                         ),
                         const SizedBox(height: 18),
@@ -193,61 +257,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             const SizedBox(width: 16),
-                            IconButton(
-                              icon: const Image(
-                                image: AssetImage('assets/icon/user-scan.png'),
-                                width: 45,
-                                height: 45,
-                                color: Color(0xFFD4A62F),
-                              ),
-                              onPressed: () async {
-                                setState(() => loading = true);
-                                final authenticated = await _biometricService
-                                    .authenticateWithFace();
-                                if (authenticated) {
-                                  final creds = await _biometricService
-                                      .getCredentials();
-                                  if (creds != null && context.mounted) {
-                                    emailCtrl.text = creds['email']!;
-                                    passCtrl.text = creds['password']!;
-                                    // Trigger login programmatically
-                                    setState(() => loading = true);
-                                    try {
-                                      final prov = Provider.of<AuthRepository>(
-                                        context,
-                                        listen: false,
-                                      );
-                                      final user = await prov.signIn(
-                                        emailCtrl.text,
-                                        passCtrl.text,
-                                      );
-                                      if (user != null) {
-                                        await DatabaseHelper().init(user.id);
-                                      }
-                                      if (context.mounted) {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          '/',
-                                          (route) => false,
-                                        );
-                                      }
-                                      setState(() => loading = false);
-                                    } catch (e) {
-                                      setState(() => loading = false);
-                                      final message =
-                                          InputValidator.parseException(e);
-                                      NotificationsService.showSnackbar(
-                                        message,
-                                      );
-                                    }
-                                  } else {
-                                    NotificationsService.showSnackbar(
-                                      'No hay credenciales guardadas. Inicie sesión manualmente primero.',
-                                    );
-                                  }
-                                }
-                              },
-                            ),
                           ],
                         ),
                       ],

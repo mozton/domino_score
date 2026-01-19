@@ -19,8 +19,28 @@ class AuthRepositoryImpl implements AuthRepository {
       final userData = await _dataSource.getUserData(token);
       return _mapToUser(userData);
     } catch (e) {
-      await signOut();
-      return null;
+      // 1. Si falla obtener datos (token vencido), intentamos refrescar
+      try {
+        final newToken = await _dataSource.refreshIdToken();
+        if (newToken != null) {
+          // 2. Si refrescamos con éxito, guardamos el nuevo token
+          // NOTA: RemoteAuthDataSource ya guarda 'idToken' y 'refreshToken',
+          // pero AuthRepositoryImpl usa la clave 'token', así que la actualizamos también.
+          await _storage.write(key: 'token', value: newToken);
+
+          // 3. Reintentamos obtener el usuario con el nuevo token
+          final userData = await _dataSource.getUserData(newToken);
+          return _mapToUser(userData);
+        } else {
+          // Si no se pudo refrescar, cerramos sesión
+          await signOut();
+          return null;
+        }
+      } catch (refreshError) {
+        // Si falla el refresh o el segundo intento
+        await signOut();
+        return null;
+      }
     }
   }
 
