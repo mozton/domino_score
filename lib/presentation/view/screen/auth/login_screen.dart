@@ -4,6 +4,7 @@ import 'package:dominos_score/domain/utils/input_validator.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/services.dart';
+import 'package:dominos_score/data/services/subscription_service.dart';
 import 'package:dominos_score/data/services/biometric_service.dart';
 import 'package:dominos_score/services/notifications_service.dart';
 import 'package:flutter/material.dart';
@@ -121,11 +122,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                               );
                                             }
                                             if (context.mounted) {
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                context,
-                                                '/',
-                                                (route) => false,
-                                              );
+                                              final isSubscribed = await context
+                                                  .read<SubscriptionService>()
+                                                  .isSubscribed;
+                                              if (isSubscribed) {
+                                                Navigator.pushNamedAndRemoveUntil(
+                                                  context,
+                                                  '/',
+                                                  (route) => false,
+                                                );
+                                              } else {
+                                                Navigator.pushNamedAndRemoveUntil(
+                                                  context,
+                                                  '/subscription',
+                                                  (route) => false,
+                                                );
+                                              }
                                             }
                                             setState(() => loading = false);
                                           } catch (e) {
@@ -143,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             'No hay credenciales guardadas. Inicie sesión manualmente primero.',
                                           );
                                         }
+                                        setState(() => loading = false);
                                       }
                                     },
                             ),
@@ -221,11 +234,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                             }
 
                                             if (context.mounted) {
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                context,
-                                                '/',
-                                                (route) => false,
-                                              );
+                                              final isSubscribed = await context
+                                                  .read<SubscriptionService>()
+                                                  .isSubscribed;
+                                              if (isSubscribed) {
+                                                Navigator.pushNamedAndRemoveUntil(
+                                                  context,
+                                                  '/',
+                                                  (route) => false,
+                                                );
+                                              } else {
+                                                Navigator.pushNamedAndRemoveUntil(
+                                                  context,
+                                                  '/subscription',
+                                                  (route) => false,
+                                                );
+                                              }
                                             }
                                           } catch (e) {
                                             final message =

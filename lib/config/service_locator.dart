@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:dominos_score/data/repositories/setting_repository_impl.dart';
+import 'package:dominos_score/data/services/subscription_service.dart';
 import 'package:dominos_score/domain/repositories/setting_resopitory.dart';
+import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:image/image.dart' as img;
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/data/remote/remote_auth_data_source_impl.dart';
@@ -15,6 +17,8 @@ import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'package:dominos_score/data/services/subscription_service.dart';
+import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -55,6 +59,13 @@ class ServiceLocator {
 
     ChangeNotifierProvider<GameViewmodel>(
       create: (context) => GameViewmodel(context.read<GameRepositoryImpl>()),
+    ),
+
+    Provider<SubscriptionService>(create: (_) => SubscriptionService()),
+
+    ChangeNotifierProvider<SubscriptionViewModel>(
+      create: (context) =>
+          SubscriptionViewModel(context.read<SubscriptionService>()),
     ),
   ];
 }

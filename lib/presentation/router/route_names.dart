@@ -7,4 +7,5 @@ class RouteNames {
   static const String checking = '/checking';
   static const String settingsPopup = '/settingsPopup';
   static const String historyDemo = '/historyDemo';
+  static const String subscription = '/subscription';
 }

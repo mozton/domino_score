@@ -4,6 +4,7 @@ import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/auth/register_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/history_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
+import 'package:dominos_score/presentation/view/screen/subscription/subscription_screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class AppRouter {
       RouteNames.login: (context) => LoginScreen(),
       RouteNames.register: (context) => RegisterScreen(),
       RouteNames.historyDemo: (context) => HistoryDemoScreen(),
+      RouteNames.subscription: (context) => SubscriptionScreen(),
     };
   }
 }
