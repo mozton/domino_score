@@ -107,4 +107,9 @@ class AuthRepositoryImpl implements AuthRepository {
       groupIds: [],
     );
   }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _dataSource.sendPasswordResetEmail(email);
+  }
 }

@@ -2,12 +2,13 @@ import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/utils/input_validator.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
-import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
+// import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/services.dart';
-import 'package:dominos_score/data/services/subscription_service.dart';
+// import 'package:dominos_score/data/services/subscription_service.dart';
 import 'package:dominos_score/data/services/biometric_service.dart';
 import 'package:dominos_score/services/notifications_service.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,14 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.watch<SettingViewModel>().themeMode;
-    final isDarkMode =
-        theme == ThemeMode.dark ||
-        (theme == ThemeMode.system &&
-            MediaQuery.of(context).platformBrightness == Brightness.dark);
-
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
+      backgroundColor: isDark ? Colors.black : const Color(0xFFEFF3F7),
+
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -59,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: isDarkMode ? const Color(0xFF0F1822) : Colors.white,
+                    color: isDark ? const Color(0xFF0F1822) : Colors.white,
                     borderRadius: BorderRadius.circular(22),
                     boxShadow: [
                       BoxShadow(
@@ -82,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             label: 'Correo electrónico',
                             icon: Icons.email_outlined,
                             isEmail: true, // Flag para validar email
-                            isDarkMode: isDarkMode, // Pass theme state
+                            isDarkMode: isDark, // Pass theme state
                             suffix: IconButton(
                               icon: const Image(
                                 image: AssetImage('assets/icon/user-scan.png'),
@@ -122,22 +119,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                               );
                                             }
                                             if (context.mounted) {
-                                              final isSubscribed = await context
-                                                  .read<SubscriptionService>()
-                                                  .isSubscribed;
-                                              if (isSubscribed) {
-                                                Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  '/',
-                                                  (route) => false,
-                                                );
-                                              } else {
-                                                Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  '/subscription',
-                                                  (route) => false,
-                                                );
-                                              }
+                                              // final isSubscribed = await context
+                                              //     .read<SubscriptionService>()
+                                              //     .isSubscribed;
+                                              // if (isSubscribed) {
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                '/',
+                                                (route) => false,
+                                              );
+                                              // } else {
+                                              //   Navigator.pushNamedAndRemoveUntil(
+                                              //     context,
+                                              //     '/subscription',
+                                              //     (route) => false,
+                                              //   );
+                                              // }
                                             }
                                             setState(() => loading = false);
                                           } catch (e) {
@@ -162,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        const SizedBox(height: 18),
+                        // const SizedBox(height: 18),
 
                         // Password
                         _inputField(
@@ -170,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: "Contraseña",
                           icon: Icons.lock_outline,
                           obscure: obscure,
-                          isDarkMode: isDarkMode, // Pass theme state
+                          isDarkMode: isDark, // Pass theme state
                           suffix: IconButton(
                             icon: Icon(
                               obscure
@@ -184,7 +181,35 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 30),
+                        // const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: EdgeInsets.zero,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/forgotPassword');
+                              },
+                              child: Text(
+                                "¿Olvidaste tu contraseña?",
+                                style: TextStyle(
+                                  color: isDark
+                                      ? Colors.white70
+                                      : const Color(0xFF1E2B43),
+                                  fontSize: 13,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
 
                         // Login button
                         Row(
@@ -234,22 +259,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                             }
 
                                             if (context.mounted) {
-                                              final isSubscribed = await context
-                                                  .read<SubscriptionService>()
-                                                  .isSubscribed;
-                                              if (isSubscribed) {
-                                                Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  '/',
-                                                  (route) => false,
-                                                );
-                                              } else {
-                                                Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  '/subscription',
-                                                  (route) => false,
-                                                );
-                                              }
+                                              // final isSubscribed = await context
+                                              //     .read<SubscriptionService>()
+                                              //     .isSubscribed;
+                                              // if (isSubscribed) {
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                '/',
+                                                (route) => false,
+                                              );
+                                              // } else {
+                                              //   Navigator.pushNamedAndRemoveUntil(
+                                              //     context,
+                                              //     '/subscription',
+                                              //     (route) => false,
+                                              //   );
+                                              // }
                                             }
                                           } catch (e) {
                                             final message =
@@ -261,11 +286,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                             );
                                           }
                                         },
+
                                   child: Center(
                                     child: loading
-                                        ? const CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
+                                        ? LoadingAnimationWidget.progressiveDots(
+                                            color: isDark
+                                                ? Colors.white
+                                                : Colors.black,
+                                            size: 40,
                                           )
                                         : const Text(
                                             "Iniciar sesión",

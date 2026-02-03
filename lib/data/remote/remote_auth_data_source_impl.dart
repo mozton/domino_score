@@ -274,4 +274,25 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       throw Exception('Error inesperado: $e');
     }
   }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      final resp = await _dio.post(
+        '/v1/accounts:sendOobCode',
+        queryParameters: {'key': _firebaseToken},
+        data: {'requestType': 'PASSWORD_RESET', 'email': email},
+      );
+
+      final data = resp.data;
+
+      if (!data.containsKey('email')) {
+        throw Exception('No se pudo enviar el correo de recuperación.');
+      }
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
+    } catch (e) {
+      throw Exception('Error inesperado: $e');
+    }
+  }
 }

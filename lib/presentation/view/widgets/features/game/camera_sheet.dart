@@ -2,6 +2,7 @@ import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,9 @@ class _CameraSheetState extends State<CameraSheet> {
 
     if (!viewModel.isInitialized || viewModel.cameraController == null) {
       return Center(
-        child: CircularProgressIndicator(
+        child: LoadingAnimationWidget.progressiveDots(
           color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF1E2B43),
+          size: 40,
         ),
       );
     }
@@ -253,7 +255,10 @@ class _PreviewDialogState extends State<_PreviewDialog> {
 
             // Texto de confirmación o Loader
             if (_isProcessing) ...[
-              const CircularProgressIndicator(color: Color(0xFFD4AF37)),
+              LoadingAnimationWidget.progressiveDots(
+                color: Color(0xFFD4AF37),
+                size: 40,
+              ),
               const SizedBox(height: 10),
               Text(
                 'Procesando...',

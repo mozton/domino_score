@@ -5,6 +5,7 @@ import 'package:dominos_score/presentation/view/widgets/features/game/button/but
 import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -119,8 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
             : Container(
                 color: isDark ? Colors.black : Colors.white,
                 child: Center(
-                  child: CircularProgressIndicator(
+                  child: LoadingAnimationWidget.progressiveDots(
                     color: isDark ? Colors.white : Colors.black,
+                    size: 40,
                   ),
                 ),
               );

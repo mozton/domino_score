@@ -83,7 +83,9 @@ class HistoryDemoScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Juego #${game.id}',
+                        team1.totalScore >= 199 || team2.totalScore >= 199
+                            ? 'Juego #${game.id}'
+                            : 'Actual',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 14,

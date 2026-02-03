@@ -9,4 +9,5 @@ abstract class RemoteAuthDataSource {
   Future<bool> isEmailVerified();
   Future<void> resendVerificationEmail();
   Future<String?> refreshIdToken();
+  Future<void> sendPasswordResetEmail(String email);
 }

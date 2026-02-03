@@ -1,4 +1,5 @@
 import 'package:dominos_score/data/local/database_helper.dart';
+import 'package:dominos_score/domain/repositories/url_launcher_repository.dart';
 
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
@@ -73,7 +74,7 @@ class SettingsPopup extends StatelessWidget {
 
   Widget _buildPopup(BuildContext context) {
     final width = MediaQuery.of(context).size.width * (244 / 393);
-    final height = MediaQuery.of(context).size.height * (183 / 851);
+    final height = MediaQuery.of(context).size.height * (220 / 851);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -159,18 +160,24 @@ class SettingsPopup extends StatelessWidget {
             child: Divider(height: 20, color: Color(0xFFE5E7EB)),
           ),
 
-          // _component(
-          //   context,
-          //   'Configuración de cuenta',
-          //   'assets/icon/user-cog.png',
-          //   () {},
-          //   Color(0xFF6B7280),
-          //   Color(0xFF6B7280),
-          //   false,
-          // ),
           _component(
             context,
-            'Sign Out',
+            'Acerca de la app',
+            'assets/icon/info-circle.png',
+            () {
+              final urlLauncherRepository = Provider.of<UrlLauncherRepository>(
+                context,
+                listen: false,
+              );
+              urlLauncherRepository.openInstagram();
+            },
+            Color(0xFF6B7280),
+            Color(0xFF6B7280),
+            false,
+          ),
+          _component(
+            context,
+            'Cerrar sesión',
             'assets/icon/logout-2.png',
             () async {
               final authRepository = Provider.of<AuthRepository>(

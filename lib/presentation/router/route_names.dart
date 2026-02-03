@@ -8,4 +8,5 @@ class RouteNames {
   static const String settingsPopup = '/settingsPopup';
   static const String historyDemo = '/historyDemo';
   static const String subscription = '/subscription';
+  static const String forgotPassword = '/forgotPassword';
 }
