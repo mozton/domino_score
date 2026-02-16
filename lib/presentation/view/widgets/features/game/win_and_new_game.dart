@@ -136,7 +136,9 @@ class _Buttons extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: size.height * (43 / 852),
-        width: size.width * (155 / 393),
+        width: MediaQuery.of(context).size.width >= 700
+            ? size.width * 0.2
+            : size.width * 0.4,
         decoration: BoxDecoration(
           color: buttonColor,
           borderRadius: BorderRadius.circular(22),

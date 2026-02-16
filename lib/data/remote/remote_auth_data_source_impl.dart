@@ -8,20 +8,16 @@ import 'package:dio/dio.dart';
 String _idTokenKey = 'idToken';
 String _refreshTokenKey = 'refreshToken';
 
-/// Implementación de la fuente de datos remota para la autenticación.
 class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   final Dio _dio;
   final FlutterSecureStorage _storage;
-
   final String _firebaseToken = dotenv.env['FIREBASE_TOKEN'] ?? '';
-  // Usamos el mismo Base URL para identitytoolkit.googleapis.com
   final String _authBaseUrl = 'https://identitytoolkit.googleapis.com';
 
   RemoteAuthDataSourceImpl(this._storage, {Dio? dio}) : _dio = dio ?? Dio() {
     _dio.options.baseUrl = _authBaseUrl;
   }
 
-  // Helper para manejar errores de Dio/Firebase
   String _handleDioError(DioException e) {
     final errorData = e.response?.data['error'] as Map<String, dynamic>?;
     return errorData?['message'] ?? 'Error de conexión o servidor.';
@@ -29,15 +25,10 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   // ===================== CORE AUTHENTICATION =====================
 
-  /// 🚨 NUEVO MÉTODO HELPER: Para guardar ambos tokens de forma consistente.
   Future<void> _saveTokens(Map<String, dynamic> data) async {
-    // 1. Guardar el ID Token (el de corta duración)
     if (data.containsKey('idToken')) {
       await _storage.write(key: _idTokenKey, value: data['idToken']);
     }
-
-    // 2. Guardar el Refresh Token (el de larga duración)
-    // El endpoint de login devuelve 'refreshToken'. El endpoint de refresh devuelve 'refresh_token'.
     final refreshToken = data['refreshToken'] ?? data['refresh_token'];
     if (refreshToken != null) {
       await _storage.write(key: _refreshTokenKey, value: refreshToken);
@@ -52,8 +43,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         data: {'idToken': idToken, 'requestType': 'VERIFY_EMAIL'},
       );
     } on DioException catch (e) {
-      // Ignoramos errores menores de reenvío, pero podemos loguearlos
-
       SnackBar(
         content: Text(
           'Error al enviar correo de verificación en background: ${_handleDioError(e)}',
@@ -80,10 +69,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       final userData = resp.data as Map<String, dynamic>;
 
       if (userData.containsKey('idToken')) {
-        // 🚨 CORRECCIÓN: Usar _saveTokens para guardar ambos tokens
         await _saveTokens(userData);
-
-        // Enviar verificación inmediatamente
         await _sendVerificationRequest(userData['idToken'] as String);
 
         return userData;
@@ -291,8 +277,28 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       }
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
+    }
+  }
+
+  @override
+  Future<void> deleteUser(String idToken) async {
+    try {
+      final resp = await _dio.post(
+        '/v1/accounts:delete',
+        queryParameters: {'key': _firebaseToken},
+        data: {'idToken': idToken},
+      );
+
+      final data = resp.data;
+
+      if (data != null &&
+          data['kind'] == 'identitytoolkit#DeleteAccountResponse') {
+        // Éxito confirmado
+      }
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      throw Exception('Error inesperado al eliminar la cuenta: $e');
     }
   }
 }

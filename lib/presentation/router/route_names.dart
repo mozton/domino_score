@@ -9,4 +9,5 @@ class RouteNames {
   static const String historyDemo = '/historyDemo';
   static const String subscription = '/subscription';
   static const String forgotPassword = '/forgotPassword';
+  static const String accountSettings = '/accountSettings';
 }

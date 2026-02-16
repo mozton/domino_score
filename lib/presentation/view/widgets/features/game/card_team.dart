@@ -62,7 +62,8 @@ class CardTeam extends StatelessWidget {
                       Text(
                         points.toString(),
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize:
+                              MediaQuery.of(context).size.height * (28 / 852),
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Poppins',
                           color: Colors.black,
@@ -74,7 +75,9 @@ class CardTeam extends StatelessWidget {
                           Text(
                             teamName,
                             style: TextStyle(
-                              fontSize: 13,
+                              fontSize:
+                                  MediaQuery.of(context).size.height *
+                                  (13 / 852),
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Poppins',
                               color: Colors.black,
@@ -89,7 +92,7 @@ class CardTeam extends StatelessWidget {
                   top: 5,
                   right: 5,
                   child: Image(
-                    height: 20,
+                    height: MediaQuery.of(context).size.height * (20 / 852),
                     color: Colors.black26,
                     image: AssetImage('assets/icon/pencil-plus.png'),
                   ),

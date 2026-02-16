@@ -16,11 +16,16 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
   Widget build(BuildContext context) {
     final prov = Provider.of<GameViewmodel>(context);
     final size = MediaQuery.of(context).size;
+    var orientation = MediaQuery.of(context).orientation;
 
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height * (60 / 852),
+          height: MediaQuery.of(context).size.height >= 700
+              ? orientation == Orientation.landscape
+                    ? MediaQuery.of(context).size.height * (180 / 852)
+                    : MediaQuery.of(context).size.height * (80 / 852)
+              : MediaQuery.of(context).size.height * (100 / 852),
           width: double.infinity,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
@@ -40,6 +45,7 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
                   prov.selectedPointsToWin(point);
                 },
                 child: Container(
+                  width: 20,
                   padding: EdgeInsets.all(10),
 
                   decoration: BoxDecoration(
@@ -76,7 +82,9 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
           },
           child: Container(
             height: size.height * (43 / 852),
-            width: size.width * (155 / 393),
+            width: MediaQuery.of(context).size.width >= 700
+                ? size.width * 0.2
+                : size.width * 0.4,
             decoration: BoxDecoration(
               color: Color(0xFFD4AF37),
               borderRadius: BorderRadius.circular(22),
@@ -89,35 +97,35 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: IconDomino(colorIcon: Color(0xFF000000)),
-                  ),
-
-                  Positioned(
-                    top: 8,
-                    left: 50,
-                    child: Text(
-                      'Guardar',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
-                        color: Color(0xFF000000),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [dialogSave()],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget dialogSave() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconDomino(colorIcon: const Color(0xFF000000)),
+
+          const Text(
+            'Guardar',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              color: Color(0xFF000000),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dominos_score/data/local/database_helper.dart';
+
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/utils/input_validator.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
@@ -159,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        // const SizedBox(height: 18),
+                        const SizedBox(height: 18),
 
                         // Password
                         _inputField(
@@ -181,33 +182,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
 
-                        // const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                padding: EdgeInsets.zero,
-                              ),
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/forgotPassword');
-                              },
-                              child: Text(
-                                "¿Olvidaste tu contraseña?",
-                                style: TextStyle(
-                                  color: isDark
-                                      ? Colors.white70
-                                      : const Color(0xFF1E2B43),
-                                  fontSize: 13,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/forgotPassword');
+                            },
+                            child: Text(
+                              "¿Olvidaste tu contraseña?",
+                              style: TextStyle(
+                                color: isDark
+                                    ? Colors.white70
+                                    : const Color(0xFF1E2B43),
+                                fontSize: 13,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ],
+                          ),
                         ),
                         const SizedBox(height: 18),
 
@@ -258,23 +251,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   );
                                             }
 
-                                            if (context.mounted) {
-                                              // final isSubscribed = await context
-                                              //     .read<SubscriptionService>()
-                                              //     .isSubscribed;
-                                              // if (isSubscribed) {
+                                            if (context.mounted &&
+                                                user != null) {
+                                              // Simple check or navigation
                                               Navigator.pushNamedAndRemoveUntil(
                                                 context,
                                                 '/',
                                                 (route) => false,
                                               );
-                                              // } else {
-                                              //   Navigator.pushNamedAndRemoveUntil(
-                                              //     context,
-                                              //     '/subscription',
-                                              //     (route) => false,
-                                              //   );
-                                              // }
                                             }
                                           } catch (e) {
                                             final message =

@@ -43,8 +43,8 @@ class ButtonAddScore extends StatelessWidget {
                 ),
                 child: Center(
                   child: Image(
-                    height: 20,
-                    width: 20,
+                    height: MediaQuery.of(context).size.height * (20 / 852),
+                    width: MediaQuery.of(context).size.height * (20 / 852),
                     image: AssetImage('assets/icon/plus.png'),
                     color: colorButton != Color(0xFFD4AF37)
                         ? Colors.white

@@ -74,7 +74,7 @@ class SettingsPopup extends StatelessWidget {
 
   Widget _buildPopup(BuildContext context) {
     final width = MediaQuery.of(context).size.width * (244 / 393);
-    final height = MediaQuery.of(context).size.height * (220 / 851);
+    final height = MediaQuery.of(context).size.height * (255 / 851);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -87,6 +87,19 @@ class SettingsPopup extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 8),
+          _component(
+            context,
+            'Mi cuenta',
+            'assets/icon/user.png',
+            () {
+              Navigator.pop(context);
+              Future.delayed(Duration.zero);
+              Navigator.pushNamed(context, RouteNames.accountSettings);
+            },
+            const Color(0xFF6B7280),
+            Color(0xFF6B7280),
+            true,
+          ),
 
           Consumer<SettingViewModel>(
             builder: (context, vm, _) {

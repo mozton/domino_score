@@ -1,5 +1,4 @@
 import 'package:dominos_score/data/local/database_helper.dart';
-// import 'package:dominos_score/data/services/subscription_service.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
@@ -43,14 +42,8 @@ class CheckAuthScreen extends StatelessWidget {
             } else {
               Future.microtask(() async {
                 await DatabaseHelper().init(snapshot.data!.id);
-                // Check subscription
+                // Check subscription removed
                 if (context.mounted) {
-                  // final isSubscribed = await context
-                  //     .read<SubscriptionService>()
-                  //     .isSubscribed;
-                  // if (!isSubscribed) {
-                  //   Navigator.pushReplacementNamed(context, '/subscription');
-                  // } else {
                   Navigator.pushReplacement(
                     context,
                     PageRouteBuilder(
@@ -58,7 +51,6 @@ class CheckAuthScreen extends StatelessWidget {
                       transitionDuration: Duration(seconds: 0),
                     ),
                   );
-                  // }
                 }
               });
             }

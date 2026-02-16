@@ -10,4 +10,5 @@ abstract class RemoteAuthDataSource {
   Future<void> resendVerificationEmail();
   Future<String?> refreshIdToken();
   Future<void> sendPasswordResetEmail(String email);
+  Future<void> deleteUser(String idToken);
 }

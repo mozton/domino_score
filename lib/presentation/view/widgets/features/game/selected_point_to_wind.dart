@@ -8,6 +8,7 @@ class SelectPointToWind extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
+    var orientation = MediaQuery.of(context).orientation;
     return Dialog(
       insetPadding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
@@ -19,7 +20,11 @@ class SelectPointToWind extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: SizedBox(
-          height: size.height * (218 / 852),
+          height: MediaQuery.of(context).size.height >= 700
+              ? orientation == Orientation.landscape
+                    ? MediaQuery.of(context).size.height * (330 / 852)
+                    : MediaQuery.of(context).size.height * (225 / 852)
+              : MediaQuery.of(context).size.height * (218 / 852),
           width: size.width * 320 / 393,
           child: Column(
             children: [

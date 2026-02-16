@@ -1,8 +1,6 @@
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/ui_helpers.dart';
-
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,29 +52,31 @@ class ButtonStartGame extends StatelessWidget {
                 }
               },
 
-        child: Stack(
-          children: [
-            Positioned(
-              left: 8,
-              top: 15,
-              child: IconDomino(colorIcon: Color(0xFFFFFFFF)),
-            ),
-            Positioned(
-              left: 40,
-              top: 13,
-              child: Text(
-                isScoreSelect ? ' Empezar Partida' : '  Nueva Partida',
+        child: Center(child: _dialogNewGame(isScoreSelect, context)),
+      ),
+    );
+  }
 
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Poppins',
-                  color: Colors.white,
-                ),
-              ),
+  Widget _dialogNewGame(bool isScoreSelect, BuildContext context) {
+    return SizedBox(
+      height: 50,
+      width: 200,
+
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconDomino(colorIcon: Color(0xFFFFFFFF)),
+          Text(
+            isScoreSelect ? ' Empezar Partida' : '  Nueva Partida',
+
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',
+              color: Colors.white,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
