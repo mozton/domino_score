@@ -1,4 +1,5 @@
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
+import 'package:dominos_score/domain/exceptions/auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -18,9 +19,57 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     _dio.options.baseUrl = _authBaseUrl;
   }
 
-  String _handleDioError(DioException e) {
+  void _handleDioError(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.connectionError) {
+      throw AuthException(
+        'Error de conexión. Verifique su internet.',
+        code: 'NETWORK_ERROR',
+      );
+    }
+
     final errorData = e.response?.data['error'] as Map<String, dynamic>?;
-    return errorData?['message'] ?? 'Error de conexión o servidor.';
+    final message = errorData?['message'] as String? ?? 'UNKNOWN_ERROR';
+
+    if (message.contains('EMAIL_EXISTS')) {
+      throw AuthException(
+        'Este correo electrónico ya está registrado.',
+        code: 'EMAIL_EXISTS',
+      );
+    }
+    if (message.contains('INVALID_LOGIN_CREDENTIALS') ||
+        message.contains('INVALID_PASSWORD') ||
+        message.contains('EMAIL_NOT_FOUND') ||
+        message.contains('USER_NOT_FOUND')) {
+      throw AuthException(
+        'Correo o contraseña incorrectos.',
+        code: 'INVALID_CREDENTIALS',
+      );
+    }
+    if (message.contains('WEAK_PASSWORD')) {
+      throw AuthException(
+        'La contraseña es muy débil. Debe tener al menos 6 caracteres.',
+        code: 'WEAK_PASSWORD',
+      );
+    }
+    if (message.contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+      throw AuthException(
+        'Demasiados intentos fallidos. Inténtelo más tarde.',
+        code: 'TOO_MANY_ATTEMPTS',
+      );
+    }
+    if (message.contains('USER_DISABLED')) {
+      throw AuthException(
+        'Esta cuenta ha sido deshabilitada.',
+        code: 'USER_DISABLED',
+      );
+    }
+
+    throw AuthException(
+      'Ocurrió un error inesperado al procesar su solicitud.',
+      code: message,
+    );
   }
 
   // ===================== CORE AUTHENTICATION =====================
@@ -43,11 +92,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         data: {'idToken': idToken, 'requestType': 'VERIFY_EMAIL'},
       );
     } on DioException catch (e) {
-      SnackBar(
-        content: Text(
-          'Error al enviar correo de verificación en background: ${_handleDioError(e)}',
-        ),
-      );
+      debugPrint('Error al enviar correo de verificación en background: $e');
     }
   }
 
@@ -74,11 +119,13 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
         return userData;
       }
-      throw Exception('Error desconocido al registrar usuario');
+      throw AuthException('Error desconocido al registrar usuario');
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow; // Should not reach here as _handleDioError throws
     } catch (e) {
-      throw Exception('Ocurrió un error inesperado: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Ocurrió un error inesperado: $e');
     }
   }
 
@@ -103,11 +150,13 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         await _saveTokens(decodeResp);
         return decodeResp;
       }
-      throw Exception('Error desconocido al iniciar sesión');
+      throw AuthException('Error desconocido al iniciar sesión');
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow;
     } catch (e) {
-      throw Exception('Ocurrió un error inesperado: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Ocurrió un error inesperado: $e');
     }
   }
 
@@ -166,7 +215,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   @override
   Future<bool> isEmailVerified() async {
     final idToken = await _storage.read(key: _idTokenKey);
-    if (idToken == null) throw Exception('No se encontró token');
+    if (idToken == null) throw AuthException('No se encontró token');
 
     try {
       final resp = await _dio.post(
@@ -179,18 +228,20 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       if (decodeResp.containsKey('users')) {
         return (decodeResp['users'] as List).first['emailVerified'] as bool;
       }
-      throw Exception('No se encontraron datos del usuario');
+      throw AuthException('No se encontraron datos del usuario');
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow;
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Error inesperado: $e');
     }
   }
 
   @override
   Future<void> sendEmailVerification() async {
     final token = await _storage.read(key: _idTokenKey); // Usar clave correcta
-    if (token == null) throw Exception('No se encontró token');
+    if (token == null) throw AuthException('No se encontró token');
 
     try {
       final resp = await _dio.post(
@@ -201,13 +252,15 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
       final data = resp.data;
 
-      if (!data.containsKey('email')) {
-        throw Exception('No se pudo enviar el correo de verificación');
+      if (data == null || !data.containsKey('email')) {
+        throw AuthException('No se pudo enviar el correo de verificación');
       }
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow;
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Error inesperado: $e');
     }
   }
 
@@ -216,7 +269,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     final token = await _storage.read(key: _idTokenKey); // Usar clave correcta
 
     if (token == null) {
-      throw Exception('No se encontró el token del usuario.');
+      throw AuthException('No se encontró el token del usuario.');
     }
 
     try {
@@ -228,15 +281,17 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
       final data = resp.data;
 
-      if (!data.containsKey('email')) {
-        throw Exception('No se pudo reenviar el correo de verificación.');
+      if (data == null || !data.containsKey('email')) {
+        throw AuthException('No se pudo reenviar el correo de verificación.');
       }
 
       // print("Correo de verificación reenviado a: ${data['email']}");
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow;
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Error inesperado: $e');
     }
   }
 
@@ -253,11 +308,13 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       if (decodeResp.containsKey('users')) {
         return (decodeResp['users'] as List).first as Map<String, dynamic>;
       }
-      throw Exception('No se encontraron datos del usuario');
+      throw AuthException('No se encontraron datos del usuario');
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow;
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Error inesperado: $e');
     }
   }
 
@@ -272,11 +329,11 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
       final data = resp.data;
 
-      if (!data.containsKey('email')) {
-        throw Exception('No se pudo enviar el correo de recuperación.');
+      if (data == null || !data.containsKey('email')) {
+        throw AuthException('No se pudo enviar el correo de recuperación.');
       }
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
     }
   }
 
@@ -296,9 +353,11 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         // Éxito confirmado
       }
     } on DioException catch (e) {
-      throw Exception(_handleDioError(e));
+      _handleDioError(e);
+      rethrow;
     } catch (e) {
-      throw Exception('Error inesperado al eliminar la cuenta: $e');
+      if (e is AuthException) rethrow;
+      throw AuthException('Error inesperado al eliminar la cuenta: $e');
     }
   }
 }

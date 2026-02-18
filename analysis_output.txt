@@ -1,0 +1,9 @@
+Analyzing domino_score...                                       
+
+   info • Statements in an if should be enclosed in a block • lib/data/remote/remote_auth_data_source_impl.dart:272:7 • curly_braces_in_flow_control_structures
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/view/screen/auth/checking_screen.dart:70:39 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/view/screen/auth/checking_screen.dart:72:39 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/view/screen/auth/checking_screen.dart:100:11 • use_build_context_synchronously
+   info • Function literals shouldn't be passed to 'forEach' • lib/presentation/viewmodel/subscription_viewmodel.dart:141:25 • avoid_function_literals_in_foreach_calls
+
+5 issues found. (ran in 3.2s)

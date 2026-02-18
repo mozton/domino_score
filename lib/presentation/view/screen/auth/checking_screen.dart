@@ -9,76 +9,98 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class CheckAuthScreen extends StatelessWidget {
+class CheckAuthScreen extends StatefulWidget {
   const CheckAuthScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final authRepository = context.read<AuthRepository>();
-    final subscriptionViewModel = context.read<SubscriptionViewModel>();
+  State<CheckAuthScreen> createState() => _CheckAuthScreenState();
+}
 
+class _CheckAuthScreenState extends State<CheckAuthScreen> {
+  Future<UserModel?>? _authFuture;
+  Future<void>? _subInitializationFuture;
+  UserModel? _lastAuthenticatedUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _authFuture = context.read<AuthRepository>().checkAuthStatus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: FutureBuilder(
-          future: Future.wait([
-            authRepository.checkAuthStatus(),
-            subscriptionViewModel.initializationComplete,
-          ]),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return Center(
-                    child: LoadingAnimationWidget.progressiveDots(
-                      color: Colors.black,
-                      size: 40,
-                    ),
-                  );
+        child: FutureBuilder<UserModel?>(
+          future: _authFuture,
+          builder: (context, authSnapshot) {
+            if (authSnapshot.connectionState != ConnectionState.done) {
+              return _loadingIndicator();
+            }
+
+            final user = authSnapshot.data;
+
+            if (user == null) {
+              _navigateTo(Navigator.of(context), const LoginScreen());
+              return Container();
+            }
+
+            // User is authenticated, now check subscription
+            // Ensure we only initialize once for this user
+            if (_lastAuthenticatedUser?.id != user.id) {
+              _lastAuthenticatedUser = user;
+              _subInitializationFuture = context
+                  .read<SubscriptionViewModel>()
+                  .initialize();
+            }
+
+            return FutureBuilder(
+              future: _subInitializationFuture,
+              builder: (context, subSnapshot) {
+                if (subSnapshot.connectionState != ConnectionState.done) {
+                  return _loadingIndicator();
                 }
 
-                final UserModel? user = snapshot.data?[0] as UserModel?;
-
-                if (user == null) {
-                  Future.microtask(() {
-                    if (context.mounted) {
-                      Navigator.pushReplacement(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => LoginScreen(),
-                          transitionDuration: Duration(seconds: 0),
-                        ),
-                      );
-                    }
-                  });
-                } else {
-                  Future.microtask(() async {
-                    await DatabaseHelper().init(user.id);
-
-                    if (context.mounted) {
-                      // If not premium, always show subscription screen
-                      if (!subscriptionViewModel.isPremium) {
-                        Navigator.pushReplacement(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => SubscriptionScreen(),
-                            transitionDuration: Duration(seconds: 0),
-                          ),
-                        );
+                return Consumer<SubscriptionViewModel>(
+                  builder: (context, subscriptionViewModel, child) {
+                    final navigator = Navigator.of(context);
+                    Future.microtask(() async {
+                      await DatabaseHelper().init(user.id);
+                      if (!mounted) return;
+                      if (subscriptionViewModel.isPremium) {
+                        _navigateTo(navigator, HomeScreen());
                       } else {
-                        Navigator.pushReplacement(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => HomeScreen(),
-                            transitionDuration: Duration(seconds: 0),
-                          ),
-                        );
+                        _navigateTo(navigator, const SubscriptionScreen());
                       }
-                    }
-                  });
-                }
-                return Container();
+                    });
+                    return _loadingIndicator();
+                  },
+                );
               },
+            );
+          },
         ),
       ),
     );
+  }
+
+  Widget _loadingIndicator() {
+    return Center(
+      child: LoadingAnimationWidget.progressiveDots(
+        color: Colors.black,
+        size: 40,
+      ),
+    );
+  }
+
+  void _navigateTo(NavigatorState navigator, Widget screen) {
+    Future.microtask(() {
+      navigator.pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => screen,
+          transitionDuration: Duration.zero,
+        ),
+      );
+    });
   }
 }

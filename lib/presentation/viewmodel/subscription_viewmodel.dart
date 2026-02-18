@@ -27,16 +27,17 @@ class SubscriptionViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  late final Future<void> initializationComplete;
+  bool _isInitialized = false;
+  bool get isInitialized => _isInitialized;
 
   SubscriptionViewModel({InAppPurchase? inAppPurchase})
-    : _inAppPurchase = inAppPurchase ?? InAppPurchase.instance {
-    initializationComplete = _initialize();
-  }
+    : _inAppPurchase = inAppPurchase ?? InAppPurchase.instance;
 
-  Future<void> _initialize() async {
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+
     _isLoading = true;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       _isAvailable = await _inAppPurchase.isAvailable();
@@ -46,6 +47,12 @@ class SubscriptionViewModel extends ChangeNotifier {
             .queryProductDetails(kIds);
         if (response.error == null) {
           _products = response.productDetails;
+          debugPrint('🍎 INITIALIZING: Found ${_products.length} products');
+          for (var p in _products) {
+            debugPrint('🍎 FOUND PRODUCT: id=${p.id}, status=${p.title}');
+          }
+        } else {
+          debugPrint('🍎 INITIALIZING ERROR: ${response.error!.message}');
         }
       }
 
@@ -53,24 +60,34 @@ class SubscriptionViewModel extends ChangeNotifier {
           _inAppPurchase.purchaseStream;
       _subscription = purchaseUpdated.listen(
         (List<PurchaseDetails> purchaseDetailsList) {
+          debugPrint('🍎 STREAM_LISTEN: Received update from Apple');
           _listenToPurchaseUpdated(purchaseDetailsList);
         },
         onDone: () {
+          debugPrint('🍎 STREAM_LISTEN: Done');
           _subscription.cancel();
         },
         onError: (Object error) {
-          debugPrint('Purchase Stream Error: $error');
+          debugPrint('🍎 STREAM_LISTEN ERROR: $error');
         },
       );
 
       // Automatically restore purchases to check premium status from Apple
       if (_isAvailable) {
+        debugPrint('🍎 INITIALIZING: Calling restorePurchases...');
         await _inAppPurchase.restorePurchases();
+        // Wait a bit for the stream to emit the results from restorePurchases
+        debugPrint('🍎 INITIALIZING: Waiting 3s for Apple sync...');
+        await Future.delayed(const Duration(milliseconds: 3000));
+        debugPrint(
+          '🍎 INITIALIZING: Done waiting. Premium status: $_isPremium',
+        );
       }
     } catch (e) {
       debugPrint('SubscriptionViewModel initialization error: $e');
       _errorMessage = 'Initialization failed: $e';
     } finally {
+      _isInitialized = true;
       _isLoading = false;
       notifyListeners();
     }
@@ -108,15 +125,26 @@ class SubscriptionViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
+      debugPrint('🍎 MANUAL: Calling restorePurchases...');
       await _inAppPurchase.restorePurchases();
+      await Future.delayed(const Duration(seconds: 1));
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+  Future<void> _listenToPurchaseUpdated(
+    List<PurchaseDetails> purchaseDetailsList,
+  ) async {
+    debugPrint(
+      '🍎 STREAM: Received ${purchaseDetailsList.length} purchase updates',
+    );
+    for (var purchaseDetails in purchaseDetailsList) {
+      debugPrint(
+        '🍎 STREAM DETAIL: status=${purchaseDetails.status}, ID=${purchaseDetails.productID}',
+      );
+
       if (purchaseDetails.status == PurchaseStatus.pending) {
         _isLoading = true;
         notifyListeners();
@@ -127,19 +155,29 @@ class SubscriptionViewModel extends ChangeNotifier {
           notifyListeners();
         } else if (purchaseDetails.status == PurchaseStatus.purchased ||
             purchaseDetails.status == PurchaseStatus.restored) {
-          debugPrint(
-            '🍎 APPLE PREMIUM RESPONSE: status=${purchaseDetails.status}, ID=${purchaseDetails.productID}, transactionDate=${purchaseDetails.transactionDate}',
-          );
-          _isPremium = true;
-          _isLoading = false;
-          notifyListeners();
+          // STRICT CHECK: Ensure the product ID is the one we expect
+          if (purchaseDetails.productID == _kBasicSubscriptionId) {
+            debugPrint(
+              '🍎 APPLE PREMIUM SUCCESS: Validated ID matching $_kBasicSubscriptionId',
+            );
+            debugPrint(
+              '🍎 APPLE PREMIUM SUCCESS: Validated ID matching $_kBasicSubscriptionId',
+            );
+            _isPremium = true;
+            _isLoading = false;
+            notifyListeners();
+          } else {
+            debugPrint(
+              '🍎 APPLE PREMIUM IGNORED: ID ${purchaseDetails.productID} does not match $_kBasicSubscriptionId',
+            );
+          }
         }
 
         if (purchaseDetails.pendingCompletePurchase) {
           await _inAppPurchase.completePurchase(purchaseDetails);
         }
       }
-    });
+    }
 
     // If the list is empty and we are not pending, we might want to ensure loading is off
     if (purchaseDetailsList.isEmpty) {

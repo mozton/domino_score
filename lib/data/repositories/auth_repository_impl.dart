@@ -1,4 +1,5 @@
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
+import 'package:dominos_score/domain/exceptions/auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
@@ -43,14 +44,20 @@ class AuthRepositoryImpl implements AuthRepository {
       final idToken = response['idToken'] as String?;
 
       if (idToken == null) {
-        throw Exception('No se recibió token del servidor');
+        throw AuthException(
+          'No se recibió token del servidor',
+          code: 'NO_TOKEN',
+        );
       }
 
       await _storage.write(key: 'token', value: idToken);
       final verified = await _dataSource.isEmailVerified();
 
       if (!verified) {
-        throw Exception('Debe verificar su correo antes de iniciar sesión.');
+        throw AuthException(
+          'Debe verificar su correo antes de iniciar sesión.',
+          code: 'EMAIL_NOT_VERIFIED',
+        );
       }
 
       return _mapToUser(response);
@@ -109,7 +116,10 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> deleteUser() async {
     final token = await _storage.read(key: 'token');
     if (token == null) {
-      throw Exception('No se encontró sesión activa para eliminar.');
+      throw AuthException(
+        'No se encontró sesión activa para eliminar.',
+        code: 'NO_SESSION',
+      );
     }
 
     // Primero eliminamos en remoto
