@@ -62,8 +62,7 @@ class ServiceLocator {
     ),
 
     ChangeNotifierProvider<SubscriptionViewModel>(
-      create: (context) => 
-          SubscriptionViewModel(context.read<FlutterSecureStorage>()),
+      create: (context) => SubscriptionViewModel(),
     ),
 
     Provider<UrlLauncherDataSource>(create: (_) => UrlLauncherDataSourceImpl()),

@@ -1,3 +1,4 @@
+import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,9 +29,9 @@ class SubscriptionScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   const Spacer(),
+                  const Spacer(),
                   // Icon or Image
-                   Icon(
+                  Icon(
                     Icons.star_rate_rounded,
                     size: 100,
                     color: const Color(0xFFD4A62F),
@@ -78,7 +79,7 @@ class SubscriptionScreen extends StatelessWidget {
 
                   const Spacer(),
 
-                  if (!viewModel.isPremium)
+                  if (!viewModel.isPremium) ...[
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -105,36 +106,8 @@ class SubscriptionScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                    )
-                  else
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.green),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.check_circle, color: Colors.green),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Ya eres Premium",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: isDarkMode ? Colors.white : Colors.black87,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                    
-                  const SizedBox(height: 16),
-
-                  if (!viewModel.isPremium)
+                    const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {
                         viewModel.restorePurchases();
@@ -147,6 +120,22 @@ class SubscriptionScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                  ] else ...[
+                    // Redirigir al home automáticamente si ya es premium
+                    Builder(
+                      builder: (context) {
+                        Future.microtask(() {
+                          if (context.mounted) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              RouteNames.home,
+                            );
+                          }
+                        });
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                  ],
                   const SizedBox(height: 24),
                 ],
               ),
