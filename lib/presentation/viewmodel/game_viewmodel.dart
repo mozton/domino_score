@@ -110,6 +110,8 @@ class GameViewmodel extends ChangeNotifier {
 
   Future<void> loadGames() async {
     final games = await _repository.fetchAllGames();
+    // Ordenar por fecha de creación descendente (más recientes primero)
+    games.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     _games = games;
     notifyListeners();
   }

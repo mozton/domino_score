@@ -13,6 +13,7 @@ import 'package:dominos_score/domain/datasourse/url_launcher_data_source.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/repositories/setting_resopitory.dart';
 import 'package:dominos_score/domain/repositories/url_launcher_repository.dart';
+import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
@@ -64,6 +65,8 @@ class ServiceLocator {
     ChangeNotifierProvider<SubscriptionViewModel>(
       create: (context) => SubscriptionViewModel(),
     ),
+
+    ChangeNotifierProvider<AuthViewmodel>(create: (context) => AuthViewmodel()),
 
     Provider<UrlLauncherDataSource>(create: (_) => UrlLauncherDataSourceImpl()),
     Provider<UrlLauncherRepository>(

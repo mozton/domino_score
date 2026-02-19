@@ -55,7 +55,8 @@ class HistoryDemoScreen extends StatelessWidget {
             final game = games[index];
             final team1 = game.teams[0];
             final team2 = game.teams[1];
-            final date = game.createdAt.toString().substring(0, 10);
+            final date = game.createdAt.toString();
+            // .substring(0, 10);
 
             // Determine winner for coloring
             final team1Won = team1.totalScore > team2.totalScore;
@@ -83,7 +84,8 @@ class HistoryDemoScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        team1.totalScore >= 199 || team2.totalScore >= 199
+                        team1.totalScore >= game.pointsToWin ||
+                                team2.totalScore >= game.pointsToWin
                             ? 'Juego #${game.id}'
                             : 'Actual',
                         style: TextStyle(
