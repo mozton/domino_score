@@ -28,6 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final GlobalKey settingsKey = GlobalKey();
     final isDark = Theme.of(context).brightness == Brightness.dark;

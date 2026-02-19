@@ -41,7 +41,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     // if (confirmed == true && mounted) {
     // try {
     // await authVM.deleteAccount(authRepo);
-    await database.deleteDB();
+    await database.deleteAllDatabases();
     Navigator.pop(context);
 
     // if (mounted) {
@@ -62,72 +62,75 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final authVM = context.read<AuthViewmodel>();
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: isDark
-              ? [const Color(0x00000000), const Color(0x00000000)]
-              : [const Color(0xFFE4E9F2), const Color(0xFFFAFAFA)],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: Text(
-            'Mi Cuenta',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins',
-              color: isDark ? Colors.white : Colors.black,
+    return Consumer<AuthViewmodel>(
+      builder: (context, authVM, child) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: isDark
+                  ? [const Color(0x00000000), const Color(0x00000000)]
+                  : [const Color(0xFFE4E9F2), const Color(0xFFFAFAFA)],
             ),
           ),
-        ),
-        body: authVM.isLoading
-            ? Center(
-                child: LoadingAnimationWidget.progressiveDots(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
                   color: isDark ? Colors.white : Colors.black,
-                  size: 40,
                 ),
-              )
-            : authVM.user == null
-            ? Center(
-                child: LoadingAnimationWidget.progressiveDots(
+                onPressed: () => Navigator.pop(context),
+              ),
+              title: Text(
+                'Mi Cuenta',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Poppins',
                   color: isDark ? Colors.white : Colors.black,
-                  size: 40,
-                ),
-              )
-            : SingleChildScrollView(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ProfileHeader(user: authVM.user!),
-                      const SizedBox(height: 40),
-                      ButtonDeleteAccount(
-                        onPressed: () => _deleteAccount(context),
-                      ),
-                    ],
-                  ),
                 ),
               ),
-      ),
+            ),
+            body: authVM.isLoading
+                ? Center(
+                    child: LoadingAnimationWidget.progressiveDots(
+                      color: isDark ? Colors.white : Colors.black,
+                      size: 40,
+                    ),
+                  )
+                : authVM.user == null
+                ? Center(
+                    child: LoadingAnimationWidget.progressiveDots(
+                      color: isDark ? Colors.white : Colors.black,
+                      size: 40,
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ProfileHeader(user: authVM.user!),
+                          const SizedBox(height: 40),
+                          ButtonDeleteAccount(
+                            onPressed: () => _deleteAccount(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
+        );
+      },
     );
   }
 }

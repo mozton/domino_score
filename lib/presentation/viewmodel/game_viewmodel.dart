@@ -62,31 +62,31 @@ class GameViewmodel extends ChangeNotifier {
 
     try {
       final existingGamen = await _repository.fetchAllGames();
-
+      print("Juegos existentes: ${existingGamen.length}");
       if (existingGamen.isEmpty) {
         // Asegurar que el estado anterior no interfiera
-        _currentGame = GameModel(
-          actualRound: 0,
-          pointsToWin: pointsToWin,
-          createdAt: DateTime.now(),
-          teams: [],
-          rounds: [],
-        );
+        // _currentGame = GameModel(
+        //   actualRound: 0,
+        //   pointsToWin: pointsToWin,
+        //   createdAt: DateTime.now(),
+        //   teams: [],
+        //   rounds: [],
+        // );
         await _createNewGame();
-        // print("Juego nuevo creado con ID: ${_currentGame.id}");
+        print("Juego nuevo creado con ID: ${_currentGame.id}");
       } else {
         _currentGame = existingGamen.last;
-        // print("Juego existente cargado: ID ${_currentGame.id}");
+        print("Juego existente cargado: ID ${_currentGame.id}");
       }
     } catch (e) {
-      // print('Error al inicializar el juego: $e');
-      _currentGame = GameModel(
-        actualRound: 0,
-        pointsToWin: pointsToWin,
-        createdAt: DateTime.now(),
-        teams: [],
-        rounds: [],
-      );
+      print('Error al inicializar el juego: $e');
+      // _currentGame = GameModel(
+      //   actualRound: 0,
+      //   pointsToWin: pointsToWin,
+      //   createdAt: DateTime.now(),
+      //   teams: [],
+      //   rounds: [],
+      // );
     }
     _isLoading = false;
 

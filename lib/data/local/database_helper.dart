@@ -1,17 +1,22 @@
+import 'dart:io';
+
 import 'package:dominos_score/domain/models/models.dart';
 import 'package:dominos_score/domain/models/game/team_model.dart';
 import 'package:dominos_score/domain/models/game/round_model.dart';
 import 'package:dominos_score/domain/datasourse/local_game_data_source.dart';
+import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper implements LocalGameDataSource {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
+  late AuthRepository authRepository;
 
   DatabaseHelper._internal();
 
   static Database? _database;
+
   String? _userId;
 
   Future<void> init(String userId) async {
@@ -64,8 +69,29 @@ class DatabaseHelper implements LocalGameDataSource {
       dbPath,
       'DominoScoreDB${_userId != null ? "_$_userId" : ""}.db',
     );
+    print("Path de la base de datos: $path");
 
     await deleteDatabase(path);
+  }
+
+  // En DatabaseHelper
+  Future<void> deleteAllDatabases() async {
+    final dbPath = await getDatabasesPath();
+    // Obtener lista de archivos .db en el directorio
+    final dbDir = Directory(dbPath);
+    if (await dbDir.exists()) {
+      final files = dbDir
+          .listSync()
+          .where((file) => file.path.endsWith('.db'))
+          .toList();
+
+      for (var file in files) {
+        await deleteDatabase(file.path);
+      }
+    }
+
+    // Reiniciar el estado interno
+    await close();
   }
 
   Future<void> _createTables(Database db, int version) async {
