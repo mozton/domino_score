@@ -6,20 +6,37 @@ class MessageDeleteAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final size = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.zero,
       child: Container(
-        width: 350,
-        height: 250,
-        padding: const EdgeInsets.all(25),
+        padding: EdgeInsets.all(20),
+        height: size.height * (257 / 852),
+        width: size.width * (350 / 393),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: isDark ? Color(0xFF0F1822) : Colors.white,
+          color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Image(
+                    height: 23,
+                    width: 23,
+                    color: isDark ? Colors.white : Color(0xFF555555),
+                    image: AssetImage('assets/icon/square-rounded-x.png'),
+                  ),
+                ),
+              ],
+            ),
             Text(
               'Eliminar cuenta',
               style: TextStyle(

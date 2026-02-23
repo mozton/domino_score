@@ -69,7 +69,7 @@ class DatabaseHelper implements LocalGameDataSource {
       dbPath,
       'DominoScoreDB${_userId != null ? "_$_userId" : ""}.db',
     );
-    print("Path de la base de datos: $path");
+    // print("Path de la base de datos: $path");
 
     await deleteDatabase(path);
   }

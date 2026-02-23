@@ -70,7 +70,7 @@ class GameViewmodel extends ChangeNotifier {
         // print("Juego existente cargado: ID ${_currentGame.id}");
       }
     } catch (e) {
-      print('Error al inicializar el juego: $e');
+      // print('Error al inicializar el juego: $e');
     }
     _isLoading = false;
     notifyListeners();
