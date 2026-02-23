@@ -84,11 +84,11 @@ class HistoryDemoScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        // team1.totalScore >= game.pointsToWin ||
-                        //         team2.totalScore >= game.pointsToWin
-                        //     ? 'Juego #${game.id}'
-                        //     : 'Actual',
-                        'Juego #${game.id}',
+                        team1.totalScore >= game.pointsToWin ||
+                                team2.totalScore >= game.pointsToWin
+                            ? 'Juego #${game.id}'
+                            : 'Actual',
+
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 14,
@@ -99,7 +99,7 @@ class HistoryDemoScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        date,
+                        date.substring(0, 10),
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 12,

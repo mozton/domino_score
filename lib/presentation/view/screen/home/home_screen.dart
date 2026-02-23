@@ -21,9 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final gameViewModel = context.read<GameViewmodel>();
-
-      gameViewModel.initGameOnStartup();
+      context.read<GameViewmodel>().initGameOnStartup();
     });
   }
 

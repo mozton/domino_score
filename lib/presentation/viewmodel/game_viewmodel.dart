@@ -55,41 +55,24 @@ class GameViewmodel extends ChangeNotifier {
   // ======================== Inicialización ======================== //
 
   Future<void> initGameOnStartup() async {
-    _isLoading = true;
-    notifyListeners();
     _localSettingDataSource = LocalSettingDataSource();
     pointsToWin = _localSettingDataSource.getPointToWin() ?? 0;
-
+    _isLoading = true;
+    notifyListeners();
     try {
       final existingGamen = await _repository.fetchAllGames();
-      print("Juegos existentes: ${existingGamen.length}");
+      // print("Juegos existentes: ${existingGamen.length}");
       if (existingGamen.isEmpty) {
-        // Asegurar que el estado anterior no interfiera
-        // _currentGame = GameModel(
-        //   actualRound: 0,
-        //   pointsToWin: pointsToWin,
-        //   createdAt: DateTime.now(),
-        //   teams: [],
-        //   rounds: [],
-        // );
         await _createNewGame();
-        print("Juego nuevo creado con ID: ${_currentGame.id}");
+        // print("Juego nuevo creado con ID: ${_currentGame.id}");
       } else {
         _currentGame = existingGamen.last;
-        print("Juego existente cargado: ID ${_currentGame.id}");
+        // print("Juego existente cargado: ID ${_currentGame.id}");
       }
     } catch (e) {
       print('Error al inicializar el juego: $e');
-      // _currentGame = GameModel(
-      //   actualRound: 0,
-      //   pointsToWin: pointsToWin,
-      //   createdAt: DateTime.now(),
-      //   teams: [],
-      //   rounds: [],
-      // );
     }
     _isLoading = false;
-
     notifyListeners();
   }
 
@@ -126,7 +109,6 @@ class GameViewmodel extends ChangeNotifier {
       _roundSelected = null;
     } catch (e) {
       // print('Error al iniciar un nuevo juego: $e');
-      // Manejar el error si la creación falla
     }
     _isLoading = false;
     notifyListeners();

@@ -32,31 +32,32 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final database = DatabaseHelper();
-
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => const MessageDeleteAccount(),
     );
 
-    // if (confirmed == true && mounted) {
-    // try {
-    // await authVM.deleteAccount(authRepo);
-    await database.deleteAllDatabases();
-    Navigator.pop(context);
+    if (confirmed == true && mounted) {
+      try {
+        await authVM.deleteAccount(authRepo);
+        await database.deleteDB();
 
-    // if (mounted) {
-    // navigator.pushNamedAndRemoveUntil(
-    //         RouteNames.checking,
-    //         (route) => false,
-    //       );
-    //     }
-    //   } catch (e) {
-    //     if (mounted) {
-    //       messenger.showSnackBar(
-    //         SnackBar(content: Text('Error al eliminar cuenta: $e')),
-    //       );
-    //     }
-    //   }
+        navigator.pop();
+
+        if (mounted) {
+          navigator.pushNamedAndRemoveUntil(
+            RouteNames.checking,
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          messenger.showSnackBar(
+            SnackBar(content: Text('Error al eliminar cuenta: $e')),
+          );
+        }
+      }
+    }
   }
 
   @override

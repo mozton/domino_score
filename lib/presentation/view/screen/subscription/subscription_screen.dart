@@ -1,6 +1,7 @@
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionScreen extends StatelessWidget {
@@ -20,7 +21,12 @@ class SubscriptionScreen extends StatelessWidget {
       body: Consumer<SubscriptionViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: LoadingAnimationWidget.progressiveDots(
+                color: isDarkMode ? Colors.white : Colors.black,
+                size: 40,
+              ),
+            );
           }
 
           return SafeArea(
@@ -132,7 +138,12 @@ class SubscriptionScreen extends StatelessWidget {
                             );
                           }
                         });
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                          child: LoadingAnimationWidget.progressiveDots(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            size: 40,
+                          ),
+                        );
                       },
                     ),
                   ],
