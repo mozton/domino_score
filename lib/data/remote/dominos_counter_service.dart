@@ -1,8 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../core/network/dio_interceptor.dart';
 
 class DominosCounter {
   final dio = Dio();
+
+  DominosCounter() {
+    dio.interceptors.add(NetworkInterceptor());
+  }
 
   Future<int> getDominosPointFromImg(String base64Image) async {
     final apiKey = dotenv.env['ROBOFLOW_API_KEY'] ?? "";

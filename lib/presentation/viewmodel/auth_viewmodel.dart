@@ -14,6 +14,14 @@ class AuthViewmodel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   bool isValidForm() {
     return formKey.currentState?.validate() ?? false;
   }
@@ -23,8 +31,10 @@ class AuthViewmodel extends ChangeNotifier {
     notifyListeners();
     try {
       _user = await repository.checkAuthStatus();
+      _errorMessage = null;
     } catch (e) {
       _user = null;
+      _errorMessage = e.toString();
     }
     _isLoading = false;
     notifyListeners();

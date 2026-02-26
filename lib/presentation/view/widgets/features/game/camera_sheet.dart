@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
+import 'package:dominos_score/presentation/widgets/error_snackbar.dart';
+import 'package:dominos_score/core/error/app_exception.dart';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -451,9 +454,14 @@ class _PreviewDialogState extends State<_PreviewDialog> {
                           Navigator.pop(context, points);
                         }
                       } catch (e) {
-                        // Manejo de error simple, podría ser un Toast
-                        // print("Error procesando imagen: $e");
                         if (mounted) {
+                          String message = "Ha ocurrido un error inesperado";
+                          if (e is DioException && e.error is AppException) {
+                            message = (e.error as AppException).message;
+                          } else if (e is AppException) {
+                            message = e.message;
+                          }
+                          ErrorSnackbar.show(context, message);
                           setState(() {
                             _isProcessing = false;
                           });
