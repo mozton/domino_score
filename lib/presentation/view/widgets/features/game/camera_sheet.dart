@@ -461,7 +461,9 @@ class _PreviewDialogState extends State<_PreviewDialog> {
                           } else if (e is AppException) {
                             message = e.message;
                           }
-                          ErrorSnackbar.show(context, message);
+                          if (context.mounted) {
+                            ErrorSnackbar.show(context, message);
+                          }
                           setState(() {
                             _isProcessing = false;
                           });

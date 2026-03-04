@@ -188,6 +188,19 @@ class SettingsPopup extends StatelessWidget {
             Color(0xFF6B7280),
             false,
           ),
+          // _component(
+          //   context,
+          //   'Información Legal',
+          //   'assets/icon/info-circle.png',
+          //   () {
+          //     Navigator.pop(context);
+          //     Future.delayed(Duration.zero);
+          //     Navigator.pushNamed(context, RouteNames.privacyPolicy);
+          //   },
+          //   const Color(0xFF6B7280),
+          //   Color(0xFF6B7280),
+          //   true,
+          // ),
           _component(
             context,
             'Cerrar sesión',

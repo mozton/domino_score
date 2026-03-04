@@ -6,6 +6,7 @@ import 'package:dominos_score/presentation/view/screen/home/history_screen.dart'
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
 
 import 'package:dominos_score/presentation/view/screen/auth/forgot_password_screen.dart';
+import 'package:dominos_score/presentation/view/screen/info/privacy_polity_screen.dart';
 import 'package:dominos_score/presentation/view/screen/setting/account_settings_screen.dart';
 import 'package:dominos_score/presentation/view/screen/subscription/subscription_screen.dart';
 
@@ -23,6 +24,7 @@ class AppRouter {
       RouteNames.forgotPassword: (context) => ForgotPasswordScreen(),
       RouteNames.subscription: (context) => SubscriptionScreen(),
       RouteNames.accountSettings: (context) => AccountSettingsScreen(),
+      RouteNames.privacyPolicy: (context) => PrivacyPolicyScreen(),
     };
   }
 }

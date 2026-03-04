@@ -3,7 +3,6 @@ import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
-import 'package:dominos_score/presentation/view/screen/subscription/subscription_screen.dart';
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,16 +51,17 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
   Future<void> _initializeApp(UserModel user) async {
     try {
-      // Ejecutar ambas inicializaciones concurrentemente
-      await Future.wait([
-        DatabaseHelper().init(user.id),
-        context.read<SubscriptionViewModel>().initialize(),
-      ]);
+      // Inicializar base de datos primero
+      await DatabaseHelper().init(user.id);
 
       if (!mounted) return;
 
-      final isPremium = context.read<SubscriptionViewModel>().isPremium;
-      _navigateTo(isPremium ? HomeScreen() : const SubscriptionScreen());
+      // Inicializar suscripción en segundo plano sin bloquear la navegación inicial
+      // Esto permite que el usuario entre al Home más rápido
+      context.read<SubscriptionViewModel>().initialize();
+
+      // Navegar directamente al Home una vez autenticado e inicializada la DB
+      _navigateTo(const HomeScreen());
     } catch (e) {
       if (!mounted) return;
       setState(() {

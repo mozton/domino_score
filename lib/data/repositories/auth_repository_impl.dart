@@ -127,4 +127,15 @@ class AuthRepositoryImpl implements AuthRepository {
     // Luego limpiamos sesión local
     await signOut();
   }
+
+  @override
+  Future<void> acceptPrivacyPolicy() async {
+    await _storage.write(key: 'privacy_policy_accepted', value: 'true');
+  }
+
+  @override
+  Future<bool> isPrivacyPolicyAccepted() async {
+    final accepted = await _storage.read(key: 'privacy_policy_accepted');
+    return accepted == 'true';
+  }
 }

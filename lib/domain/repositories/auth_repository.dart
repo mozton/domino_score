@@ -7,4 +7,6 @@ abstract class AuthRepository {
   Future<UserModel?> checkAuthStatus();
   Future<void> sendPasswordResetEmail(String email);
   Future<void> deleteUser();
+  Future<void> acceptPrivacyPolicy();
+  Future<bool> isPrivacyPolicyAccepted();
 }

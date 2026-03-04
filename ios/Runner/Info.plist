@@ -34,8 +34,6 @@
 	<string>Usamos la cámara para tomar fotos de las fichas y analizar su imagen para contar automáticamente los puntos durante el juego.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Usamos Face ID para iniciar sesión</string>
-	<!-- <key>NSMicrophoneUsageDescription</key>
-	<string>Necesitamos acceso al micrófono para grabar audios</string> -->
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -45,6 +43,10 @@
 	<key>UIStatusBarHidden</key>
 	<false/>
 	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>

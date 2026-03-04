@@ -78,7 +78,7 @@ class SubscriptionViewModel extends ChangeNotifier {
         await _inAppPurchase.restorePurchases();
         // Wait a bit for the stream to emit the results from restorePurchases
         debugPrint('🍎 INITIALIZING: Waiting 3s for Apple sync...');
-        await Future.delayed(const Duration(milliseconds: 3000));
+        await Future.delayed(Duration(seconds: 3));
         debugPrint(
           '🍎 INITIALIZING: Done waiting. Premium status: $_isPremium',
         );
