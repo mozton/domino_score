@@ -78,27 +78,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           ),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: isDark ? Colors.white : Colors.black,
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),
-              title: Text(
-                'Mi Cuenta',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Poppins',
-                  color: isDark ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
+            appBar: _appBar(isDark, context),
             body: authVM.isLoading
                 ? Center(
                     child: LoadingAnimationWidget.progressiveDots(
@@ -188,6 +168,19 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                           ProfileHeader(user: authVM.user!),
                           const SizedBox(height: 40),
                           ButtonDeleteAccount(
+                            title: 'Activar Premium',
+                            color: Colors.amber,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteNames.subscription,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          ButtonDeleteAccount(
+                            title: 'Eliminar Cuenta',
+                            color: Colors.red,
                             onPressed: () => _deleteAccount(context),
                           ),
                         ],
@@ -197,6 +190,30 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           ),
         );
       },
+    );
+  }
+
+  AppBar _appBar(bool isDark, BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios_new,
+          color: isDark ? Colors.white : Colors.black,
+        ),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Text(
+        'Mi Cuenta',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Poppins',
+          color: isDark ? Colors.white : Colors.black,
+        ),
+      ),
     );
   }
 }

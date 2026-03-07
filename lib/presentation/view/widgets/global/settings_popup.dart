@@ -1,7 +1,7 @@
 import 'package:dominos_score/data/local/database_helper.dart';
+import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/repositories/url_launcher_repository.dart';
 
-import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/ui_helpers.dart';
@@ -188,19 +188,6 @@ class SettingsPopup extends StatelessWidget {
             Color(0xFF6B7280),
             false,
           ),
-          // _component(
-          //   context,
-          //   'Información Legal',
-          //   'assets/icon/info-circle.png',
-          //   () {
-          //     Navigator.pop(context);
-          //     Future.delayed(Duration.zero);
-          //     Navigator.pushNamed(context, RouteNames.privacyPolicy);
-          //   },
-          //   const Color(0xFF6B7280),
-          //   Color(0xFF6B7280),
-          //   true,
-          // ),
           _component(
             context,
             'Cerrar sesión',

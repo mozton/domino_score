@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 
 class ButtonDeleteAccount extends StatelessWidget {
   final VoidCallback onPressed;
-
-  const ButtonDeleteAccount({super.key, required this.onPressed});
+  final Color color;
+  final String title;
+  const ButtonDeleteAccount({
+    super.key,
+    required this.onPressed,
+    required this.color,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    const color = Colors.red;
 
     return Container(
       height: size.height * (44 / 852),
@@ -36,12 +41,12 @@ class ButtonDeleteAccount extends StatelessWidget {
         onPressed: onPressed,
         child: Center(
           child: Text(
-            'Eliminar Cuenta',
+            title,
             style: TextStyle(
               fontSize: size.height * (14 / 852),
               fontWeight: FontWeight.w700,
               fontFamily: 'Poppins',
-              color: Colors.red,
+              color: color,
             ),
           ),
         ),

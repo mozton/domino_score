@@ -1,9 +1,9 @@
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
-import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -30,7 +30,8 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
   Future<void> _checkAuth() async {
     try {
-      final user = await context.read<AuthRepository>().checkAuthStatus();
+      final authRepo = context.read<AuthRepository>();
+      final user = await authRepo.checkAuthStatus();
       if (!mounted) return;
 
       if (user == null) {
@@ -38,7 +39,20 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
         return;
       }
 
-      // Usuario autenticado: inicializar BD y suscripción en paralelo
+      // Usuario autenticado: verificar aceptación de políticas
+      final accepted = await authRepo.isPrivacyPolicyAccepted();
+      if (!mounted) return;
+
+      if (!accepted) {
+        // Usar pushReplacementNamed para asegurar que el flujo sea lineal
+        Future.microtask(() {
+          if (!mounted) return;
+          Navigator.pushReplacementNamed(context, RouteNames.privacyPolicy);
+        });
+        return;
+      }
+
+      // Si ya aceptó y está logueado, ir al Home después de inicializar DB
       await _initializeApp(user);
     } catch (e) {
       if (!mounted) return;
@@ -51,16 +65,12 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
   Future<void> _initializeApp(UserModel user) async {
     try {
-      // Inicializar base de datos primero
+      // Inicializar base de datos
       await DatabaseHelper().init(user.id);
 
       if (!mounted) return;
 
-      // Inicializar suscripción en segundo plano sin bloquear la navegación inicial
-      // Esto permite que el usuario entre al Home más rápido
-      context.read<SubscriptionViewModel>().initialize();
-
-      // Navegar directamente al Home una vez autenticado e inicializada la DB
+      // Navegar directamente al Home
       _navigateTo(const HomeScreen());
     } catch (e) {
       if (!mounted) return;

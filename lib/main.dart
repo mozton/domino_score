@@ -1,6 +1,7 @@
 import 'package:dominos_score/config/service_locator.dart';
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/data/local/local_setting_data_source.dart';
+import 'package:dominos_score/data/services/in_app_purschase_services.dart';
 import 'package:dominos_score/presentation/router/app_router.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
@@ -26,6 +27,7 @@ void main() async {
 
   // Inicializar DatabaseHelper con el userId
   await DatabaseHelper().init(userId);
+  await SubscriptionService.instance.initialize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(providers: ServiceLocator().providers, child: const MyApp()),

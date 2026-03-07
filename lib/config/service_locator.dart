@@ -6,12 +6,14 @@ import 'package:dominos_score/data/remote/url_launcher_data_source_impl.dart';
 import 'package:dominos_score/data/repositories/auth_repository_impl.dart';
 import 'package:dominos_score/data/repositories/game_repository_impl.dart';
 import 'package:dominos_score/data/repositories/setting_repository_impl.dart';
+import 'package:dominos_score/data/repositories/subscription_repository_impl.dart';
 import 'package:dominos_score/data/repositories/url_launcher_repository_impl.dart';
 import 'package:dominos_score/domain/datasourse/local_game_data_source.dart';
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
 import 'package:dominos_score/domain/datasourse/url_launcher_data_source.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/repositories/setting_resopitory.dart';
+import 'package:dominos_score/domain/repositories/subscription_repository.dart';
 import 'package:dominos_score/domain/repositories/url_launcher_repository.dart';
 import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
@@ -30,8 +32,8 @@ class ServiceLocator {
 
   final List<SingleChildWidget> providers = [
     Provider<LocalGameDataSource>(create: (_) => DatabaseHelper()),
-
     Provider<FlutterSecureStorage>(create: (_) => const FlutterSecureStorage()),
+
     Provider<RemoteAuthDataSource>(
       create: (context) =>
           RemoteAuthDataSourceImpl(context.read<FlutterSecureStorage>()),
@@ -52,6 +54,21 @@ class ServiceLocator {
 
     Provider<SettingRepository>(create: (context) => SettingRepositoryImpl()),
 
+    // --- SECCIÓN DE SUSCRIPCIÓN (CORREGIDA) ---
+
+    // 1. Primero registramos el Repositorio (la implementación vinculada a la interfaz)
+    Provider<ISubscriptionRepository>(
+      create: (_) => SubscriptionRepositoryImpl('basic_suscription'),
+      dispose: (_, repository) => repository.dispose(),
+    ),
+
+    // 2. Luego registramos el ViewModel, que ahora sí encontrará el repositorio arriba
+    ChangeNotifierProvider<SubscriptionViewModel>(
+      create: (context) =>
+          SubscriptionViewModel(context.read<ISubscriptionRepository>()),
+    ),
+
+    // ------------------------------------------
     ChangeNotifierProvider<SettingViewModel>(
       create: (context) => SettingViewModel(context.read<SettingRepository>()),
     ),
@@ -60,10 +77,6 @@ class ServiceLocator {
 
     ChangeNotifierProvider<GameViewmodel>(
       create: (context) => GameViewmodel(context.read<GameRepositoryImpl>()),
-    ),
-
-    ChangeNotifierProvider<SubscriptionViewModel>(
-      create: (context) => SubscriptionViewModel(),
     ),
 
     ChangeNotifierProvider<AuthViewmodel>(create: (context) => AuthViewmodel()),
