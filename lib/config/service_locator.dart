@@ -6,20 +6,22 @@ import 'package:dominos_score/data/remote/url_launcher_data_source_impl.dart';
 import 'package:dominos_score/data/repositories/auth_repository_impl.dart';
 import 'package:dominos_score/data/repositories/game_repository_impl.dart';
 import 'package:dominos_score/data/repositories/setting_repository_impl.dart';
-import 'package:dominos_score/data/repositories/subscription_repository_impl.dart';
+
 import 'package:dominos_score/data/repositories/url_launcher_repository_impl.dart';
+import 'package:dominos_score/data/services/in_app_purschase_services.dart';
 import 'package:dominos_score/domain/datasourse/local_game_data_source.dart';
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
 import 'package:dominos_score/domain/datasourse/url_launcher_data_source.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/repositories/setting_resopitory.dart';
-import 'package:dominos_score/domain/repositories/subscription_repository.dart';
+
 import 'package:dominos_score/domain/repositories/url_launcher_repository.dart';
 import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';
@@ -54,21 +56,12 @@ class ServiceLocator {
 
     Provider<SettingRepository>(create: (context) => SettingRepositoryImpl()),
 
-    // --- SECCIÓN DE SUSCRIPCIÓN (CORREGIDA) ---
+    Provider<IAPService>(create: (context) => IAPService(['basic_suscription'])),
 
-    // 1. Primero registramos el Repositorio (la implementación vinculada a la interfaz)
-    Provider<ISubscriptionRepository>(
-      create: (_) => SubscriptionRepositoryImpl('basic_suscription'),
-      dispose: (_, repository) => repository.dispose(),
-    ),
-
-    // 2. Luego registramos el ViewModel, que ahora sí encontrará el repositorio arriba
     ChangeNotifierProvider<SubscriptionViewModel>(
-      create: (context) =>
-          SubscriptionViewModel(context.read<ISubscriptionRepository>()),
+      create: (context) => SubscriptionViewModel(context.read<IAPService>()),
     ),
 
-    // ------------------------------------------
     ChangeNotifierProvider<SettingViewModel>(
       create: (context) => SettingViewModel(context.read<SettingRepository>()),
     ),

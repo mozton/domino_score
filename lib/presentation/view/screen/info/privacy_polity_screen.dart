@@ -236,7 +236,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         boxShadow: [
           if (!isDark)
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -249,7 +249,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           decoration: BoxDecoration(
             color: (isDark
                 ? Colors.white10
-                : Colors.blueGrey.withOpacity(0.05)),
+                : Colors.blueGrey.withValues(alpha: 0.05)),
             shape: BoxShape.circle,
           ),
           child: Image.asset(
