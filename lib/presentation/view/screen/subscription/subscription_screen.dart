@@ -1,5 +1,5 @@
+
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
-import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -51,14 +51,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             );
           }
 
-          // 2. Manejo de estado: Redirección si ya es Premium
-          if (viewModel.isPremium) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                Navigator.pushReplacementNamed(context, RouteNames.home);
-              }
-            });
-          }
+          // 2. Manejo de estado: Redirección instantánea removida para evitar
+          // que expulse al usuario si ya era Premium. En vez de eso, ocultamos
+          // los botones de compra más abajo y mostramos un mensaje.
 
           return SafeArea(
             child: Padding(
@@ -126,7 +121,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   const Spacer(),
 
                   // Botones de acción
-                  if (!viewModel.isPremium)
+                  if (!viewModel.isPremium) ...[
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -155,20 +150,47 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: () {
-                      context.read<SubscriptionViewModel>().restorePurchases();
-                    },
-                    child: Text(
-                      "Restaurar Compras",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: isDarkMode ? Colors.white70 : Colors.grey[800],
-                        fontFamily: 'Poppins',
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () {
+                        context.read<SubscriptionViewModel>().restorePurchases();
+                      },
+                      child: Text(
+                        "Restaurar Compras",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: isDarkMode ? Colors.white70 : Colors.grey[800],
+                          fontFamily: 'Poppins',
+                        ),
                       ),
                     ),
-                  ),
+                  ] else ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.green, width: 2),
+                      ),
+                      child: const Column(
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.green, size: 32),
+                          SizedBox(height: 8),
+                          Text(
+                            "¡Ya eres Premium!",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   // Disclaimer legal requerido por Apple
                   Padding(
                     padding: const EdgeInsets.symmetric(

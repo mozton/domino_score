@@ -5,6 +5,7 @@ import 'package:dominos_score/presentation/view/widgets/features/auth/message_de
 import 'package:dominos_score/presentation/view/widgets/features/setting/button_delete_account.dart';
 import 'package:dominos_score/presentation/view/widgets/features/setting/profile_header.dart';
 import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
+import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authRepo = context.read<AuthRepository>();
       context.read<AuthViewmodel>().loadUser(authRepo);
+      context.read<SubscriptionViewModel>().initialize();
     });
   }
 
@@ -167,17 +169,26 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         children: [
                           ProfileHeader(user: authVM.user!),
                           const SizedBox(height: 40),
-                          ButtonDeleteAccount(
-                            title: 'Activar Premium',
-                            color: Colors.amber,
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                RouteNames.subscription,
+                          Consumer<SubscriptionViewModel>(
+                            builder: (context, subVM, child) {
+                              if (subVM.isPremium) return const SizedBox.shrink();
+                              return Column(
+                                children: [
+                                  ButtonDeleteAccount(
+                                    title: 'Activar Premium',
+                                    color: Colors.amber,
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.subscription,
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
                               );
                             },
                           ),
-                          const SizedBox(height: 10),
                           ButtonDeleteAccount(
                             title: 'Eliminar Cuenta',
                             color: Colors.red,

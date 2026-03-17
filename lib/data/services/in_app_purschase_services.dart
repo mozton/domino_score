@@ -30,15 +30,17 @@ class IAPService {
     //   await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
     // }
 
-    _subscription = _iap.purchaseStream.listen(
-      _handlePurchases,
-      onDone: () {
-        _subscription?.cancel();
-      },
-      onError: (error) {
-        onPurchaseError?.call("Hubo un error al conectar con la tienda: ${error.toString()}");
-      },
-    );
+    if (_subscription == null) {
+      _subscription = _iap.purchaseStream.listen(
+        _handlePurchases,
+        onDone: () {
+          _subscription?.cancel();
+        },
+        onError: (error) {
+          onPurchaseError?.call("Hubo un error al conectar con la tienda: ${error.toString()}");
+        },
+      );
+    }
 
     return await _loadProducts();
   }
