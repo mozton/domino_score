@@ -1,6 +1,7 @@
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:flutter/material.dart';
-
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,23 +42,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       body: Consumer<SubscriptionViewModel>(
         builder: (context, viewModel, child) {
           // 1. Manejo de estado: Pantalla de carga
-          // if (viewModel.isLoading) {
-          //   return Center(
-          //     child: LoadingAnimationWidget.progressiveDots(
-          //       color: isDarkMode ? Colors.white : Colors.black,
-          //       size: 40,
-          //     ),
-          //   );
-          // }
+          if (viewModel.isLoading) {
+            return Center(
+              child: LoadingAnimationWidget.progressiveDots(
+                color: isDarkMode ? Colors.white : Colors.black,
+                size: 40,
+              ),
+            );
+          }
 
-          // // 2. Manejo de estado: Redirección si ya es Premium
-          // if (viewModel.isPremium) {
-          //   WidgetsBinding.instance.addPostFrameCallback((_) {
-          //     if (mounted) {
-          //       Navigator.pushReplacementNamed(context, RouteNames.home);
-          //     }
-          //   });
-          // }
+          // 2. Manejo de estado: Redirección si ya es Premium
+          if (viewModel.isPremium) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, RouteNames.home);
+              }
+            });
+          }
 
           return SafeArea(
             child: Padding(
@@ -94,29 +95,30 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   ),
 
                   // Precio dinámico desde el repositorio
-                  // if (viewModel.products.isNotEmpty)
-                  //   Padding(
-                  //     padding: const EdgeInsets.only(top: 16.0),
-                  //     child: Text(
-                  //       "${viewModel.products.first.price} / mes",
-                  //       style: const TextStyle(
-                  //         fontSize: 22,
-                  //         fontWeight: FontWeight.w700,
-                  //         color: Color(0xFFD4A62F),
-                  //         fontFamily: 'Poppins',
-                  //       ),
-                  //     ),
-                  //   ),
+                  if (viewModel.products.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        "${viewModel.products.first.price} / mes",
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFD4A62F),
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                    ),
 
-                  // if (viewModel.errorMessage != null)
-                  //   Padding(
-                  //     padding: const EdgeInsets.only(top: 16.0),
-                  //     child: Text(
-                  //       viewModel.errorMessage!,
-                  //       style: const TextStyle(color: Colors.red, fontSize: 12),
-                  //       textAlign: TextAlign.center,
-                  //     ),
-                  //   ),
+                  if (viewModel.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        viewModel.errorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+
                   const SizedBox(height: 32),
                   _buildFeatureItem(context, "Sin anuncios"),
                   _buildFeatureItem(context, "Historial ilimitado"),
@@ -124,32 +126,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   const Spacer(),
 
                   // Botones de acción
-                  // if (!viewModel.isPremium)
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        context.read<SubscriptionViewModel>().buySubscription();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD4A62F),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                  if (!viewModel.isPremium)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: viewModel.isAvailable && viewModel.products.isNotEmpty 
+                            ? () {
+                                context.read<SubscriptionViewModel>().buySubscription();
+                              }
+                            : null, // Deshabilitar si no hay conexión a la tienda o no cargó el producto
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD4A62F),
+                          disabledBackgroundColor: Colors.grey[700],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 4,
                         ),
-                        elevation: 4,
-                      ),
-                      child: const Text(
-                        "Suscribirse Ahora",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontFamily: 'Poppins',
+                        child: const Text(
+                          "Suscribirse Ahora",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () {
