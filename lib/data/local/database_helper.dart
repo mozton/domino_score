@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dominos_score/domain/models/models.dart';
+import 'package:dominos_score/domain/models/game/game_model.dart';
 import 'package:dominos_score/domain/models/game/team_model.dart';
 import 'package:dominos_score/domain/models/game/round_model.dart';
 import 'package:dominos_score/domain/datasourse/local_game_data_source.dart';

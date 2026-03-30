@@ -24,6 +24,10 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authRepo = context.read<AuthRepository>();
       context.read<AuthViewmodel>().loadUser(authRepo);
+<<<<<<< HEAD
+=======
+      // Restaurar estado de suscripción al abrir la pantalla
+>>>>>>> suscription_implement
       context.read<SubscriptionViewModel>().initialize();
     });
   }
@@ -170,6 +174,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                           ProfileHeader(user: authVM.user!),
                           const SizedBox(height: 40),
                           Consumer<SubscriptionViewModel>(
+<<<<<<< HEAD
                             builder: (context, subVM, child) {
                               if (subVM.isPremium) return const SizedBox.shrink();
                               return Column(
@@ -185,6 +190,45 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                     },
                                   ),
                                   const SizedBox(height: 10),
+=======
+                            builder: (context, subVM, _) {
+                              final isPremium =
+                                  subVM.state == AppAccessState.premium;
+                              return Column(
+                                children: [
+                                  ButtonDeleteAccount(
+                                    title: isPremium
+                                        ? 'Suscripto ✓'
+                                        : 'Activar Premium',
+
+                                    color: isPremium
+                                        ? Colors.green
+                                        : Colors.amber,
+                                    onPressed: isPremium
+                                        ? null
+                                        : () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              RouteNames.subscription,
+                                            );
+                                          },
+                                  ),
+                                  if (isPremium)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Text(
+                                        'Tu suscripción está activa',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: 'Poppins',
+                                          color: isDark
+                                              ? Colors.green[300]
+                                              : Colors.green,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+>>>>>>> suscription_implement
                                 ],
                               );
                             },

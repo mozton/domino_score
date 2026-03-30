@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 
+=======
+import 'package:dominos_score/presentation/router/route_names.dart';
+>>>>>>> suscription_implement
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -25,18 +29,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyActions: false,
-        automaticallyImplyLeading: true,
-        backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: isDarkMode ? Colors.white : Colors.black,
-          ),
-          onPressed: () => Navigator.pop(context),
+    return PopScope(
+      canPop: false, // Bloquear volver atrás con gesto/botón de sistema
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyActions: false, // Oculta el botón default
+          backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
         ),
+<<<<<<< HEAD
       ),
       backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
       body: Consumer<SubscriptionViewModel>(
@@ -149,6 +149,83 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           ),
                         ),
                       ),
+=======
+        backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
+        body: Consumer<SubscriptionViewModel>(
+          builder: (context, viewModel, child) {
+            
+            // Redirección si ya es Premium
+            if (viewModel.state == AppAccessState.premium) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  Navigator.pushReplacementNamed(context, RouteNames.home);
+                }
+              });
+            }
+
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    const Icon(
+                      Icons.star_rate_rounded,
+                      size: 80,
+                      color: Color(0xFFD4A62F),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "Desbloquea Corillo Premium",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                        color: isDarkMode ? Colors.white : Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Obtén acceso ilimitado a todas las funciones premium y disfruta de una experiencia libre de anuncios.",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    _buildFeatureItem(context, "Sin anuncios"),
+                    _buildFeatureItem(context, "Historial ilimitado"),
+                    _buildFeatureItem(context, "Olvídate de contar las fichas"),
+                    const Spacer(),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          context.read<SubscriptionViewModel>().buySubscription();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD4A62F),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 4,
+                        ),
+                        child: const Text(
+                          "Suscribirse Ahora",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ),
+>>>>>>> suscription_implement
                     ),
                     const SizedBox(height: 12),
                     TextButton(
@@ -164,6 +241,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         ),
                       ),
                     ),
+<<<<<<< HEAD
                   ] else ...[
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -203,39 +281,49 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         fontSize: 10,
                         color: isDarkMode ? Colors.grey[500] : Colors.grey[600],
                         fontFamily: 'Poppins',
+=======
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 8.0,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-
-                  // Links Legales
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildLegalLink(
-                          "Privacidad",
-                          "https://github.com/mozton/privacy-policy/blob/a794023ef93547f8e9e127b2c87488f763199ded/index.md",
+                      child: Text(
+                        "El pago se cargará a tu cuenta de Apple al confirmar la compra. La suscripción se renueva automáticamente a menos que se cancele al menos 24 horas antes del final del período actual. Puedes gestionar o cancelar tu suscripción desde los ajustes de tu cuenta en el App Store.",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isDarkMode ? Colors.grey[500] : Colors.grey[600],
+                          fontFamily: 'Poppins',
                         ),
-                        const Text("  •  "),
-                        _buildLegalLink(
-                          "EULA",
-                          "https://www.apple.com/legal/macapps/stdeula/",
-                        ),
-                      ],
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildLegalLink(
+                            "Privacidad",
+                            "https://github.com/mozton/privacy-policy/blob/a794023ef93547f8e9e127b2c87488f763199ded/index.md",
+                          ),
+                          const Text("  •  "),
+                          _buildLegalLink(
+                            "EULA",
+                            "https://www.apple.com/legal/macapps/stdeula/",
+                          ),
+                        ],
+>>>>>>> suscription_implement
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
-
-  // --- Widgets Auxiliares ---
 
   Widget _buildLegalLink(String text, String url) {
     return InkWell(

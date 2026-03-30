@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ButtonDeleteAccount extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color color;
   final String title;
   const ButtonDeleteAccount({

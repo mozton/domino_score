@@ -45,6 +45,7 @@ class AuthViewmodel extends ChangeNotifier {
     notifyListeners();
     try {
       await repository.deleteUser();
+      await repository.rejectPrivacyPolicy();
       await DatabaseHelper().deleteDB();
     } catch (e) {
       rethrow;

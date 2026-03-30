@@ -42,10 +42,12 @@ class ButtonStartGame extends StatelessWidget {
                 if (prov.totalTeam1Points >= prov.currentGame.pointsToWin ||
                     prov.totalTeam2Points >= prov.currentGame.pointsToWin) {
                   UiHelpers.newGame(context, '');
+                  Navigator.pushReplacementNamed(context, '/home');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       duration: Duration(seconds: 1),
+
                       content: Text('Termine la partida actual'),
                     ),
                   );

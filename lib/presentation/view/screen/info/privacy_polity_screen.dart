@@ -256,9 +256,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             iconAsset,
             width: 24,
             height: 24,
-            color: const Color(
-              0xFFD4AF37,
-            ), // Color dorado característico de la app
+            color: const Color(0xFFD4AF37),
           ),
         ),
         title: Text(

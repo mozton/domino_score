@@ -9,4 +9,5 @@ abstract class AuthRepository {
   Future<void> deleteUser();
   Future<void> acceptPrivacyPolicy();
   Future<bool> isPrivacyPolicyAccepted();
+  Future<void> rejectPrivacyPolicy();
 }
