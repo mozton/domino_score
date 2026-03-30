@@ -1,121 +1,12 @@
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:in_app_purchase/in_app_purchase.dart';
-
-// class IAPService {
-//   final InAppPurchase _iap = InAppPurchase.instance;
-//   final List<String> productIds;
-//   List<ProductDetails> products = [];
-//   StreamSubscription<List<PurchaseDetails>>? _subscription;
-
-//   // 1. Variable reactiva para el estado de suscripción
-//   final ValueNotifier<bool> isSubscribed = ValueNotifier<bool>(false);
-
-//   Function(PurchaseDetails purchase)? onPurchaseSuccess;
-
-//   IAPService(this.productIds);
-
-//   Future<void> initialize() async {
-//     final available = await _iap.isAvailable();
-//     if (!available) return;
-
-//     await _loadProducts();
-
-//     _subscription = _iap.purchaseStream.listen(
-//       _handlePurchases,
-//       onError: (error) {
-//         print("Error en el stream: $error");
-//       },
-//     );
-
-//     // 2. Al iniciar, verificamos si ya tiene suscripciones activas
-//     await restorePurchases();
-//   }
-
-//   Future<void> _loadProducts() async {
-//     final response = await _iap.queryProductDetails(productIds.toSet());
-//     if (response.error == null) {
-//       products = response.productDetails;
-//     }
-//   }
-
-//   ProductDetails? getProduct(String id) {
-//     try {
-//       return products.firstWhere((p) => p.id == id);
-//     } catch (_) {
-//       return null;
-//     }
-//   }
-
-//   Future<void> buy(String productId) async {
-//     final product = getProduct(productId);
-
-//     if (product == null) {
-//       throw Exception("Product not found");
-//     }
-
-//     final param = PurchaseParam(productDetails: product);
-
-//     await _iap.buyNonConsumable(purchaseParam: param);
-//   }
-
-//   Future<void> restorePurchases() async {
-//     // Esto disparará el evento en _handlePurchases si hay compras previas
-//     await _iap.restorePurchases();
-//   }
-
-//   void _handlePurchases(List<PurchaseDetails> purchases) async {
-//     if (purchases.isEmpty) {
-//       isSubscribed.value = false; // Opcional: manejar si no hay nada
-//     }
-
-//     for (final purchase in purchases) {
-//       switch (purchase.status) {
-//         case PurchaseStatus.purchased:
-//         case PurchaseStatus.restored:
-//           // 3. Si el ID coincide y el status es correcto, marcamos como suscrito
-//           if (productIds.contains(purchase.productID)) {
-//             isSubscribed.value = true;
-//           }
-//           onPurchaseSuccess?.call(purchase);
-//           break;
-
-//         case PurchaseStatus.error:
-//         case PurchaseStatus.canceled:
-//           // Podrías resetear el estado si es una compra fallida nueva
-//           // isSubscribed.value = false;
-//           break;
-
-//         default:
-//           break;
-//       }
-
-//       if (purchase.pendingCompletePurchase) {
-//         await _iap.completePurchase(purchase);
-//       }
-//     }
-//   }
-
-//   void dispose() {
-//     _subscription?.cancel();
-//     isSubscribed.dispose(); // Limpiar el notifier
-//   }
-// }
-
 import 'dart:async';
-<<<<<<< HEAD
-import 'dart:io';
-import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
-=======
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:verify_local_purchase/verify_local_purchase.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
->>>>>>> suscription_implement
 
 class IAPService {
   final InAppPurchase _iap = InAppPurchase.instance;
@@ -123,15 +14,10 @@ class IAPService {
   List<ProductDetails> products = [];
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
-<<<<<<< HEAD
-  // Callbacks
-=======
   final ValueNotifier<bool> isSubscribed = ValueNotifier<bool>(false);
-  final ValueNotifier<DateTime?> expirationDate = ValueNotifier<DateTime?>(
-    null,
-  );
+  final ValueNotifier<DateTime?> expirationDate = ValueNotifier<DateTime?>(null);
 
->>>>>>> suscription_implement
+  // Callbacks
   Function(PurchaseDetails purchase)? onPurchaseSuccess;
   Function(String error)? onPurchaseError;
 
@@ -140,16 +26,7 @@ class IAPService {
 
   IAPService(this.productIds);
 
-<<<<<<< HEAD
   Future<bool> initialize() async {
-    final available = await _iap.isAvailable();
-
-    if (!available) {
-      onPurchaseError?.call("La tienda no está disponible en este momento.");
-      return false;
-    }
-=======
-  Future<void> initialize() async {
     await dotenv.load(fileName: "assets/api_keys.env");
 
     VerifyLocalPurchase.initialize(
@@ -158,21 +35,16 @@ class IAPService {
         issuerId: dotenv.env['APPLE_ISSUER_ID']!,
         keyId: dotenv.env['APPLE_KEY_ID']!,
         privateKey: dotenv.env['APPLE_PRIVATE_KEY']!.replaceAll(r'\n', '\n'),
-        useSandbox: true,
+        useSandbox: !kReleaseMode,
       ),
     );
 
     final available = await _iap.isAvailable();
-    if (!available) return;
->>>>>>> suscription_implement
+    if (!available) {
+      onPurchaseError?.call("La tienda no está disponible en este momento.");
+      return false;
+    }
 
-    // if (Platform.isIOS) {
-    //   final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-    //       _iap.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-    //   await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
-    // }
-
-<<<<<<< HEAD
     if (_subscription == null) {
       _subscription = _iap.purchaseStream.listen(
         _handlePurchases,
@@ -185,39 +57,10 @@ class IAPService {
       );
     }
 
-    return await _loadProducts();
-  }
-
-  Future<bool> _loadProducts() async {
-    final ProductDetailsResponse response =
-        await _iap.queryProductDetails(productIds.toSet());
-
-    if (response.error != null) {
-      onPurchaseError?.call("Error al cargar productos: ${response.error!.message}");
-      return false;
-    }
-
-    if (response.notFoundIDs.isNotEmpty) {
-      // Opcional: registrar los IDs que no se encontraron
-      print("No se encontraron los productos con IDs: ${response.notFoundIDs}");
-    }
-
-    products = response.productDetails;
-    return products.isNotEmpty;
-=======
-    _subscription = _iap.purchaseStream.listen(
-      _handlePurchases,
-      onError: (error) {
-        // print("Error en el stream de compras: $error");
-      },
-    );
-
     await _loadCachedSubscription();
 
     if (_currentOriginalTransactionId != null) {
-      final isValid = await verifySubscriptionWithApple(
-        _currentOriginalTransactionId!,
-      );
+      final isValid = await verifySubscriptionWithApple(_currentOriginalTransactionId!);
       if (isValid) {
         isSubscribed.value = true;
       } else {
@@ -226,16 +69,24 @@ class IAPService {
     } else {
       await restorePurchases();
     }
+
+    return await _loadProducts();
   }
 
-  Future<void> _loadProducts() async {
-    final response = await _iap.queryProductDetails(productIds.toSet());
-    if (response.error == null) {
-      products = response.productDetails;
-    } else {
-      // print("Error cargando productos: ${response.error}");
+  Future<bool> _loadProducts() async {
+    final ProductDetailsResponse response = await _iap.queryProductDetails(productIds.toSet());
+
+    if (response.error != null) {
+      onPurchaseError?.call("Error al cargar productos: ${response.error!.message}");
+      return false;
     }
->>>>>>> suscription_implement
+
+    if (response.notFoundIDs.isNotEmpty) {
+      print("No se encontraron los productos con IDs: ${response.notFoundIDs}");
+    }
+
+    products = response.productDetails;
+    return products.isNotEmpty;
   }
 
   ProductDetails? getProduct(String id) {
@@ -249,23 +100,15 @@ class IAPService {
   Future<void> buy(String productId) async {
     final product = getProduct(productId);
     if (product == null) {
-<<<<<<< HEAD
       onPurchaseError?.call("Producto no encontrado o aún no ha cargado.");
       return;
-=======
-      throw Exception("Producto no encontrado");
->>>>>>> suscription_implement
     }
     final param = PurchaseParam(productDetails: product);
-<<<<<<< HEAD
     try {
       await _iap.buyNonConsumable(purchaseParam: param);
     } catch (e) {
       onPurchaseError?.call("Error al iniciar compra: ${e.toString()}");
     }
-=======
-    await _iap.buyNonConsumable(purchaseParam: param);
->>>>>>> suscription_implement
   }
 
   Future<void> restorePurchases() async {
@@ -298,36 +141,22 @@ class IAPService {
       );
       return isActive;
     } catch (e) {
-      // print("Error verificando suscripción con Apple: $e");
       return false;
     }
   }
 
-  Future<void> _cacheSubscription(
-    String transactionId,
-    DateTime? expiration,
-  ) async {
-    await _secureStorage.write(
-      key: 'original_transaction_id',
-      value: transactionId,
-    );
+  Future<void> _cacheSubscription(String transactionId, DateTime? expiration) async {
+    await _secureStorage.write(key: 'original_transaction_id', value: transactionId);
     await _secureStorage.write(key: 'subscription_active', value: 'true');
     if (expiration != null) {
-      await _secureStorage.write(
-        key: 'subscription_expiration',
-        value: expiration.toIso8601String(),
-      );
+      await _secureStorage.write(key: 'subscription_expiration', value: expiration.toIso8601String());
     }
   }
 
   Future<void> _loadCachedSubscription() async {
-    final transactionId = await _secureStorage.read(
-      key: 'original_transaction_id',
-    );
+    final transactionId = await _secureStorage.read(key: 'original_transaction_id');
     final active = await _secureStorage.read(key: 'subscription_active');
-    final expirationStr = await _secureStorage.read(
-      key: 'subscription_expiration',
-    );
+    final expirationStr = await _secureStorage.read(key: 'subscription_expiration');
 
     if (transactionId != null && active == 'true') {
       _currentOriginalTransactionId = transactionId;
@@ -351,59 +180,32 @@ class IAPService {
 
   void _handlePurchases(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
-<<<<<<< HEAD
       if (purchase.status == PurchaseStatus.pending) {
-        // La transacción está pendiente. No hacer nada aquí, solo esperar.
+        // Nada
       } else if (purchase.status == PurchaseStatus.error) {
         onPurchaseError?.call("La compra falló o fue cancelada: ${purchase.error?.message}");
-      } else if (purchase.status == PurchaseStatus.purchased ||
-          purchase.status == PurchaseStatus.restored) {
-        
-        // Aquí deberías validar el recibo con tu servidor
-        bool valid = await _verifyPurchase(purchase);
+      } else if (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored) {
+        final transactionId = _getOriginalTransactionId(purchase);
+        if (transactionId == null) {
+          onPurchaseError?.call("No se pudo validar el recibo");
+          continue;
+        }
 
-        if (valid) {
+        final isValid = await verifySubscriptionWithApple(transactionId);
+        if (isValid) {
+          _currentOriginalTransactionId = transactionId;
+          DateTime? expiration;
+          await _cacheSubscription(transactionId, expiration);
+          isSubscribed.value = true;
+          if (expiration != null) expirationDate.value = expiration;
           onPurchaseSuccess?.call(purchase);
         } else {
-          onPurchaseError?.call("No se pudo verificar la validez de la compra.");
+          onPurchaseError?.call("La compra no es válida (reembolsada o expirada)");
         }
-=======
-      switch (purchase.status) {
-        case PurchaseStatus.purchased:
-        case PurchaseStatus.restored:
-          final transactionId = _getOriginalTransactionId(purchase);
-          if (transactionId == null) {
-            // print("No se pudo obtener transactionId para validar");
-            break;
-          }
-
-          final isValid = await verifySubscriptionWithApple(transactionId);
-          if (isValid) {
-            _currentOriginalTransactionId = transactionId;
-            DateTime? expiration;
-            await _cacheSubscription(transactionId, expiration);
-            isSubscribed.value = true;
-            // ignore: unnecessary_null_comparison
-            if (expiration != null) expirationDate.value = expiration;
-            onPurchaseSuccess?.call(purchase);
-          } else {
-            // print("La compra no es válida (reembolsada o expirada)");
-          }
-          break;
-
-        case PurchaseStatus.error:
-        case PurchaseStatus.canceled:
-          // No hacemos nada
-          break;
-
-        default:
-          break;
->>>>>>> suscription_implement
       }
 
       if (purchase.pendingCompletePurchase) {
         try {
-          // IMPORTANTE: siempre hay que llamar a completePurchase cuando termine.
           await _iap.completePurchase(purchase);
         } catch (e) {
           print("Error al completar compra: $e");
@@ -412,19 +214,12 @@ class IAPService {
     }
   }
 
-<<<<<<< HEAD
-  Future<bool> _verifyPurchase(PurchaseDetails purchase) async {
-    // Si tuvieras servidor, enviarías purchase.verificationData
-    return true; // Por ahora damos por válido todo
-=======
   Future<bool> refreshSubscriptionStatus() async {
     if (_currentOriginalTransactionId == null) {
       isSubscribed.value = false;
       return false;
     }
-    final isValid = await verifySubscriptionWithApple(
-      _currentOriginalTransactionId!,
-    );
+    final isValid = await verifySubscriptionWithApple(_currentOriginalTransactionId!);
     if (isValid) {
       isSubscribed.value = true;
       return true;
@@ -432,18 +227,11 @@ class IAPService {
       await _clearSubscriptionCache();
       return false;
     }
->>>>>>> suscription_implement
   }
 
   void dispose() {
-    // if (Platform.isIOS) {
-    //   final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-    //       _iap.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-    //   iosPlatformAddition.setDelegate(null);
-    // }
     _subscription?.cancel();
     isSubscribed.dispose();
     expirationDate.dispose();
   }
 }
-
