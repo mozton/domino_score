@@ -1,115 +1,11 @@
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:in_app_purchase/in_app_purchase.dart';
-
-// class IAPService {
-//   final InAppPurchase _iap = InAppPurchase.instance;
-//   final List<String> productIds;
-//   List<ProductDetails> products = [];
-//   StreamSubscription<List<PurchaseDetails>>? _subscription;
-
-//   // 1. Variable reactiva para el estado de suscripción
-//   final ValueNotifier<bool> isSubscribed = ValueNotifier<bool>(false);
-
-//   Function(PurchaseDetails purchase)? onPurchaseSuccess;
-
-//   IAPService(this.productIds);
-
-//   Future<void> initialize() async {
-//     final available = await _iap.isAvailable();
-//     if (!available) return;
-
-//     await _loadProducts();
-
-//     _subscription = _iap.purchaseStream.listen(
-//       _handlePurchases,
-//       onError: (error) {
-//         print("Error en el stream: $error");
-//       },
-//     );
-
-//     // 2. Al iniciar, verificamos si ya tiene suscripciones activas
-//     await restorePurchases();
-//   }
-
-//   Future<void> _loadProducts() async {
-//     final response = await _iap.queryProductDetails(productIds.toSet());
-//     if (response.error == null) {
-//       products = response.productDetails;
-//     }
-//   }
-
-//   ProductDetails? getProduct(String id) {
-//     try {
-//       return products.firstWhere((p) => p.id == id);
-//     } catch (_) {
-//       return null;
-//     }
-//   }
-
-//   Future<void> buy(String productId) async {
-//     final product = getProduct(productId);
-
-//     if (product == null) {
-//       throw Exception("Product not found");
-//     }
-
-//     final param = PurchaseParam(productDetails: product);
-
-//     await _iap.buyNonConsumable(purchaseParam: param);
-//   }
-
-//   Future<void> restorePurchases() async {
-//     // Esto disparará el evento en _handlePurchases si hay compras previas
-//     await _iap.restorePurchases();
-//   }
-
-//   void _handlePurchases(List<PurchaseDetails> purchases) async {
-//     if (purchases.isEmpty) {
-//       isSubscribed.value = false; // Opcional: manejar si no hay nada
-//     }
-
-//     for (final purchase in purchases) {
-//       switch (purchase.status) {
-//         case PurchaseStatus.purchased:
-//         case PurchaseStatus.restored:
-//           // 3. Si el ID coincide y el status es correcto, marcamos como suscrito
-//           if (productIds.contains(purchase.productID)) {
-//             isSubscribed.value = true;
-//           }
-//           onPurchaseSuccess?.call(purchase);
-//           break;
-
-//         case PurchaseStatus.error:
-//         case PurchaseStatus.canceled:
-//           // Podrías resetear el estado si es una compra fallida nueva
-//           // isSubscribed.value = false;
-//           break;
-
-//         default:
-//           break;
-//       }
-
-//       if (purchase.pendingCompletePurchase) {
-//         await _iap.completePurchase(purchase);
-//       }
-//     }
-//   }
-
-//   void dispose() {
-//     _subscription?.cancel();
-//     isSubscribed.dispose(); // Limpiar el notifier
-//   }
-// }
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:verify_local_purchase/verify_local_purchase.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 
 class IAPService {
   final InAppPurchase _iap = InAppPurchase.instance;
@@ -138,7 +34,8 @@ class IAPService {
         issuerId: dotenv.env['APPLE_ISSUER_ID']!,
         keyId: dotenv.env['APPLE_KEY_ID']!,
         privateKey: dotenv.env['APPLE_PRIVATE_KEY']!.replaceAll(r'\n', '\n'),
-        useSandbox: true,
+        useSandbox:
+            !kReleaseMode, // true en Debug (TestFlight/Emulador), false en Producción (App Store)
       ),
     );
 
