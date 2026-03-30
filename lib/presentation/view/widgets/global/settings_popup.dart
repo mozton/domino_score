@@ -92,6 +92,7 @@ class SettingsPopup extends StatelessWidget {
             'Mi cuenta',
             'assets/icon/user.png',
             () {
+              // context.read<SubscriptionViewModel>().restorePurchases();
               Navigator.pop(context);
               Future.delayed(Duration.zero);
               Navigator.pushNamed(context, RouteNames.accountSettings);

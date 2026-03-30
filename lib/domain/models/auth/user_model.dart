@@ -1,12 +1,13 @@
-class UserModel {
-  final String id; // UID de Firebase o ID de base de datos
-  final String email;
-  final String name; // Nombre real (Ej: "Juan Pérez")
-  final String username; // Alias único (Ej: "@juanp")
-  final String? photoUrl; // URL de la imagen o path local
+import 'package:dominos_score/domain/models/models.dart';
 
-  // RELACIÓN: Un usuario puede pertenecer a varios grupos.
-  // Guardamos los IDs de los grupos.
+class UserModel {
+  final String id;
+  final String email;
+  final String name;
+  final String username;
+  final String? photoUrl;
+  final SubscriptionModel? subscription;
+
   final List<String> groupIds;
 
   final DateTime createdAt;
@@ -19,9 +20,9 @@ class UserModel {
     this.photoUrl,
     this.groupIds = const [],
     required this.createdAt,
+    this.subscription,
   });
 
-  // Factory para crear desde JSON (Base de datos remota/local)
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
@@ -29,13 +30,13 @@ class UserModel {
       name: map['name'] ?? '',
       username: map['username'] ?? '',
       photoUrl: map['photoUrl'],
-      // Convertir la lista dinámica a lista de Strings
       groupIds: List<String>.from(map['groupIds'] ?? []),
       createdAt: DateTime.parse(map['createdAt']),
+      subscription: map['subscription'] != null
+          ? SubscriptionModel.fromMap(map['subscription'])
+          : null,
     );
   }
-
-  // Convertir a Map para guardar
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -45,10 +46,10 @@ class UserModel {
       'photoUrl': photoUrl,
       'groupIds': groupIds,
       'createdAt': createdAt.toIso8601String(),
+      'subscription': subscription?.toMap(),
     };
   }
 
-  // CopyWith para inmutabilidad
   UserModel copyWith({
     String? id,
     String? email,
@@ -56,6 +57,7 @@ class UserModel {
     String? username,
     String? photoUrl,
     List<String>? groupIds,
+    SubscriptionModel? subscription,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -65,6 +67,7 @@ class UserModel {
       photoUrl: photoUrl ?? this.photoUrl,
       groupIds: groupIds ?? this.groupIds,
       createdAt: createdAt,
+      subscription: subscription ?? this.subscription,
     );
   }
 }

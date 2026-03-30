@@ -134,6 +134,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> rejectPrivacyPolicy() async {
+    await _storage.delete(key: 'privacy_policy_accepted');
+  }
+
+  @override
   Future<bool> isPrivacyPolicyAccepted() async {
     final accepted = await _storage.read(key: 'privacy_policy_accepted');
     return accepted == 'true';

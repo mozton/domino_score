@@ -55,6 +55,7 @@ dependencies:
   url_launcher: ^6.3.2
   in_app_purchase_storekit: ^0.4.7
   connectivity_plus: ^7.0.0
+  verify_local_purchase: ^1.0.4
 
 dev_dependencies:
   flutter_test:
