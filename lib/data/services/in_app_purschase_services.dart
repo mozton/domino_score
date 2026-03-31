@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:verify_local_purchase/verify_local_purchase.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -45,17 +45,15 @@ class IAPService {
       return false;
     }
 
-    if (_subscription == null) {
-      _subscription = _iap.purchaseStream.listen(
-        _handlePurchases,
-        onDone: () {
-          _subscription?.cancel();
-        },
-        onError: (error) {
-          onPurchaseError?.call("Hubo un error al conectar con la tienda: ${error.toString()}");
-        },
-      );
-    }
+    _subscription ??= _iap.purchaseStream.listen(
+      _handlePurchases,
+      onDone: () {
+        _subscription?.cancel();
+      },
+      onError: (error) {
+        onPurchaseError?.call("Hubo un error al conectar con la tienda: ${error.toString()}");
+      },
+    );
 
     await _loadCachedSubscription();
 
@@ -82,7 +80,7 @@ class IAPService {
     }
 
     if (response.notFoundIDs.isNotEmpty) {
-      print("No se encontraron los productos con IDs: ${response.notFoundIDs}");
+      debugPrint("No se encontraron los productos con IDs: ${response.notFoundIDs}");
     }
 
     products = response.productDetails;
@@ -197,7 +195,7 @@ class IAPService {
           DateTime? expiration;
           await _cacheSubscription(transactionId, expiration);
           isSubscribed.value = true;
-          if (expiration != null) expirationDate.value = expiration;
+          expirationDate.value = expiration;
           onPurchaseSuccess?.call(purchase);
         } else {
           onPurchaseError?.call("La compra no es válida (reembolsada o expirada)");
@@ -208,7 +206,7 @@ class IAPService {
         try {
           await _iap.completePurchase(purchase);
         } catch (e) {
-          print("Error al completar compra: $e");
+          debugPrint("Error al completar compra: $e");
         }
       }
     }

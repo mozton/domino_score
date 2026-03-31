@@ -77,7 +77,7 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
       if (!mounted) return;
 
-      if (subVM.state == AppAccessState.premium) {
+      if (subVM.isPremium) {
         _navigateTo(const HomeScreen());
       } else {
         Future.microtask(() {

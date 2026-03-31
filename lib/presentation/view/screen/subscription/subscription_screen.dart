@@ -160,7 +160,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
+                          color: Colors.green.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: Colors.green, width: 2),
                         ),
