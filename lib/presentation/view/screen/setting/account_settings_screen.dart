@@ -172,25 +172,47 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                           const SizedBox(height: 40),
                           Consumer<SubscriptionViewModel>(
                             builder: (context, subVM, _) {
-                              final isPremium = subVM.isPremium;
-                              if (isPremium) return const SizedBox.shrink();
+                              final isPremium =
+                                  subVM.state == AppAccessState.premium;
                               return Column(
                                 children: [
                                   ButtonDeleteAccount(
-                                    title: 'Activar Premium',
-                                    color: Colors.amber,
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        RouteNames.subscription,
-                                      );
-                                    },
+                                    title: isPremium
+                                        ? 'Suscripto ✓'
+                                        : 'Activar Premium',
+
+                                    color: isPremium
+                                        ? Colors.green
+                                        : Colors.amber,
+                                    onPressed: isPremium
+                                        ? null
+                                        : () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              RouteNames.subscription,
+                                            );
+                                          },
                                   ),
-                                  const SizedBox(height: 10),
+                                  if (isPremium)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Text(
+                                        'Tu suscripción está activa',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: 'Poppins',
+                                          color: isDark
+                                              ? Colors.green[300]
+                                              : Colors.green,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               );
                             },
                           ),
+                          const SizedBox(height: 10),
                           ButtonDeleteAccount(
                             title: 'Eliminar Cuenta',
                             color: Colors.red,

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +13,20 @@ class WinAndNewGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void handleNewGame(VoidCallback onAllow) async {
+      final subVM = context.read<SubscriptionViewModel>();
+      if (subVM.state != AppAccessState.premium) {
+        if (!subVM.hasConsumedFreeGame) {
+          await subVM.consumeFreeGame();
+        }
+        Navigator.pop(context); // Cerramos el modal
+        Navigator.pushNamed(context, RouteNames.subscription);
+        return;
+      }
+      onAllow();
+      Navigator.pop(context); // Cerramos el modal si se permitió la acción
+    }
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
@@ -89,8 +105,9 @@ class WinAndNewGame extends StatelessWidget {
                 titleButton: 'Mismo equipo',
                 contentColor: Color(0xFF1E2B43),
                 onTap: () {
-                  context.read<GameViewmodel>().startNewGameWithCurrentTeams();
-                  Navigator.pop(context);
+                  handleNewGame(() {
+                    context.read<GameViewmodel>().startNewGameWithCurrentTeams();
+                  });
                 },
               ),
               _Buttons(
@@ -100,8 +117,9 @@ class WinAndNewGame extends StatelessWidget {
                 titleButton: 'Otro equipo',
                 contentColor: isDark ? Colors.white : Color(0xFF1E2B43),
                 onTap: () {
-                  context.read<GameViewmodel>().startNewGame();
-                  Navigator.pop(context);
+                  handleNewGame(() {
+                    context.read<GameViewmodel>().startNewGame();
+                  });
                 },
               ),
             ],

@@ -1,4 +1,4 @@
-import 'package:dominos_score/domain/models/models.dart';
+import 'package:dominos_score/domain/models/subscription/subscription_models.dart';
 
 class UserModel {
   final String id;
