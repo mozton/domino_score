@@ -11,4 +11,5 @@ class RouteNames {
   static const String forgotPassword = '/forgotPassword';
   static const String accountSettings = '/accountSettings';
   static const String privacyPolicy = '/privacyPolicy';
+  static const String detailGame = '/detailGame';
 }

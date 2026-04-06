@@ -19,11 +19,13 @@ class WinAndNewGame extends StatelessWidget {
         if (!subVM.hasConsumedFreeGame) {
           await subVM.consumeFreeGame();
         }
+        if (!context.mounted) return;
         Navigator.pop(context); // Cerramos el modal
         Navigator.pushNamed(context, RouteNames.subscription);
         return;
       }
       onAllow();
+      if (!context.mounted) return;
       Navigator.pop(context); // Cerramos el modal si se permitió la acción
     }
 

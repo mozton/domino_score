@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:dominos_score/data/local/database_helper.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
@@ -38,6 +42,15 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
       if (user == null) {
         _navigateTo(const LoginScreen());
         return;
+      }
+
+      // Verificación de instalación limpia o falta de base de datos
+      final dbPath = await sqflite.getDatabasesPath();
+      final dbExists = await File('$dbPath/DominoScoreDB_${user.id}.db').exists();
+      if (!dbExists) {
+        const storage = FlutterSecureStorage();
+        await storage.delete(key: 'free_game_consumed');
+        await storage.delete(key: 'privacy_policy_accepted');
       }
 
       // Usuario autenticado: verificar aceptación de políticas

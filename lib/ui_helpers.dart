@@ -1,4 +1,5 @@
 import 'package:dominos_score/domain/models/game/round_model.dart';
+import 'package:dominos_score/presentation/view/screen/home/detail_game.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/camera_sheet.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/add_score.dart';
 import 'package:dominos_score/presentation/view/widgets/features/game/change_name_team.dart';
@@ -138,6 +139,21 @@ class UiHelpers {
       },
     );
   }
+
+  static Future<void> detailGame(BuildContext context, int index) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.zero,
+
+          child: DetailGameScreen(index: index),
+        );
+      },
+    );
+  }
+
   // Change Name Team
 
   static Future<void> changeNameTeam(

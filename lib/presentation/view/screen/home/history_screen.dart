@@ -1,4 +1,5 @@
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
+import 'package:dominos_score/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,57 +63,72 @@ class HistoryDemoScreen extends StatelessWidget {
             final team1Won = team1.totalScore > team2.totalScore;
             final team2Won = team2.totalScore > team1.totalScore;
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF0F1822) : Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  if (!isDark)
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        team1.totalScore >= game.pointsToWin ||
-                                team2.totalScore >= game.pointsToWin
-                            ? 'Juego #${game.id}'
-                            : 'Actual',
+            return GestureDetector(
+              onTap: () {
+                UiHelpers.detailGame(context, index);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0F1822) : Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    if (!isDark)
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          team1.totalScore >= game.pointsToWin ||
+                                  team2.totalScore >= game.pointsToWin
+                              ? 'Juego #${game.id}'
+                              : 'Actual',
 
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: isDark
-                              ? Colors.white
-                              : const Color(0xFF1E2B43),
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF1E2B43),
+                          ),
                         ),
-                      ),
-                      Text(
-                        date.substring(0, 10),
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12,
-                          color: const Color(0xFF9CA3AF),
+                        Text(
+                          date.substring(0, 10),
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            color: const Color(0xFF9CA3AF),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _buildTeamRow(team1.name, team1.totalScore, team1Won, isDark),
-                  const SizedBox(height: 8),
-                  _buildTeamRow(team2.name, team2.totalScore, team2Won, isDark),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTeamRow(
+                      team1.name,
+                      team1.totalScore,
+                      team1Won,
+                      isDark,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildTeamRow(
+                      team2.name,
+                      team2.totalScore,
+                      team2Won,
+                      isDark,
+                    ),
+                  ],
+                ),
               ),
             );
           },

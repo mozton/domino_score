@@ -2,6 +2,7 @@ import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/screen/auth/checking_screen.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/auth/register_screen.dart';
+import 'package:dominos_score/presentation/view/screen/home/detail_game.dart';
 import 'package:dominos_score/presentation/view/screen/home/history_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
 
@@ -25,6 +26,7 @@ class AppRouter {
       RouteNames.subscription: (context) => SubscriptionScreen(),
       RouteNames.accountSettings: (context) => AccountSettingsScreen(),
       RouteNames.privacyPolicy: (context) => PrivacyPolicyScreen(),
+      RouteNames.detailGame: (context) => DetailGameScreen(index: 2),
     };
   }
 }
