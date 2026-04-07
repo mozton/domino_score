@@ -16,16 +16,13 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
   Widget build(BuildContext context) {
     final prov = Provider.of<GameViewmodel>(context);
     final size = MediaQuery.of(context).size;
-    var orientation = MediaQuery.of(context).orientation;
 
     return Column(
       children: [
         SizedBox(
           height: MediaQuery.of(context).size.height >= 700
-              ? orientation == Orientation.landscape
-                    ? MediaQuery.of(context).size.height * (180 / 852)
-                    : MediaQuery.of(context).size.height * (80 / 852)
-              : MediaQuery.of(context).size.height * (100 / 852),
+              ? MediaQuery.of(context).size.height * (180 / 852)
+              : MediaQuery.of(context).size.height * (80 / 852),
           width: double.infinity,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
@@ -72,7 +69,7 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
             },
           ),
         ),
-        SizedBox(height: 15),
+        // SizedBox(height: 15),
         GestureDetector(
           onTap: () {
             final prov = context.read<GameViewmodel>();

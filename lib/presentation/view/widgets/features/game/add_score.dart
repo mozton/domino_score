@@ -47,7 +47,7 @@ class _AddScoreState extends State<AddScore> {
       ),
       child: Column(
         children: [
-          SizedBox(height: 30),
+          SizedBox(height: size.height * (30 / 852)),
           Stack(
             children: [
               SizedBox(
@@ -110,7 +110,7 @@ class _AddScoreState extends State<AddScore> {
             ],
           ),
 
-          SizedBox(height: 25),
+          SizedBox(height: size.height * 0.03),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

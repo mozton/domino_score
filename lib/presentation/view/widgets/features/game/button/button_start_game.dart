@@ -57,7 +57,6 @@ class ButtonStartGame extends StatelessWidget {
                   }
 
                   UiHelpers.newGame(context, '');
-                  Navigator.pushReplacementNamed(context, '/home');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

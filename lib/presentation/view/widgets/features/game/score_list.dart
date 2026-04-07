@@ -41,7 +41,8 @@ class ScoreList extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: size.height * 0.0550,
+              height: size.height * 0.055,
+
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -52,7 +53,14 @@ class ScoreList extends StatelessWidget {
               ),
             ),
 
-            Column(children: [SizedBox(height: 319, child: RoundView())]),
+            Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: RoundView(),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -115,8 +123,6 @@ class RoundView extends StatelessWidget {
                       UiHelpers.deleteRound(context, index, round);
                     } else {
                       prov.selectedRoundByIndex(index);
-
-                      // print(index);
                     }
                   },
                   child: Padding(
@@ -143,7 +149,6 @@ class RoundView extends StatelessWidget {
                               : isDark
                               ? Color(0xFF0F1822)
                               : Color(0xFFF7F8FA),
-                          // isDark ? Color(0xFF0F1822) : Color(0xFFDADDE2),
                         ),
                       ),
 

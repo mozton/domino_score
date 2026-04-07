@@ -45,7 +45,7 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
       ),
       child: Column(
         children: [
-          SizedBox(height: 30),
+          SizedBox(height: size.height * (30 / 852)),
           Stack(
             children: [
               SizedBox(
@@ -98,7 +98,7 @@ class _ChangeNameTeamState extends State<ChangeNameTeam> {
             ],
           ),
 
-          SizedBox(height: 15),
+          SizedBox(height: size.height * (15 / 852)),
           Row(
             children: [
               SizedBox(width: 20),

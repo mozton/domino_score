@@ -51,11 +51,13 @@ class SelectPointToWind extends StatelessWidget {
                   color: isDark ? Colors.white : Color(0xFF1E2B43),
                 ),
               ),
-              SizedBox(height: 15),
 
+              SizedBox(
+                height: size.height >= 700 ? size.height * (15 / 852) : 5,
+              ),
               MenuSelectPoint(),
 
-              SizedBox(height: 10),
+              // SizedBox(height: 10),
             ],
           ),
         ),

@@ -46,8 +46,8 @@ class MessageDeleteAccount extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: size.height * (20 / 852)),
+            Text(
               '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y perderás todos tus datos.',
               textAlign: TextAlign.justify,
               style: TextStyle(
@@ -56,7 +56,7 @@ class MessageDeleteAccount extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: size.height * (20 / 852)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

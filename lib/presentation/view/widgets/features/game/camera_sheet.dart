@@ -40,254 +40,126 @@ class _CameraSheetState extends State<CameraSheet> {
 
     final controller = viewModel.cameraController!;
 
-    final orientation = MediaQuery.of(context).orientation;
-    final isLandscape = orientation == Orientation.landscape;
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: isLandscape
-            ? Row(
-                children: [
-                  // 1. Camera Preview (Landscape: 4:3 Aspect Ratio)
-                  Expanded(
-                    child: Center(
-                      child: Container(
-                        height: size.height * 0.85,
-                        width:
-                            (size.height * 0.85) *
-                            4 /
-                            3, // 4:3 Aspect Ratio (Landscape)
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: OverflowBox(
-                            alignment: Alignment.center,
-                            maxHeight: double.infinity,
-                            maxWidth: double.infinity,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                width: (size.height * 0.85) * 4 / 3,
-                                child: CameraPreview(controller),
-                              ),
-                            ),
-                          ),
-                        ),
+        child: Column(
+          children: [
+            // 1. Top Bar (Close Button)
+            SizedBox(
+              height: isTablet
+                  ? MediaQuery.of(context).size.height * 0.05
+                  : MediaQuery.of(context).size.height * 0.05,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            const Spacer(),
+
+            // 2. Camera Preview (4:3 Aspect Ratio)
+            Center(
+              child: Container(
+                width: size.width,
+                height: isTablet ? (size.width) * 4 / 3 : (size.width) * 3 / 3,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: OverflowBox(
+                    alignment: Alignment.center,
+                    maxHeight: double.infinity,
+                    maxWidth: double.infinity,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: size.width,
+                        // We rely on the aspect ratio of the camera to determine height
+                        // This ensures it fills width and overflows height (or vice versa)
+                        child: CameraPreview(controller),
                       ),
                     ),
                   ),
+                ),
+              ),
+            ),
+            const Spacer(),
 
-                  // 2. Controls & Close Button (Side Bar)
-                  Container(
-                    width: 120,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    color: Colors.black,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Close Button
-                        Align(
-                          alignment: Alignment.center,
-                          child: GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // Capture Button
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InkWell(
-                              onTap: () =>
-                                  _handleTakePicture(context, viewModel),
-                              borderRadius: BorderRadius.circular(50),
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Container(
-                                  margin: const EdgeInsets.all(6),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.black,
-                                  ),
-                                  child: _isTakingPicture
-                                      ? const SizedBox.shrink()
-                                      : Image(
-                                          image: const AssetImage(
-                                            'assets/icon/camera.png',
-                                          ),
-                                          color: Colors.white,
-                                          height: 24,
-                                          width: 24,
-                                        ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              'Tomar foto',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 12,
-                                color: Colors.white.withValues(alpha: 0.8),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Spacer to balance layout
-                        const SizedBox(height: 40),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : Column(
+            // 3. Controls
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 1. Top Bar (Close Button)
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  // 2. Camera Preview (4:3 Aspect Ratio)
                   Center(
-                    child: Container(
-                      width: isTablet ? 500 : size.width,
-                      height:
-                          (isTablet ? 500 : size.width) *
-                          4 /
-                          3, // 3:4 Aspect Ratio (Portrait)
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: OverflowBox(
-                          alignment: Alignment.center,
-                          maxHeight: double.infinity,
-                          maxWidth: double.infinity,
-                          child: FittedBox(
-                            fit: BoxFit.cover,
-                            child: SizedBox(
-                              width: isTablet ? 500 : size.width,
-                              // We rely on the aspect ratio of the camera to determine height
-                              // This ensures it fills width and overflows height (or vice versa)
-                              child: CameraPreview(controller),
-                            ),
+                    child: InkWell(
+                      onTap: () => _handleTakePicture(context, viewModel),
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                          // color: Colors.white.withOpacity(0.2),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black,
                           ),
+                          child: _isTakingPicture
+                              ? SizedBox.shrink()
+                              : Image(
+                                  image: AssetImage('assets/icon/camera.png'),
+                                  color: Colors.white,
+                                  height:
+                                      MediaQuery.of(context).size.height *
+                                      (24 / 853),
+                                  width:
+                                      MediaQuery.of(context).size.width *
+                                      (24 / 393),
+                                ),
                         ),
                       ),
                     ),
                   ),
-
-                  const Spacer(),
-
-                  // 3. Controls
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Center(
-                          child: InkWell(
-                            onTap: () => _handleTakePicture(context, viewModel),
-                            borderRadius: BorderRadius.circular(50),
-                            child: Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 1.5,
-                                ),
-                                // color: Colors.white.withOpacity(0.2),
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.all(8),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black,
-                                ),
-                                child: _isTakingPicture
-                                    ? SizedBox.shrink()
-                                    : Image(
-                                        image: AssetImage(
-                                          'assets/icon/camera.png',
-                                        ),
-                                        color: Colors.white,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                            (24 / 853),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                            (24 / 393),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Tomar foto',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.8),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                  const SizedBox(height: 10),
+                  Text(
+                    'Tomar foto',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
       ),
     );
   }

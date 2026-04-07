@@ -18,7 +18,9 @@ class DeleteRound extends StatelessWidget {
 
       child: Container(
         padding: EdgeInsets.all(20),
-        height: size.height * (257 / 852),
+        height: size.height >= 700
+            ? size.height * (257 / 852)
+            : size.height * (297 / 852),
         width: size.width * (350 / 393),
         decoration: BoxDecoration(
           color: isDark ? Color(0xFF0F1822) : Color(0xFFFFFFFF),
@@ -42,14 +44,14 @@ class DeleteRound extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 15),
+            SizedBox(height: size.height * (15 / 852)),
             Image(
-              height: 30,
-              width: 30,
+              height: size.height * (30 / 852),
+              width: size.width * (30 / 393),
               color: Color(0xFFF2B610),
               image: AssetImage('assets/icon/alertcircle.png'),
             ),
-            SizedBox(height: 13),
+            SizedBox(height: size.height * (13 / 852)),
 
             // TextDialog
             textDialog(context, index, round.number),
@@ -142,7 +144,6 @@ Widget buttonCancelAndDelete(
     height: size.height * (34 / 852),
     width: size.width * (110 / 393),
     decoration: BoxDecoration(
-      // color: Color(0xFFFFFFFF),
       borderRadius: BorderRadius.circular(20),
       border: BoxBorder.all(width: 1.2, color: color),
     ),
