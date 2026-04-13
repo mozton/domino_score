@@ -1,5 +1,6 @@
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/utils/input_validator.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/singup_message.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -215,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 // link back to login
                 TextButton(
                   onPressed: () =>
-                      Navigator.pushReplacementNamed(context, '/login'),
+                      Navigator.pushReplacementNamed(context, RouteNames.login),
                   child: Text(
                     "Ya tengo una cuenta",
                     style: TextStyle(

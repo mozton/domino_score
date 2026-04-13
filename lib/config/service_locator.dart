@@ -27,12 +27,19 @@ import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class ServiceLocator {
+  final SharedPreferences prefs;
+
+  ServiceLocator(this.prefs);
+
   Future<List<SingleChildWidget>> init() async {
     return providers;
   }
 
-  final List<SingleChildWidget> providers = [
+  late final List<SingleChildWidget> providers = [
+    Provider<SharedPreferences>.value(value: prefs),
     Provider<LocalGameDataSource>(create: (_) => DatabaseHelper()),
     Provider<FlutterSecureStorage>(create: (_) => const FlutterSecureStorage()),
 
@@ -45,6 +52,7 @@ class ServiceLocator {
       create: (context) => AuthRepositoryImpl(
         context.read<RemoteAuthDataSource>(),
         context.read<FlutterSecureStorage>(),
+        context.read<SharedPreferences>(),
       ),
     ),
 
@@ -56,7 +64,9 @@ class ServiceLocator {
 
     Provider<SettingRepository>(create: (context) => SettingRepositoryImpl()),
 
-    Provider<IAPService>(create: (context) => IAPService(['basic_suscription'])),
+    Provider<IAPService>(
+      create: (context) => IAPService(['basic_suscription']),
+    ),
 
     ChangeNotifierProvider<SubscriptionViewModel>(
       create: (context) => SubscriptionViewModel(context.read<IAPService>()),

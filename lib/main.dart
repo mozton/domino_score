@@ -21,7 +21,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   String? userId = prefs.getString('userId');
   if (userId == null) {
-    userId = 'default'; // o podrías generar un UUID
+    userId = 'default';
     await prefs.setString('userId', userId);
   }
 
@@ -30,7 +30,10 @@ void main() async {
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
-    MultiProvider(providers: ServiceLocator().providers, child: const MyApp()),
+    MultiProvider(
+      providers: ServiceLocator(prefs).providers,
+      child: const MyApp(),
+    ),
   );
 }
 

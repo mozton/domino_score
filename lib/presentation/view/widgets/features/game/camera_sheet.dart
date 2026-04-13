@@ -29,6 +29,22 @@ class _CameraSheetState extends State<CameraSheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isTablet = size.width > 600;
 
+    if (viewModel.hasError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Solo mostramos un pequeño mensaje y cerramos el modal
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 2),
+              content: Text('No se pudo acceder a la cámara. Revisa los permisos.'),
+            ),
+          );
+          Navigator.pop(context);
+        }
+      });
+      return const Scaffold(backgroundColor: Colors.black);
+    }
+
     if (!viewModel.isInitialized || viewModel.cameraController == null) {
       return Center(
         child: LoadingAnimationWidget.progressiveDots(

@@ -15,12 +15,17 @@ class CameraViewModel extends ChangeNotifier {
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
   Future<void> initialize() async {
     try {
       await _cameraService.initializeCamera();
       _isInitialized = true;
+      _hasError = false;
     } catch (e) {
       _isInitialized = false;
+      _hasError = true;
       // print('Error al inicializar la camara: $e');
     }
     notifyListeners();

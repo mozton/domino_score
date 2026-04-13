@@ -2,6 +2,7 @@ import 'package:dominos_score/data/local/database_helper.dart';
 
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/domain/utils/input_validator.dart';
+import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/shake_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:dominos_score/data/services/biometric_service.dart';
@@ -118,22 +119,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                               );
                                             }
                                             if (context.mounted) {
-                                              // final isSubscribed = await context
-                                              //     .read<SubscriptionService>()
-                                              //     .isSubscribed;
-                                              // if (isSubscribed) {
                                               Navigator.pushNamedAndRemoveUntil(
                                                 context,
-                                                '/',
+                                                RouteNames.checking,
                                                 (route) => false,
                                               );
-                                              // } else {
-                                              //   Navigator.pushNamedAndRemoveUntil(
-                                              //     context,
-                                              //     '/subscription',
-                                              //     (route) => false,
-                                              //   );
-                                              // }
                                             }
                                             setState(() => loading = false);
                                           } catch (e) {
@@ -254,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               // Simple check or navigation
                                               Navigator.pushNamedAndRemoveUntil(
                                                 context,
-                                                '/',
+                                                RouteNames.checking,
                                                 (route) => false,
                                               );
                                             }
@@ -303,7 +293,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Register link
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/register');
+                    Navigator.pushReplacementNamed(
+                      context,
+                      RouteNames.register,
+                    );
                   },
                   child: Text(
                     "Crear una cuenta",

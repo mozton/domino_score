@@ -28,7 +28,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     if (!mounted) return;
 
     if (accepted) {
-      Navigator.pushReplacementNamed(context, RouteNames.home);
+      Navigator.pushReplacementNamed(context, RouteNames.checking);
       return;
     }
 
@@ -125,7 +125,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                 ],
               ),
             ),
-            // Footer con Checkbox y Botón
+
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -183,7 +183,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                                 if (context.mounted) {
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
-                                    RouteNames.home,
+                                    RouteNames.checking,
                                     (route) => false,
                                   );
                                 }

@@ -5,11 +5,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dominos_score/domain/models/auth/user_model.dart';
 import 'package:dominos_score/domain/repositories/auth_repository.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class AuthRepositoryImpl implements AuthRepository {
   final RemoteAuthDataSource _dataSource;
   final FlutterSecureStorage _storage;
+  final SharedPreferences _sharedPreferences;
 
-  AuthRepositoryImpl(this._dataSource, this._storage);
+  AuthRepositoryImpl(this._dataSource, this._storage, this._sharedPreferences);
 
   @override
   Future<UserModel?> checkAuthStatus() async {
@@ -130,17 +133,16 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> acceptPrivacyPolicy() async {
-    await _storage.write(key: 'privacy_policy_accepted', value: 'true');
+    await _sharedPreferences.setBool('privacy_policy_accepted', true);
   }
 
   @override
   Future<void> rejectPrivacyPolicy() async {
-    await _storage.delete(key: 'privacy_policy_accepted');
+    await _sharedPreferences.remove('privacy_policy_accepted');
   }
 
   @override
   Future<bool> isPrivacyPolicyAccepted() async {
-    final accepted = await _storage.read(key: 'privacy_policy_accepted');
-    return accepted == 'true';
+    return _sharedPreferences.getBool('privacy_policy_accepted') ?? false;
   }
 }

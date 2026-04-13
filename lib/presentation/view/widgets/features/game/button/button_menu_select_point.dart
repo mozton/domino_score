@@ -20,9 +20,7 @@ class _MenuSelectPointState extends State<MenuSelectPoint> {
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height >= 700
-              ? MediaQuery.of(context).size.height * (180 / 852)
-              : MediaQuery.of(context).size.height * (80 / 852),
+          height: MediaQuery.of(context).size.height * (80 / 852),
           width: double.infinity,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),

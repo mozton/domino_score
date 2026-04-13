@@ -26,10 +26,33 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return PopScope(
-      canPop: false, // Bloquear volver atrás con gesto/botón de sistema
+      canPop: false,
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyActions: false, // Oculta el botón default
+          automaticallyImplyLeading: false,
+          automaticallyImplyActions: false,
+          actions: [
+            InkWell(
+              onTap: () {
+                final subVM = context.read<SubscriptionViewModel>();
+
+                if (subVM.state != AppAccessState.premium &&
+                    subVM.hasConsumedFreeGame) {
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Image(
+                  height: 25,
+                  width: 25,
+                  color: isDarkMode ? Colors.white : Color(0xFF555555),
+                  image: AssetImage('assets/icon/square-rounded-x.png'),
+                ),
+              ),
+            ),
+          ],
           backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
         ),
         backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
