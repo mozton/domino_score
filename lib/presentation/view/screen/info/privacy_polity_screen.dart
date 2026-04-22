@@ -3,6 +3,7 @@ import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   const PrivacyPolicyScreen({super.key});
@@ -62,6 +63,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          systemOverlayStyle: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
           automaticallyImplyActions: false,
           centerTitle: true,

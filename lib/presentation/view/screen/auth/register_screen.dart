@@ -4,6 +4,7 @@ import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/widgets/features/auth/singup_message.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -33,9 +34,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         theme == ThemeMode.dark ||
         (theme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
-    return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
-      body: SafeArea(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: isDarkMode ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: isDarkMode ? Colors.black : const Color(0xFFEFF3F7),
+        body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -231,6 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 

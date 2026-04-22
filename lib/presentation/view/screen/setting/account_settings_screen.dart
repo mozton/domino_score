@@ -7,6 +7,7 @@ import 'package:dominos_score/presentation/view/widgets/features/setting/profile
 import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -230,6 +231,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   AppBar _appBar(bool isDark, BuildContext context) {
     return AppBar(
+      systemOverlayStyle: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
