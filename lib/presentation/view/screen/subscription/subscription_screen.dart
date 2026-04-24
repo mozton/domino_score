@@ -122,8 +122,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                   titleText = product.title
                                       .replaceAll(RegExp(r'\(.*\)'), '')
                                       .trim();
-                                  if (titleText.isEmpty)
+                                  if (titleText.isEmpty) {
                                     titleText = "Suscripción Premium Mensual";
+                                  }
                                 }
 
                                 return Container(
@@ -198,9 +199,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                         .buySubscription();
                                   } catch (e) {
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(
-                                          content: Text("Error: Producto no disponible temporalmente. Verifica App Store Connect."),
+                                          content: Text(
+                                            "Error: Producto no disponible temporalmente. Verifica App Store Connect.",
+                                          ),
                                         ),
                                       );
                                     }
