@@ -231,10 +231,47 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             ),
                             const SizedBox(height: 12),
                             TextButton(
-                              onPressed: () {
-                                context
+                              onPressed: () async {
+                                if (!context.mounted) return;
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Buscando compras anteriores...",
+                                    ),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+
+                                final restored = await context
                                     .read<SubscriptionViewModel>()
                                     .restorePurchases();
+
+                                if (context.mounted) {
+                                  // Limpiar snackbars anteriores
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).hideCurrentSnackBar();
+
+                                  if (restored) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "¡Suscripción restaurada con éxito!",
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "No se encontraron compras para restaurar.",
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
                               },
                               child: Text(
                                 "Restaurar Compras",

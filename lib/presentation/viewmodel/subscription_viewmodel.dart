@@ -109,8 +109,16 @@ class SubscriptionViewModel extends ChangeNotifier {
     await service.buy(subscriptionId);
   }
 
-  Future<void> restorePurchases() async {
+  Future<bool> restorePurchases() async {
+    final oldSubscribed = service.isSubscribed.value;
     await service.restorePurchases();
+
+    // Esperamos un tiempo razonable para que Apple responda a través del stream
+    // y el IAPService actualice isSubscribed.value
+    await Future.delayed(const Duration(seconds: 3));
+
+    // Devolvemos si ahora está suscrito (especialmente si antes no lo estaba)
+    return service.isSubscribed.value;
   }
 
   Future<void> consumeFreeGame() async {
