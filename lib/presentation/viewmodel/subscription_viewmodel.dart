@@ -11,13 +11,14 @@ class SubscriptionViewModel extends ChangeNotifier {
   AppAccessState state = AppAccessState.loading;
 
   final String subscriptionId = "basic_suscription";
+  // final String subscriptionId = "suscripcion_mensual_premiun";
 
   bool _initialized = false;
   bool _initialCheckCompleted = false;
 
   bool _hasConsumedFreeGame = false;
   bool get hasConsumedFreeGame => _hasConsumedFreeGame;
-  
+
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   SubscriptionViewModel(this.service) {
