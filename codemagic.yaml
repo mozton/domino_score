@@ -32,16 +32,21 @@ workflows:
       # 3. Build iOS app
       - name: Build iOS ipa
         script: |
-          # Fetch the latest build number from TestFlight
-          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APP_ID")
+          # Extraer el build number actual del pubspec.yaml (ej: 1.0.0+14 -> 14)
+          PUBSPEC_BUILD_NUMBER=$(awk -F'+' '/^version:/ {print $2}' pubspec.yaml)
           
-          # If LATEST_BUILD_NUMBER is empty, default to 1 (or the one from pubspec)
-          if [ -z "$LATEST_BUILD_NUMBER" ]; then
-            LATEST_BUILD_NUMBER=14
+          # Asegurarse de que sea un número. Si falla, usar 1.
+          if ! [[ "$PUBSPEC_BUILD_NUMBER" =~ ^[0-9]+$ ]]; then
+            PUBSPEC_BUILD_NUMBER=1
           fi
           
-          BUILD_NUMBER=$((LATEST_BUILD_NUMBER + 1))
-          echo "Next Build Number will be: $BUILD_NUMBER"
+          # Sumar el número de build de Codemagic para que siempre sea único e incremental
+          # Codemagic PROJECT_BUILD_NUMBER se incrementa en +1 con cada build
+          BUILD_NUMBER=$((PUBSPEC_BUILD_NUMBER + PROJECT_BUILD_NUMBER))
+          
+          echo "Build number base (pubspec): $PUBSPEC_BUILD_NUMBER"
+          echo "Codemagic build number: $PROJECT_BUILD_NUMBER"
+          echo "=> Build Number final a usar: $BUILD_NUMBER"
 
           flutter build ipa \
             --release \
