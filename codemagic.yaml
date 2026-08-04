@@ -32,9 +32,20 @@ workflows:
       # 3. Build iOS app
       - name: Build iOS ipa
         script: |
+          # Fetch the latest build number from TestFlight
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APP_ID")
+          
+          # If LATEST_BUILD_NUMBER is empty, default to 1 (or the one from pubspec)
+          if [ -z "$LATEST_BUILD_NUMBER" ]; then
+            LATEST_BUILD_NUMBER=14
+          fi
+          
+          BUILD_NUMBER=$((LATEST_BUILD_NUMBER + 1))
+          echo "Next Build Number will be: $BUILD_NUMBER"
+
           flutter build ipa \
             --release \
-            --build-number=$PROJECT_BUILD_NUMBER
+            --build-number=$BUILD_NUMBER
 
     artifacts:
       - build/ios/ipa/*.ipa
