@@ -1,0 +1,41 @@
+workflows:
+  ios-release:
+    name: iOS Release
+
+    environment:
+      flutter: stable
+
+      groups:
+        - app_secrets
+
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: $APPLE_BUNDLE_ID
+
+    scripts:
+      # 1. Crear archivo .env con las variables configuradas en Codemagic
+      - name: Create .env file
+        script: |
+          cat <<EOF > .env
+          APPLE_BUNDLE_ID=$APPLE_BUNDLE_ID
+          SECRET_KEY=$SECRET_KEY
+          CLIENT_ID=$CLIENT_ID
+          FIREBASE_TOKEN=$FIREBASE_TOKEN
+          ROBOFLOW_API_KEY=$ROBOFLOW_API_KEY
+          EOF
+
+      # 2. Instalar dependencias
+      - name: Install Flutter dependencies
+        script: |
+          flutter pub get
+
+      # 3. Build iOS app
+      - name: Build iOS ipa
+        script: |
+          flutter build ipa \
+            --release \
+            --build-number=$PROJECT_BUILD_NUMBER
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
