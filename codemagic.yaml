@@ -33,24 +33,33 @@ workflows:
       - name: Build iOS ipa
         script: |
           # Extraer el build number actual del pubspec.yaml (ej: 1.0.0+14 -> 14)
+          # Extraer el build number actual del pubspec.yaml (ej: 1.0.0+14 -> 14)
           PUBSPEC_BUILD_NUMBER=$(awk -F'+' '/^version:/ {print $2}' pubspec.yaml)
           
-          # Asegurarse de que sea un número. Si falla, usar 1.
+          # Asegurarse de que sea un número. Si falla, usar 14.
           if ! [[ "$PUBSPEC_BUILD_NUMBER" =~ ^[0-9]+$ ]]; then
-            PUBSPEC_BUILD_NUMBER=1
+            PUBSPEC_BUILD_NUMBER=14
           fi
           
-          # Sumar el número de build de Codemagic para que siempre sea único e incremental
-          # Codemagic PROJECT_BUILD_NUMBER se incrementa en +1 con cada build
-          BUILD_NUMBER=$((PUBSPEC_BUILD_NUMBER + PROJECT_BUILD_NUMBER))
+          # Usar BUILD_NUMBER de Codemagic (que siempre existe). Si por alguna razón está vacío, usar 1.
+          CM_RUN_NUMBER=${BUILD_NUMBER:-1}
+          if [ -z "$CM_RUN_NUMBER" ]; then CM_RUN_NUMBER=1; fi
+          
+          # Sumar para obtener un número mayor al de TestFlight
+          NEXT_BUILD_NUMBER=$((PUBSPEC_BUILD_NUMBER + CM_RUN_NUMBER))
+          
+          # Seguro adicional: Si el resultado sigue siendo 14 o menor, forzarlo a 15.
+          if [ "$NEXT_BUILD_NUMBER" -le 14 ]; then
+            NEXT_BUILD_NUMBER=$((14 + CM_RUN_NUMBER))
+          fi
           
           echo "Build number base (pubspec): $PUBSPEC_BUILD_NUMBER"
-          echo "Codemagic build number: $PROJECT_BUILD_NUMBER"
-          echo "=> Build Number final a usar: $BUILD_NUMBER"
+          echo "Codemagic run number: $CM_RUN_NUMBER"
+          echo "=> Build Number final a usar: $NEXT_BUILD_NUMBER"
 
           flutter build ipa \
             --release \
-            --build-number=$BUILD_NUMBER
+            --build-number=$NEXT_BUILD_NUMBER
 
     artifacts:
       - build/ios/ipa/*.ipa
