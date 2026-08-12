@@ -15,7 +15,7 @@ workflows:
 
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.example.dominosScore
+        bundle_identifier: com.corillo.dominoScore
 
     scripts:
       - name: Get Flutter packages
