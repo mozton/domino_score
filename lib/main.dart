@@ -20,6 +20,8 @@ void main() async {
   // Obtener o crear un userId
   final prefs = await SharedPreferences.getInstance();
   String? userId = prefs.getString('userId');
+
+  // cambio
   if (userId == null) {
     userId = 'default';
     await prefs.setString('userId', userId);
