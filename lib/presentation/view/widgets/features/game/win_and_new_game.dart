@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
-import 'package:dominos_score/presentation/router/route_names.dart';
+// import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+// import 'package:dominos_score/presentation/router/route_names.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,16 +14,16 @@ class WinAndNewGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void handleNewGame(VoidCallback onAllow) async {
-      final subVM = context.read<SubscriptionViewModel>();
-      if (subVM.state != AppAccessState.premium) {
-        if (!subVM.hasConsumedFreeGame) {
-          await subVM.consumeFreeGame();
-        }
-        if (!context.mounted) return;
-        Navigator.pop(context); // Cerramos el modal
-        Navigator.pushNamed(context, RouteNames.subscription);
-        return;
-      }
+      // final subVM = context.read<SubscriptionViewModel>();
+      // if (subVM.state != AppAccessState.premium) {
+      //   if (!subVM.hasConsumedFreeGame) {
+      //     await subVM.consumeFreeGame();
+      //   }
+      //   if (!context.mounted) return;
+      //   Navigator.pop(context); // Cerramos el modal
+      //   Navigator.pushNamed(context, RouteNames.subscription);
+      //   return;
+      // }
       onAllow();
       if (!context.mounted) return;
       Navigator.pop(context); // Cerramos el modal si se permitió la acción

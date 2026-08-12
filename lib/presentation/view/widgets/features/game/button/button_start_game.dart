@@ -1,6 +1,6 @@
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
-import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
-import 'package:dominos_score/presentation/router/route_names.dart';
+// import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+// import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/ui_helpers.dart';
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -43,18 +43,18 @@ class ButtonStartGame extends StatelessWidget {
             : () {
                 if (prov.totalTeam1Points >= prov.currentGame.pointsToWin ||
                     prov.totalTeam2Points >= prov.currentGame.pointsToWin) {
-                  final subVM = context.read<SubscriptionViewModel>();
-                  if (subVM.state != AppAccessState.premium) {
-                    Future.microtask(() async {
-                      if (!subVM.hasConsumedFreeGame) {
-                        await subVM.consumeFreeGame();
-                      }
-                      if (context.mounted) {
-                        Navigator.pushNamed(context, RouteNames.subscription);
-                      }
-                    });
-                    return;
-                  }
+                  // final subVM = context.read<SubscriptionViewModel>();
+                  // if (subVM.state != AppAccessState.premium) {
+                  //   Future.microtask(() async {
+                  //     if (!subVM.hasConsumedFreeGame) {
+                  //       await subVM.consumeFreeGame();
+                  //     }
+                  //     if (context.mounted) {
+                  //       Navigator.pushNamed(context, RouteNames.subscription);
+                  //     }
+                  //   });
+                  //   return;
+                  // }
 
                   UiHelpers.newGame(context, '');
                 } else {

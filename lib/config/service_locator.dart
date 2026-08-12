@@ -8,7 +8,7 @@ import 'package:dominos_score/data/repositories/game_repository_impl.dart';
 import 'package:dominos_score/data/repositories/setting_repository_impl.dart';
 
 import 'package:dominos_score/data/repositories/url_launcher_repository_impl.dart';
-import 'package:dominos_score/data/services/in_app_purschase_services.dart';
+// import 'package:dominos_score/data/services/in_app_purschase_services.dart';
 import 'package:dominos_score/domain/datasourse/local_game_data_source.dart';
 import 'package:dominos_score/domain/datasourse/remote_auth_data_source.dart';
 import 'package:dominos_score/domain/datasourse/url_launcher_data_source.dart';
@@ -20,7 +20,7 @@ import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/camera_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 import 'package:dominos_score/presentation/viewmodel/setting_viewmodel.dart';
-import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+// import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image/image.dart' as img;
@@ -64,13 +64,13 @@ class ServiceLocator {
 
     Provider<SettingRepository>(create: (context) => SettingRepositoryImpl()),
 
-    Provider<IAPService>(
-      create: (context) => IAPService(['basic_suscription']),
-    ),
+    // Provider<IAPService>(
+    //   create: (context) => IAPService(['basic_suscription']),
+    // ),
 
-    ChangeNotifierProvider<SubscriptionViewModel>(
-      create: (context) => SubscriptionViewModel(context.read<IAPService>()),
-    ),
+    // ChangeNotifierProvider<SubscriptionViewModel>(
+    //   create: (context) => SubscriptionViewModel(context.read<IAPService>()),
+    // ),
 
     ChangeNotifierProvider<SettingViewModel>(
       create: (context) => SettingViewModel(context.read<SettingRepository>()),

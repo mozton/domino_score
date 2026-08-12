@@ -8,7 +8,7 @@ import 'package:dominos_score/domain/repositories/auth_repository.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
 import 'package:dominos_score/presentation/view/screen/home/home_screen.dart';
-import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+// import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -85,19 +85,19 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
       if (!mounted) return;
 
       // Inicializar y verificar suscripción
-      final subVM = context.read<SubscriptionViewModel>();
-      await subVM.initialize();
+      // final subVM = context.read<SubscriptionViewModel>();
+      // await subVM.initialize();
 
       if (!mounted) return;
 
-      if (subVM.state == AppAccessState.premium || !subVM.hasConsumedFreeGame) {
+      // if (subVM.state == AppAccessState.premium || !subVM.hasConsumedFreeGame) {
         _navigateTo(const HomeScreen());
-      } else {
-        Future.microtask(() {
-          if (!mounted) return;
-          Navigator.pushReplacementNamed(context, RouteNames.subscription);
-        });
-      }
+      // } else {
+      //   Future.microtask(() {
+      //     if (!mounted) return;
+      //     Navigator.pushReplacementNamed(context, RouteNames.subscription);
+      //   });
+      // }
     } catch (e) {
       if (!mounted) return;
       setState(() {

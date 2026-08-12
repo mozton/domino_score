@@ -5,7 +5,7 @@ import 'package:dominos_score/presentation/view/widgets/features/auth/message_de
 import 'package:dominos_score/presentation/view/widgets/features/setting/button_delete_account.dart';
 import 'package:dominos_score/presentation/view/widgets/features/setting/profile_header.dart';
 import 'package:dominos_score/presentation/viewmodel/auth_viewmodel.dart';
-import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
+// import 'package:dominos_score/presentation/viewmodel/subscription_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -26,7 +26,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       final authRepo = context.read<AuthRepository>();
       context.read<AuthViewmodel>().loadUser(authRepo);
       // Restaurar estado de suscripción al abrir la pantalla
-      context.read<SubscriptionViewModel>().initialize();
+      // context.read<SubscriptionViewModel>().initialize();
     });
   }
 
@@ -171,48 +171,48 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         children: [
                           ProfileHeader(user: authVM.user!),
                           const SizedBox(height: 40),
-                          Consumer<SubscriptionViewModel>(
-                            builder: (context, subVM, _) {
-                              final isPremium =
-                                  subVM.state == AppAccessState.premium;
-                              return Column(
-                                children: [
-                                  ButtonDeleteAccount(
-                                    title: isPremium
-                                        ? 'Suscripto ✓'
-                                        : 'Activar Premium',
-
-                                    color: isPremium
-                                        ? Colors.green
-                                        : Colors.amber,
-                                    onPressed: isPremium
-                                        ? null
-                                        : () {
-                                            Navigator.pushNamed(
-                                              context,
-                                              RouteNames.subscription,
-                                            );
-                                          },
-                                  ),
-                                  if (isPremium)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 6),
-                                      child: Text(
-                                        'Tu suscripción está activa',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: 'Poppins',
-                                          color: isDark
-                                              ? Colors.green[300]
-                                              : Colors.green,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              );
-                            },
-                          ),
+                          // Consumer<SubscriptionViewModel>(
+                          //   builder: (context, subVM, _) {
+                          //     final isPremium =
+                          //         subVM.state == AppAccessState.premium;
+                          //     return Column(
+                          //       children: [
+                          //         ButtonDeleteAccount(
+                          //           title: isPremium
+                          //               ? 'Suscripto ✓'
+                          //               : 'Activar Premium',
+                          //
+                          //           color: isPremium
+                          //               ? Colors.green
+                          //               : Colors.amber,
+                          //           onPressed: isPremium
+                          //               ? null
+                          //               : () {
+                          //                   Navigator.pushNamed(
+                          //                     context,
+                          //                     RouteNames.subscription,
+                          //                   );
+                          //                 },
+                          //         ),
+                          //         if (isPremium)
+                          //           Padding(
+                          //             padding: const EdgeInsets.only(top: 6),
+                          //             child: Text(
+                          //               'Tu suscripción está activa',
+                          //               style: TextStyle(
+                          //                 fontSize: 12,
+                          //                 fontFamily: 'Poppins',
+                          //                 color: isDark
+                          //                     ? Colors.green[300]
+                          //                     : Colors.green,
+                          //                 fontWeight: FontWeight.w500,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //       ],
+                          //     );
+                          //   },
+                          // ),
                           const SizedBox(height: 10),
                           ButtonDeleteAccount(
                             title: 'Eliminar Cuenta',
