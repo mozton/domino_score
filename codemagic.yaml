@@ -3,6 +3,9 @@ workflows:
     name: iOS Release
     max_build_duration: 60
 
+    integrations:
+      app_store_connect: "Codemagic Corillo"
+
     environment:
       flutter: stable
       xcode: latest
@@ -36,7 +39,8 @@ workflows:
 
     publishing:
       app_store_connect:
-        auth: integration
+        auth:
+          integration: "Codemagic Corillo"
 
         submit_to_app_store: true
         submit_to_testflight: true
