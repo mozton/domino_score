@@ -1,0 +1,42 @@
+workflows:
+  ios-release:
+    name: iOS Release
+    max_build_duration: 60
+
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+      vars:
+        APP_NAME: "Corillo"
+        BUNDLE_ID: "com.corillo.dominoScore"
+        FLUTTER_BUILD_NAME: "1.0.0"
+
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.corillo.dominoScore
+
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+
+      - name: Build iOS
+        script: |
+          flutter build ipa \
+            --release \
+            --build-name=$FLUTTER_BUILD_NAME \
+            --build-number=$BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+
+        submit_to_app_store: true
+        submit_to_testflight: true
