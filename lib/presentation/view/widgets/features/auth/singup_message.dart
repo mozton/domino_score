@@ -61,7 +61,7 @@ class SingupMessage extends StatelessWidget {
             Center(
               child: TextButton(
                 onPressed: () =>
-                    Navigator.pushReplacementNamed(context, actionRoute),
+                    Navigator.pushNamedAndRemoveUntil(context, actionRoute, (route) => false),
                 child: Text(
                   actionText,
                   style: TextStyle(

@@ -298,9 +298,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Register link
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
+                      Navigator.pushNamedAndRemoveUntil(
                         context,
                         RouteNames.register,
+                        (route) => false,
                       );
                     },
                     child: Text(

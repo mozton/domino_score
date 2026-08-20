@@ -29,7 +29,11 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     if (!mounted) return;
 
     if (accepted) {
-      Navigator.pushReplacementNamed(context, RouteNames.checking);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteNames.checking,
+        (route) => false,
+      );
       return;
     }
 
@@ -63,7 +67,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          systemOverlayStyle: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+          systemOverlayStyle: isDark
+              ? SystemUiOverlayStyle.light
+              : SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
           automaticallyImplyActions: false,
           centerTitle: true,

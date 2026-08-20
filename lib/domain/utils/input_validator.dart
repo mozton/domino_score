@@ -17,8 +17,20 @@ class InputValidator {
     if (value == null || value.isEmpty) {
       return 'La contraseña es requerida';
     }
-    if (value.length < 6) {
-      return 'La contraseña debe tener al menos 6 caracteres';
+    if (value.length < 8) {
+      return 'Debe tener al menos 8 caracteres';
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Debe contener al menos una letra mayúscula';
+    }
+    if (!RegExp(r'[a-z]').hasMatch(value)) {
+      return 'Debe contener al menos una letra minúscula';
+    }
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Debe contener al menos un número';
+    }
+    if (!RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(value)) {
+      return 'Debe contener al menos un carácter especial';
     }
 
     return null;
@@ -41,7 +53,7 @@ class InputValidator {
     }
     if (message.contains('weak-password') ||
         message.contains('WEAK_PASSWORD')) {
-      return 'La contraseña es muy débil. Debe tener al menos 6 caracteres. (Código: WEAK_PASSWORD)';
+      return 'La contraseña es muy débil. No cumple con los requisitos de complejidad. (Código: WEAK_PASSWORD)';
     }
     if (message.contains('user-not-found') ||
         message.contains('EMAIL_NOT_FOUND')) {

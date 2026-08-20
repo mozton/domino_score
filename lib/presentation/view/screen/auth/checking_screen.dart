@@ -46,7 +46,9 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
       // Verificación de instalación limpia o falta de base de datos
       final dbPath = await sqflite.getDatabasesPath();
-      final dbExists = await File('$dbPath/DominoScoreDB_${user.id}.db').exists();
+      final dbExists = await File(
+        '$dbPath/DominoScoreDB_${user.id}.db',
+      ).exists();
       if (!dbExists) {
         const storage = FlutterSecureStorage();
         await storage.delete(key: 'free_game_consumed');
@@ -58,15 +60,18 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
       if (!mounted) return;
 
       if (!accepted) {
-        // Usar pushReplacementNamed para asegurar que el flujo sea lineal
+        // Usar pushNamedAndRemoveUntil para asegurar que el flujo sea lineal y no se apilen rutas
         Future.microtask(() {
           if (!mounted) return;
-          Navigator.pushReplacementNamed(context, RouteNames.privacyPolicy);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            RouteNames.privacyPolicy,
+            (route) => false,
+          );
         });
         return;
       }
 
-      // Si ya aceptó y está logueado, ir al Home después de inicializar DB
       await _initializeApp(user);
     } catch (e) {
       if (!mounted) return;
@@ -79,25 +84,13 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
   Future<void> _initializeApp(UserModel user) async {
     try {
-      // Inicializar base de datos
       await DatabaseHelper().init(user.id);
 
       if (!mounted) return;
 
-      // Inicializar y verificar suscripción
-      // final subVM = context.read<SubscriptionViewModel>();
-      // await subVM.initialize();
-
       if (!mounted) return;
 
-      // if (subVM.state == AppAccessState.premium || !subVM.hasConsumedFreeGame) {
-        _navigateTo(const HomeScreen());
-      // } else {
-      //   Future.microtask(() {
-      //     if (!mounted) return;
-      //     Navigator.pushReplacementNamed(context, RouteNames.subscription);
-      //   });
-      // }
+      _navigateTo(const HomeScreen());
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -110,12 +103,15 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
   void _navigateTo(Widget screen) {
     if (_isNavigating) return;
     _isNavigating = true;
-    // Usamos microtask para asegurar que la navegación ocurra después del frame actual
     Future.microtask(() {
       if (!mounted) return;
+
       Navigator.of(
         context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => screen));
+      ).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => screen),
+        (route) => false,
+      );
     });
   }
 

@@ -57,7 +57,7 @@ class UiHelpers {
           child: AddScore(
             colorButton: teamIndex == 0 ? Color(0xFFD4AF37) : Color(0xFF1E2B43),
             onTapPass: () async {
-              final points = int.tryParse("30") ?? 0;
+              final points = 30;
               final RoundModel newRound;
 
               if (teamIndex == 0) {
