@@ -36,6 +36,13 @@ class InputValidator {
     return null;
   }
 
+  static String? validateLoginPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'La contraseña es requerida';
+    }
+    return null;
+  }
+
   static String parseException(dynamic e) {
     if (e is AuthException) {
       return e.toString();

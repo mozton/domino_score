@@ -27,6 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool loading = false;
   bool obscure = true;
+  String? _emailErrorText;
+  String? _passwordErrorText;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               icon: Icons.email_outlined,
                               isEmail: true, // Flag para validar email
                               isDarkMode: isDark, // Pass theme state
+                              backendError: _emailErrorText,
                               suffix: IconButton(
                                 icon: const Image(
                                   image: AssetImage(
@@ -137,9 +140,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   InputValidator.parseException(
                                                     e,
                                                   );
-                                              NotificationsService.showSnackbar(
-                                                message,
-                                              );
+                                              setState(() {
+                                                if (message
+                                                        .toLowerCase()
+                                                        .contains(
+                                                          'contraseña',
+                                                        ) ||
+                                                    message
+                                                        .toLowerCase()
+                                                        .contains(
+                                                          'credenciales',
+                                                        )) {
+                                                  _passwordErrorText = message;
+                                                } else if (message
+                                                    .toLowerCase()
+                                                    .contains('correo')) {
+                                                  _emailErrorText = message;
+                                                } else {
+                                                  NotificationsService.showSnackbar(
+                                                    message,
+                                                  );
+                                                }
+                                              });
+                                              _formKey.currentState!.validate();
                                             }
                                           } else {
                                             NotificationsService.showSnackbar(
@@ -162,6 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             icon: Icons.lock_outline,
                             obscure: obscure,
                             isDarkMode: isDark, // Pass theme state
+                            backendError: _passwordErrorText,
                             suffix: IconButton(
                               icon: Icon(
                                 obscure
@@ -227,6 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   context,
                                                   listen: false,
                                                 );
+                                            setState(() => loading = true);
                                             try {
                                               final user = await prov.signIn(
                                                 emailCtrl.text.trim(),
@@ -253,14 +278,36 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   (route) => false,
                                                 );
                                               }
+                                              setState(() => loading = false);
                                             } catch (e) {
+                                              setState(() => loading = false);
                                               final message =
                                                   InputValidator.parseException(
                                                     e,
                                                   );
-                                              NotificationsService.showSnackbar(
-                                                message,
-                                              );
+                                              setState(() {
+                                                if (message
+                                                        .toLowerCase()
+                                                        .contains(
+                                                          'contraseña',
+                                                        ) ||
+                                                    message
+                                                        .toLowerCase()
+                                                        .contains(
+                                                          'credenciales',
+                                                        )) {
+                                                  _passwordErrorText = message;
+                                                } else if (message
+                                                    .toLowerCase()
+                                                    .contains('correo')) {
+                                                  _emailErrorText = message;
+                                                } else {
+                                                  NotificationsService.showSnackbar(
+                                                    message,
+                                                  );
+                                                }
+                                              });
+                                              _formKey.currentState!.validate();
                                             }
                                           },
 
@@ -331,15 +378,31 @@ class _LoginScreenState extends State<LoginScreen> {
     bool isEmail = false,
     Widget? suffix,
     required bool isDarkMode,
+    String? backendError,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
+      onChanged: (val) {
+        if (backendError != null) {
+          setState(() {
+            if (isEmail) {
+              _emailErrorText = null;
+            } else {
+              _passwordErrorText = null;
+            }
+          });
+          _formKey.currentState!.validate();
+        }
+      },
       validator: (value) {
+        if (backendError != null) {
+          return backendError;
+        }
         if (isEmail) {
           return InputValidator.validateEmail(value);
         } else {
-          return InputValidator.validatePassword(value);
+          return InputValidator.validateLoginPassword(value);
         }
       },
       decoration: InputDecoration(
