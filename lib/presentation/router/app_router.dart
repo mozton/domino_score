@@ -1,3 +1,4 @@
+import 'package:dominos_score/feature/games/presentation/screens/group_screen.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/screen/auth/checking_screen.dart';
 import 'package:dominos_score/presentation/view/screen/auth/login_screen.dart';
@@ -27,6 +28,7 @@ class AppRouter {
       RouteNames.accountSettings: (context) => AccountSettingsScreen(),
       RouteNames.privacyPolicy: (context) => PrivacyPolicyScreen(),
       RouteNames.detailGame: (context) => DetailGameScreen(index: 2),
+      RouteNames.groups: (context) => GroupScreen(),
     };
   }
 }
