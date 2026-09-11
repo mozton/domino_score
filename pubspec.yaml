@@ -57,6 +57,9 @@ dependencies:
   connectivity_plus: ^6.1.5
   # verify_local_purchase: ^1.0.4
   path_provider: ^2.1.6
+  flutter_tabler_icons: ^1.43.0
+  equatable: ^2.1.0
+  cloud_firestore: ^6.9.0
 
 dev_dependencies:
   flutter_test:

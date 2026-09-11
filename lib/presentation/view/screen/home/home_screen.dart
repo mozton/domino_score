@@ -1,3 +1,4 @@
+import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:dominos_score/presentation/view/widgets/global/settings_popup.dart';
 import 'package:dominos_score/presentation/viewmodel/game_viewmodel.dart';
 
@@ -6,6 +7,7 @@ import 'package:dominos_score/presentation/view/widgets/features/game/button/but
 import 'package:dominos_score/presentation/view/widgets/features/game/win_and_new_game.dart';
 import 'package:dominos_score/presentation/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -154,6 +156,15 @@ class _HomeScreenState extends State<HomeScreen> {
           color: isDark ? Colors.white : Colors.black,
         ),
       ),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, RouteNames.groups);
+          },
+          icon: Icon(TablerIcons.users_group),
+        ),
+      ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 20),
@@ -172,6 +183,14 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage('assets/icon/settings.png'),
               color: isDark ? Colors.white : Colors.black,
             ),
+            // Icon(
+            //   TablerIcons.settings,
+
+            //   // opticalSize: 0.5,
+            //   size: MediaQuery.of(context).size.height * (28 / 852),
+
+            //   color: isDark ? Colors.white : Colors.black,
+            // ),
           ),
         ),
       ],
