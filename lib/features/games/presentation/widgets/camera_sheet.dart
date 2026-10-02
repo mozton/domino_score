@@ -1,0 +1,362 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
+import 'package:dominos_score/core/widgets/error_snackbar.dart';
+import 'package:dominos_score/features/camera/presentation/bloc/camera_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+class CameraSheet extends StatefulWidget {
+  final int teamIndex;
+
+  const CameraSheet({super.key, required this.teamIndex});
+
+  @override
+  State<CameraSheet> createState() => _CameraSheetState();
+}
+
+class _CameraSheetState extends State<CameraSheet> {
+  bool _isTakingPicture = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<CameraBloc>().state;
+    final bloc = context.read<CameraBloc>();
+    final size = MediaQuery.of(context).size;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTablet = size.width > 600;
+
+    if (state.status == CameraStatus.error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 2),
+              content: Text(
+                'No se pudo acceder a la cámara. Revisa los permisos.',
+              ),
+            ),
+          );
+          Navigator.pop(context);
+        }
+      });
+      return const Scaffold(backgroundColor: Colors.black);
+    }
+
+    if (state.status != CameraStatus.ready || state.controller == null) {
+      return Center(
+        child: LoadingAnimationWidget.progressiveDots(
+          color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF1E2B43),
+          size: 40,
+        ),
+      );
+    }
+
+    final controller = state.controller!;
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(
+              height: isTablet
+                  ? MediaQuery.of(context).size.height * 0.05
+                  : MediaQuery.of(context).size.height * 0.05,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Spacer(),
+            Center(
+              child: Container(
+                width: size.width,
+                height: isTablet ? (size.width) * 4 / 3 : (size.width) * 3 / 3,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: OverflowBox(
+                    alignment: Alignment.center,
+                    maxHeight: double.infinity,
+                    maxWidth: double.infinity,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: size.width,
+                        child: CameraPreview(controller),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: InkWell(
+                      onTap: () => _handleTakePicture(context, bloc),
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black,
+                          ),
+                          child: _isTakingPicture
+                              ? SizedBox.shrink()
+                              : Image(
+                                  image: AssetImage('assets/icon/camera.png'),
+                                  color: Colors.white,
+                                  height:
+                                      MediaQuery.of(context).size.height *
+                                      (24 / 853),
+                                  width:
+                                      MediaQuery.of(context).size.width *
+                                      (24 / 393),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Tomar foto',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleTakePicture(
+    BuildContext context,
+    CameraBloc bloc,
+  ) async {
+    if (_isTakingPicture) return;
+
+    setState(() {
+      _isTakingPicture = true;
+    });
+
+    try {
+      final controller = bloc.cameraController!;
+      await controller.setFocusMode(FocusMode.auto);
+      await Future.delayed(const Duration(milliseconds: 500));
+      final image = await controller.takePicture();
+
+      if (!context.mounted) return;
+
+      await _showPreviewDialog(context, image, bloc);
+    } catch (e) {
+      // Ignorar errores al tomar la foto.
+    } finally {
+      if (context.mounted) {
+        setState(() {
+          _isTakingPicture = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _showPreviewDialog(
+    BuildContext sheetContext,
+    XFile image,
+    CameraBloc bloc,
+  ) async {
+    final result = await showDialog<int>(
+      context: sheetContext,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (dialogContext) => _PreviewDialog(image: image, bloc: bloc),
+    );
+
+    if (result != null && sheetContext.mounted) {
+      Navigator.pop(sheetContext, result);
+    }
+  }
+}
+
+class _PreviewDialog extends StatefulWidget {
+  final XFile image;
+  final CameraBloc bloc;
+
+  const _PreviewDialog({required this.image, required this.bloc});
+
+  @override
+  State<_PreviewDialog> createState() => _PreviewDialogState();
+}
+
+class _PreviewDialogState extends State<_PreviewDialog> {
+  bool _isProcessing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTablet = size.width > 600;
+    final backgroundColor = isDark
+        ? const Color(0xFF0F1822)
+        : const Color(0xFFFFFFFF);
+    final textColor = isDark ? Colors.white : Colors.black;
+
+    return Dialog(
+      backgroundColor: backgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: isTablet ? 400 : size.width * 0.7,
+              height: (isTablet ? 400 : size.width * 0.7) * 4 / 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isDark ? Colors.white12 : Colors.black12,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(File(widget.image.path), fit: BoxFit.cover),
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (_isProcessing) ...[
+              LoadingAnimationWidget.progressiveDots(
+                color: Color(0xFFD4AF37),
+                size: 40,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Procesando...',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: textColor.withValues(alpha: 0.7),
+                ),
+              ),
+            ] else ...[
+              Text(
+                '¿Usar esta foto?',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFF6B7280),
+                    ),
+                    child: const Text(
+                      'Repetir',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        _isProcessing = true;
+                      });
+
+                      try {
+                        final points = await widget.bloc.processImage(
+                          widget.image,
+                        );
+
+                        if (context.mounted) {
+                          Navigator.pop(context, points);
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          final message = CameraBloc.messageFor(e);
+                          if (context.mounted) {
+                            ErrorSnackbar.show(context, message);
+                          }
+                          setState(() {
+                            _isProcessing = false;
+                          });
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFD4AF37),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                    ),
+                    child: const Text(
+                      'Usar foto',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}

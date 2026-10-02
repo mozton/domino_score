@@ -16,5 +16,18 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 # domino_score
 
+## Partida en vivo
+
+Cada partida iniciada dentro de un grupo recibe un **código de 6 caracteres** que
+se muestra en la barra superior de la pantalla de juego (se toca para copiarlo).
+El marcador se publica en Firestore en `liveGames/{code}` en cada ronda, y
+cualquier usuario con sesión iniciada puede seguirla con ese código desde
+**Ver partida en vivo** (icono de antena) sin pertenecer al grupo.
+
+- Pantalla: `lib/features/games/presentation/pages/live_game_page.dart` (se
+  refresca sola cada 5 s porque Firestore REST no tiene tiempo real).
+- Reglas de Firestore necesarias: [`docs/firestore_rules.md`](docs/firestore_rules.md).
+- Pruebas: `flutter test test/games`.
+
 /📱 Width: 393 px
 /📱 Height: 852 px

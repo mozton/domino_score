@@ -1,0 +1,15 @@
+/// Contrato del origen de datos remoto de autenticación (Firebase REST).
+abstract class AuthRemoteDataSource {
+  Future<Map<String, dynamic>> createUser(String email, String password);
+  Future<Map<String, dynamic>> login(String email, String password);
+  Future<Map<String, dynamic>> getUserData(String token);
+
+  Future<void> logout();
+  Future<String> readToken();
+  Future<void> sendEmailVerification();
+  Future<bool> isEmailVerified();
+  Future<void> resendVerificationEmail();
+  Future<String?> refreshIdToken();
+  Future<void> sendPasswordResetEmail(String email);
+  Future<void> deleteUser(String idToken);
+}

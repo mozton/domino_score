@@ -13,4 +13,6 @@ class RouteNames {
   static const String privacyPolicy = '/privacyPolicy';
   static const String detailGame = '/detailGame';
   static const String groups = '/groups';
+  static const String profile = '/profile';
+  static const String liveGame = '/liveGame';
 }

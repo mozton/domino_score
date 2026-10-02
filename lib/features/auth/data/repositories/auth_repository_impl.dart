@@ -1,0 +1,143 @@
+import 'package:dominos_score/core/error/auth_exception.dart';
+import 'package:dominos_score/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:dominos_score/features/auth/domain/entities/user_entity.dart';
+import 'package:dominos_score/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSource _dataSource;
+  final FlutterSecureStorage _storage;
+  final SharedPreferences _sharedPreferences;
+
+  AuthRepositoryImpl(this._dataSource, this._storage, this._sharedPreferences);
+
+  @override
+  Future<User?> checkAuthStatus() async {
+    try {
+      final token = await _storage.read(key: 'token');
+      if (token == null) return null;
+
+      final userData = await _dataSource.getUserData(token);
+      return _mapToUser(userData);
+    } catch (e) {
+      try {
+        final newToken = await _dataSource.refreshIdToken();
+        if (newToken != null) {
+          await _storage.write(key: 'token', value: newToken);
+          final userData = await _dataSource.getUserData(newToken);
+          return _mapToUser(userData);
+        } else {
+          await signOut();
+          return null;
+        }
+      } catch (refreshError) {
+        await signOut();
+        return null;
+      }
+    }
+  }
+
+  @override
+  Future<User?> signIn(String email, String password) async {
+    try {
+      final response = await _dataSource.login(email, password);
+      final idToken = response['idToken'] as String?;
+
+      if (idToken == null) {
+        throw AuthException(
+          'No se recibió token del servidor',
+          code: 'NO_TOKEN',
+        );
+      }
+
+      await _storage.write(key: 'token', value: idToken);
+      final verified = await _dataSource.isEmailVerified();
+
+      if (!verified) {
+        throw AuthException(
+          'Debe verificar su correo antes de iniciar sesión.',
+          code: 'EMAIL_NOT_VERIFIED',
+        );
+      }
+
+      return _mapToUser(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> signOut() async {
+    await _dataSource.logout();
+    await _storage.delete(key: 'token');
+  }
+
+  @override
+  Future<User?> signUp(String email, String password) async {
+    final response = await _dataSource.createUser(email, password);
+
+    try {
+      await _dataSource.sendEmailVerification();
+    } catch (e) {
+      debugPrint('No se pudo enviar el correo de verificación: $e');
+    }
+
+    return _mapToUser(response);
+  }
+
+  User _mapToUser(Map<String, dynamic> data) {
+    final uid = data['localId'] ?? data['uid'] ?? '';
+    final email = data['email'] ?? '';
+    final displayName = data['displayName'] ?? '';
+    final photoUrl = data['photoUrl'];
+    final createdAt = data['createdAt'] != null
+        ? DateTime.tryParse(data['createdAt']) ?? DateTime.now()
+        : DateTime.now();
+
+    return User(
+      id: uid,
+      email: email,
+      name: displayName.isNotEmpty ? displayName : 'Usuario',
+      username: email.split('@').first,
+      photoUrl: photoUrl,
+      createdAt: createdAt,
+      groupIds: [],
+    );
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _dataSource.sendPasswordResetEmail(email);
+  }
+
+  @override
+  Future<void> deleteUser() async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) {
+      throw AuthException(
+        'No se encontró sesión activa para eliminar.',
+        code: 'NO_SESSION',
+      );
+    }
+
+    await _dataSource.deleteUser(token);
+    await signOut();
+  }
+
+  @override
+  Future<void> acceptPrivacyPolicy() async {
+    await _sharedPreferences.setBool('privacy_policy_accepted', true);
+  }
+
+  @override
+  Future<void> rejectPrivacyPolicy() async {
+    await _sharedPreferences.remove('privacy_policy_accepted');
+  }
+
+  @override
+  Future<bool> isPrivacyPolicyAccepted() async {
+    return _sharedPreferences.getBool('privacy_policy_accepted') ?? false;
+  }
+}
