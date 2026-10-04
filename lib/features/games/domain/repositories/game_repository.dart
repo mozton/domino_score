@@ -22,6 +22,9 @@ abstract class GameRepository {
   Future<void> updateTeamName(int teamId, String name);
   Future<void> updateTeamScore(int teamId, int newTotalScore);
 
+  /// Jugadores del equipo: miembros del grupo o invitados con nombre propio.
+  Future<void> updateTeamPlayers(int teamId, String? player1, String? player2);
+
   Future<int> saveRound(int gameId, Round round);
   Future<void> deleteRound(int roundId);
 

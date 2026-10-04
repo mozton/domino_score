@@ -1120,6 +1120,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     final winner = _winnerOf(game);
     final code = game.liveCode;
     final hasCode = code != null && code.isNotEmpty;
+    final players = _playersOf(game);
 
     return InkWell(
       borderRadius: BorderRadius.circular(12),
@@ -1146,6 +1147,16 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                     '${scores.isEmpty ? '0' : scores.join(' - ')} • ${game.rounds.length} rondas',
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
+                  if (players.isNotEmpty)
+                    Text(
+                      players.join(' · '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.black45,
+                        fontSize: 11,
+                      ),
+                    ),
                   if (!finished)
                     const Text(
                       'En curso',
@@ -1211,13 +1222,31 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   }
 
   /// Equipo que alcanzó los puntos para ganar, si lo hay.
-  Team? _winnerOf(Game game) {
-    final goal = game.pointsToWin;
+  Team? _winnerOf(Game game) {    final goal = game.pointsToWin;
     if (goal <= 0) return null;
     for (final team in game.teams) {
       if (team.totalScore >= goal) return team;
     }
     return null;
+  }
+
+  /// Jugadores de la partida (miembros del grupo o invitados).
+  ///
+  /// Se saltan los repetidos, los que son iguales al nombre del equipo (en
+  /// individual el equipo se llama como el jugador) y los "Jugador N" que
+  /// quedan por defecto cuando nadie los ha elegido.
+  List<String> _playersOf(Game game) {
+    final players = <String>[];
+    for (final team in game.teams) {
+      for (final player in [team.player1, team.player2]) {
+        final name = player?.trim() ?? '';
+        if (name.isEmpty || name == team.name) continue;
+        if (name.startsWith('Jugador ')) continue;
+        if (players.contains(name)) continue;
+        players.add(name);
+      }
+    }
+    return players;
   }
 
   Future<void> _copyLiveCode(String code) async {

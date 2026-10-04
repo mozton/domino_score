@@ -43,6 +43,7 @@ import 'package:dominos_score/features/games/domain/usecases/set_my_team_usecase
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_with_teams_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/update_points_to_win_usecase.dart';
+import 'package:dominos_score/features/games/domain/usecases/update_team_players_usecase.dart';
 import 'package:dominos_score/features/games/presentation/bloc/live_game_bloc.dart';
 import 'package:dominos_score/features/groups/data/datasources/group_remote_data_source.dart';
 import 'package:dominos_score/features/groups/data/datasources/group_remote_data_source_impl.dart';
@@ -141,6 +142,9 @@ Future<void> initDependencies(SharedPreferences prefs) async {
   );
   getIt.registerLazySingleton<RenameTeamUseCase>(
     () => RenameTeamUseCase(getIt<GameRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateTeamPlayersUseCase>(
+    () => UpdateTeamPlayersUseCase(getIt<GameRepository>()),
   );
   getIt.registerLazySingleton<SetMyTeamUseCase>(
     () => SetMyTeamUseCase(getIt<GameRepository>()),

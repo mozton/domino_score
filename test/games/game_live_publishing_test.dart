@@ -14,6 +14,7 @@ import 'package:dominos_score/features/games/domain/usecases/set_my_team_usecase
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_with_teams_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/update_points_to_win_usecase.dart';
+import 'package:dominos_score/features/games/domain/usecases/update_team_players_usecase.dart';
 import 'package:dominos_score/features/games/presentation/bloc/game_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -40,6 +41,7 @@ void main() {
       addRound: AddRoundUseCase(games),
       deleteRound: DeleteRoundUseCase(games),
       renameTeam: RenameTeamUseCase(games),
+      updateTeamPlayers: UpdateTeamPlayersUseCase(games),
       setMyTeam: SetMyTeamUseCase(games),
       updatePointsToWin: UpdatePointsToWinUseCase(games),
       publishLiveGame: PublishLiveGameUseCase(live),
@@ -182,5 +184,80 @@ void main() {
 
     expect(afterRound.currentGame!.teams.first.totalScore, 20);
     expect(afterRound.errorMessage, isNull);
+  });
+
+  test('la partida de grupo arranca con los miembros repartidos', () async {
+    bloc.add(
+      const GroupGameStarted(
+        groupId: 'grupo-1',
+        groupName: 'Los Tigres',
+        mode: GameMode.teams2v2,
+        playerNames: ['Ana', 'Luis', 'Pedro', 'Marta'],
+      ),
+    );
+    final state = await waitForGame();
+
+    final teams = state.currentGame!.teams;
+    expect(teams[0].player1, 'Ana');
+    expect(teams[0].player2, 'Luis');
+    expect(teams[1].player1, 'Pedro');
+    expect(teams[1].player2, 'Marta');
+
+    // Y se publica en vivo con esos jugadores.
+    final code = state.currentGame!.liveCode!;
+    expect(live.games[code]!.game.teams.first.player1, 'Ana');
+  });
+
+  test('cambiar los jugadores de un equipo se guarda y se publica', () async {
+    bloc.add(
+      const GameInitialized(groupId: 'grupo-1', groupName: 'Los Tigres'),
+    );
+    final started = await waitForGame();
+    final game = started.currentGame!;
+    final code = game.liveCode!;
+    final teamId = game.teams.first.id!;
+
+    bloc.add(
+      TeamPlayersChanged(
+        teamId: teamId,
+        player1: 'Ana',
+        player2: 'Invitado Juan',
+      ),
+    );
+    final updated = await bloc.stream.firstWhere(
+      (state) =>
+          state.currentGame!.teams.first.player2 == 'Invitado Juan',
+    );
+
+    expect(updated.currentGame!.teams.first.player1, 'Ana');
+    // Se guardó en la partida...
+    expect(games.gameById(game.id!)!.teams.first.player2, 'Invitado Juan');
+    // ...y los invitados también se ven en la partida en vivo.
+    final published = live.games[code]!.game.teams.first;
+    expect(published.player1, 'Ana');
+    expect(published.player2, 'Invitado Juan');
+  });
+
+  test('en individual el nombre del equipo pasa a ser el del jugador',
+      () async {
+    bloc.add(
+      const GroupGameStarted(
+        groupId: 'grupo-1',
+        groupName: 'Los Tigres',
+        mode: GameMode.individual2,
+      ),
+    );
+    final started = await waitForGame();
+    final teamId = started.currentGame!.teams.first.id!;
+
+    bloc.add(
+      TeamPlayersChanged(teamId: teamId, player1: 'Ana', name: 'Ana'),
+    );
+    final updated = await bloc.stream.firstWhere(
+      (state) => state.currentGame!.teams.first.name == 'Ana',
+    );
+
+    expect(updated.currentGame!.teams.first.name, 'Ana');
+    expect(updated.currentGame!.teams.first.player1, 'Ana');
   });
 }

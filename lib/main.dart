@@ -23,6 +23,7 @@ import 'package:dominos_score/features/games/domain/usecases/set_my_team_usecase
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_with_teams_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/update_points_to_win_usecase.dart';
+import 'package:dominos_score/features/games/domain/usecases/update_team_players_usecase.dart';
 import 'package:dominos_score/features/games/presentation/bloc/game_bloc.dart';
 import 'package:dominos_score/features/groups/domain/usecases/add_group_guest_usecase.dart';
 import 'package:dominos_score/features/groups/domain/usecases/create_group_usecase.dart';
@@ -96,6 +97,7 @@ class MyApp extends StatelessWidget {
             addRound: getIt<AddRoundUseCase>(),
             deleteRound: getIt<DeleteRoundUseCase>(),
             renameTeam: getIt<RenameTeamUseCase>(),
+            updateTeamPlayers: getIt<UpdateTeamPlayersUseCase>(),
             setMyTeam: getIt<SetMyTeamUseCase>(),
             updatePointsToWin: getIt<UpdatePointsToWinUseCase>(),
             publishLiveGame: getIt<PublishLiveGameUseCase>(),

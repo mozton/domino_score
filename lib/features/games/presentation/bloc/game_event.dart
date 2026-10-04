@@ -28,14 +28,18 @@ class GroupGameStarted extends GameEvent {
   final String? groupName;
   final GameMode mode;
 
+  /// Nombres de los miembros del grupo para repartirlos por los equipos.
+  final List<String> playerNames;
+
   const GroupGameStarted({
     required this.groupId,
     this.groupName,
     required this.mode,
+    this.playerNames = const [],
   });
 
   @override
-  List<Object?> get props => [groupId, groupName, mode];
+  List<Object?> get props => [groupId, groupName, mode, playerNames];
 }
 
 /// Carga todas las partidas (historial).
@@ -104,6 +108,27 @@ class TeamRenamed extends GameEvent {
 
   @override
   List<Object?> get props => [teamId, newName];
+}
+
+/// Cambia los jugadores de un equipo: miembros del grupo o invitados.
+///
+/// En los modos individuales el nombre del "equipo" es el del jugador, por eso
+/// [name] se actualiza también cuando viene.
+class TeamPlayersChanged extends GameEvent {
+  final int teamId;
+  final String? player1;
+  final String? player2;
+  final String? name;
+
+  const TeamPlayersChanged({
+    required this.teamId,
+    this.player1,
+    this.player2,
+    this.name,
+  });
+
+  @override
+  List<Object?> get props => [teamId, player1, player2, name];
 }
 
 /// Cambia el modo de partida (equipos 2v2 / individual 2-3-4) y reinicia el

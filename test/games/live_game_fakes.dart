@@ -268,6 +268,25 @@ class FakeGameRepository implements GameRepository {
   }
 
   @override
+  Future<void> updateTeamPlayers(
+    int teamId,
+    String? player1,
+    String? player2,
+  ) async {
+    _mutateTeam(
+      teamId,
+      (team) => Team(
+        id: team.id,
+        gameId: team.gameId,
+        name: team.name,
+        player1: player1,
+        player2: player2,
+        totalScore: team.totalScore,
+      ),
+    );
+  }
+
+  @override
   Future<int> saveRound(int gameId, Round round) async {
     final id = _nextRoundId++;
     _rounds[id] = round.copyWith(id: id, gameId: gameId);

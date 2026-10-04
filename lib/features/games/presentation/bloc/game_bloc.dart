@@ -16,6 +16,7 @@ import 'package:dominos_score/features/games/domain/usecases/set_my_team_usecase
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/start_new_game_with_teams_usecase.dart';
 import 'package:dominos_score/features/games/domain/usecases/update_points_to_win_usecase.dart';
+import 'package:dominos_score/features/games/domain/usecases/update_team_players_usecase.dart';
 import 'package:dominos_score/features/settings/domain/repositories/settings_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final AddRoundUseCase _addRound;
   final DeleteRoundUseCase _deleteRound;
   final RenameTeamUseCase _renameTeam;
+  final UpdateTeamPlayersUseCase _updateTeamPlayers;
   final SetMyTeamUseCase _setMyTeam;
   final UpdatePointsToWinUseCase _updatePointsToWin;
   final PublishLiveGameUseCase _publishLiveGame;
@@ -49,6 +51,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required AddRoundUseCase addRound,
     required DeleteRoundUseCase deleteRound,
     required RenameTeamUseCase renameTeam,
+    required UpdateTeamPlayersUseCase updateTeamPlayers,
     required SetMyTeamUseCase setMyTeam,
     required UpdatePointsToWinUseCase updatePointsToWin,
     required PublishLiveGameUseCase publishLiveGame,
@@ -63,6 +66,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
        _addRound = addRound,
        _deleteRound = deleteRound,
        _renameTeam = renameTeam,
+       _updateTeamPlayers = updateTeamPlayers,
        _setMyTeam = setMyTeam,
        _updatePointsToWin = updatePointsToWin,
        _publishLiveGame = publishLiveGame,
@@ -81,6 +85,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<RoundSelected>(_onSelectRound);
     on<SelectedRoundDeleted>(_onDeleteSelectedRound);
     on<TeamRenamed>(_onRenameTeam);
+    on<TeamPlayersChanged>(_onTeamPlayersChanged);
     on<MyTeamSelected>(_onMyTeamSelected);
     on<PointsToWinSelected>(_onSelectPointsToWin);
     on<PointsToWinChanged>(_onChangePointsToWin);
@@ -157,6 +162,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         pointsToWin: state.pointsToWin,
         mode: event.mode,
         liveCode: await _generateLiveCode(),
+        // Los equipos arrancan con los miembros del grupo repartidos.
+        playerNames: event.playerNames,
       );
       emit(state.copyWith(isLoading: false, currentGame: game));
       await _publishLive(game);
@@ -306,6 +313,34 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       );
       emit(state.copyWith(currentGame: updated));
       await _publishLive(updated);
+    }
+  }
+
+  /// Cambia los jugadores de un equipo (miembros del grupo o invitados).
+  Future<void> _onTeamPlayersChanged(
+    TeamPlayersChanged event,
+    Emitter<GameState> emit,
+  ) async {
+    final game = state.currentGame;
+    if (game == null || game.id == null) return;
+
+    try {
+      // En individual el nombre del "equipo" es el del jugador.
+      final name = event.name;
+      if (name != null && name.trim().isNotEmpty) {
+        await _renameTeam(event.teamId, name.trim());
+      }
+
+      final updated = await _updateTeamPlayers(
+        game,
+        teamId: event.teamId,
+        player1: event.player1,
+        player2: event.player2,
+      );
+      emit(state.copyWith(currentGame: updated));
+      await _publishLive(updated);
+    } catch (_) {
+      // Ignorar errores: el marcador sigue funcionando.
     }
   }
 

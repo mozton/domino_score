@@ -128,6 +128,18 @@ class DriftGameDataSource implements GameDataSource {
   }
 
   @override
+  Future<void> updateTeamPlayers(int teamId, String? player1, String? player2) {
+    return _guardVoid(() async {
+      await (_db.update(_db.teams)..where((t) => t.id.equals(teamId))).write(
+        TeamsCompanion(
+          player1: Value(player1),
+          player2: Value(player2),
+        ),
+      );
+    });
+  }
+
+  @override
   Future<int> insertRound(int gameId, Round round) {
     return _guard(0, () async {
       return _db.into(_db.rounds).insert(

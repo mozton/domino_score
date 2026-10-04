@@ -63,6 +63,13 @@ class RoutedGameDataSource implements GameDataSource {
       _active.updateTeamScore(teamId, newTotalScore);
 
   @override
+  Future<void> updateTeamPlayers(
+    int teamId,
+    String? player1,
+    String? player2,
+  ) => _active.updateTeamPlayers(teamId, player1, player2);
+
+  @override
   Future<int> insertRound(int gameId, Round round) =>
       _active.insertRound(gameId, round);
 

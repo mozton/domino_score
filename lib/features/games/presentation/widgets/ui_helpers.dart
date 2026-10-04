@@ -10,7 +10,9 @@ import 'package:dominos_score/features/games/presentation/widgets/change_name_te
 import 'package:dominos_score/features/games/presentation/widgets/delete_round.dart';
 import 'package:dominos_score/features/games/presentation/widgets/selected_point_to_wind.dart';
 import 'package:dominos_score/features/games/presentation/widgets/team_palette.dart';
+import 'package:dominos_score/features/games/presentation/widgets/team_players_dialog.dart';
 import 'package:dominos_score/features/games/presentation/widgets/win_and_new_game.dart';
+import 'package:dominos_score/features/groups/domain/entities/group_member_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -156,6 +158,46 @@ class UiHelpers {
           ),
         );
       },
+    );
+  }
+
+  /// Elige los jugadores de un equipo entre los miembros del grupo o como
+  /// invitados con nombre propio (solo partidas de grupo).
+  static Future<void> showTeamPlayersDialog(
+    BuildContext context,
+    int teamIndex,
+    List<GroupMember> members,
+  ) async {
+    final gameState = context.read<GameBloc>().state;
+    final game = gameState.currentGame;
+    if (game == null || teamIndex < 0 || teamIndex >= game.teams.length) return;
+
+    final team = game.teams[teamIndex];
+    final teamId = team.id;
+    if (teamId == null) return;
+
+    final isTeams = gameState.gameMode.isTeams;
+
+    final result = await showDialog<TeamPlayersResult>(
+      context: context,
+      builder: (dialogContext) => TeamPlayersDialog(
+        teamName: team.name,
+        isTeams: isTeams,
+        player1: team.player1,
+        player2: team.player2,
+        members: members,
+      ),
+    );
+    if (result == null || !context.mounted) return;
+
+    context.read<GameBloc>().add(
+      TeamPlayersChanged(
+        teamId: teamId,
+        player1: result.player1,
+        player2: isTeams ? result.player2 : null,
+        // En individual el "equipo" se llama como el jugador.
+        name: isTeams ? null : result.player1,
+      ),
     );
   }
 

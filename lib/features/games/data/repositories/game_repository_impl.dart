@@ -107,4 +107,11 @@ class GameRepositoryImpl implements GameRepository {
   @override
   Future<void> updateGameLiveCode(int gameId, String liveCode) =>
       _activeDataSource.updateLiveCode(gameId, liveCode);
+
+  @override
+  Future<void> updateTeamPlayers(
+    int teamId,
+    String? player1,
+    String? player2,
+  ) => _activeDataSource.updateTeamPlayers(teamId, player1, player2);
 }

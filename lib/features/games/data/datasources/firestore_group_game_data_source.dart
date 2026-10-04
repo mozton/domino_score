@@ -146,6 +146,16 @@ class FirestoreGroupGameDataSource implements GameDataSource {
   Future<void> updateTeamScore(int teamId, int newTotalScore) =>
       _client.setDocument('$_teamsPath/$teamId', {'totalScore': newTotalScore});
 
+  @override
+  Future<void> updateTeamPlayers(
+    int teamId,
+    String? player1,
+    String? player2,
+  ) => _client.setDocument('$_teamsPath/$teamId', {
+    'player1': player1,
+    'player2': player2,
+  });
+
   // ============================ ROUNDS ============================
 
   @override

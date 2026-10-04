@@ -1,3 +1,4 @@
+import 'package:dominos_score/core/di/injection.dart';
 import 'package:dominos_score/features/games/presentation/bloc/game_bloc.dart';
 import 'package:dominos_score/features/games/presentation/pages/live_game_page.dart';
 import 'package:dominos_score/features/games/presentation/widgets/card_team.dart';
@@ -8,6 +9,8 @@ import 'package:dominos_score/features/games/presentation/widgets/score_list.dar
 import 'package:dominos_score/features/games/presentation/widgets/team_palette.dart';
 import 'package:dominos_score/features/games/presentation/widgets/ui_helpers.dart';
 import 'package:dominos_score/features/games/presentation/widgets/win_and_new_game.dart';
+import 'package:dominos_score/features/groups/domain/entities/group_member_entity.dart';
+import 'package:dominos_score/features/groups/domain/usecases/get_group_detail_usecase.dart';
 import 'package:dominos_score/features/settings/presentation/widgets/settings_popup.dart';
 import 'package:dominos_score/presentation/router/route_names.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +44,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   GameBloc? _bloc;
 
+  /// Miembros del grupo (para elegir jugadores y sembrar los equipos).
+  List<GroupMember> _members = const [];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -53,23 +59,53 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final bloc = context.read<GameBloc>();
-      if (widget.startNew && widget.groupId != null) {
-        bloc.add(
-          GroupGameStarted(
-            groupId: widget.groupId!,
-            groupName: widget.groupName,
-            mode: bloc.state.gameMode,
-          ),
-        );
+      final groupId = widget.groupId;
+
+      if (widget.startNew && groupId != null) {
+        // Se necesitan los miembros antes de crear los equipos.
+        _startNewGroupGame(bloc, groupId);
       } else {
         bloc.add(
-          GameInitialized(
-            groupId: widget.groupId,
-            groupName: widget.groupName,
-          ),
+          GameInitialized(groupId: groupId, groupName: widget.groupName),
         );
+        // Los miembros se cargan en paralelo, solo para el selector de
+        // jugadores (así "Continuar partida" no espera a la red).
+        if (groupId != null) _refreshMembers(groupId);
       }
     });
+  }
+
+  /// Crea la partida nueva del grupo repartiendo a sus miembros por los equipos.
+  Future<void> _startNewGroupGame(GameBloc bloc, String groupId) async {
+    final members = await _loadMembers(groupId);
+    if (!mounted) return;
+    setState(() => _members = members);
+
+    bloc.add(
+      GroupGameStarted(
+        groupId: groupId,
+        groupName: widget.groupName,
+        mode: bloc.state.gameMode,
+        playerNames: members.map((member) => member.displayName).toList(),
+      ),
+    );
+  }
+
+  /// Carga los miembros del grupo para poder elegirlos como jugadores.
+  Future<void> _refreshMembers(String groupId) async {
+    final members = await _loadMembers(groupId);
+    if (!mounted) return;
+    setState(() => _members = members);
+  }
+
+  /// Miembros del grupo; si falla (sin red) se juega sin ellos.
+  Future<List<GroupMember>> _loadMembers(String groupId) async {
+    try {
+      final detail = await getIt<GetGroupDetailUseCase>()(groupId);
+      return detail.members;
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override
@@ -156,6 +192,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       teams[i].id!,
                                       i,
                                     ),
+                                    // Solo en partidas de grupo: elegir
+                                    // miembros del grupo o invitados.
+                                    onTapPlayers: widget.groupId == null
+                                        ? null
+                                        : () => UiHelpers.showTeamPlayersDialog(
+                                            context,
+                                            i,
+                                            _members,
+                                          ),
                                   ),
                               ],
                             ),

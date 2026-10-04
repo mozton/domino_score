@@ -19,6 +19,13 @@ abstract class GameDataSource {
   Future<void> updateTeamName(int teamId, String newName);
   Future<void> updateTeamScore(int teamId, int newTotalScore);
 
+  /// Jugadores del equipo (miembros del grupo o invitados).
+  Future<void> updateTeamPlayers(
+    int teamId,
+    String? player1,
+    String? player2,
+  );
+
   Future<int> insertRound(int gameId, Round round);
   Future<void> deleteRound(int roundId);
 

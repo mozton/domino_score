@@ -1,5 +1,6 @@
 import 'package:dominos_score/features/games/presentation/widgets/button/button_add_score.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 
 class CardTeam extends StatelessWidget {
   final String teamName;
@@ -10,6 +11,10 @@ class CardTeam extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onTapname;
 
+  /// Si se pasa, muestra el acceso para elegir los jugadores del equipo
+  /// (miembros del grupo o invitados). Solo se usa en partidas de grupo.
+  final VoidCallback? onTapPlayers;
+
   const CardTeam({
     super.key,
     required this.teamName,
@@ -19,6 +24,7 @@ class CardTeam extends StatelessWidget {
     this.widthFactor = 0.43,
     required this.onTap,
     required this.onTapname,
+    this.onTapPlayers,
   });
 
   @override
@@ -102,6 +108,24 @@ class CardTeam extends StatelessWidget {
                     image: AssetImage('assets/icon/pencil-plus.png'),
                   ),
                 ),
+                // Elegir quién juega (miembros del grupo o invitados).
+                if (onTapPlayers != null)
+                  Positioned(
+                    top: 2,
+                    left: 2,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onTapPlayers,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Icon(
+                          TablerIcons.users_plus,
+                          size: 20,
+                          color: Colors.black.withValues(alpha: 0.35),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
